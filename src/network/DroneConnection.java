@@ -43,8 +43,8 @@ public class DroneConnection {
 	 */
 	public synchronized void executeCmd(int cmd) {
 		System.out.println("Command to be executed[int]: " + cmd);
-		
-		new LEDAnimationCommand(LEDAnimation.BLINK_RED, 0.50f, 1);
+		System.out.println("DUMME GED");
+		drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_ORANGE, 3, 10);
 	}
 	
 	/**
