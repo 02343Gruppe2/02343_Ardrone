@@ -2,7 +2,6 @@ package network;
 
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.LEDAnimation;
-import de.yadrone.base.command.LEDAnimationCommand;
 
 public class DroneConnection {
 	private static DroneConnection instance = null;
@@ -33,7 +32,7 @@ public class DroneConnection {
 	public synchronized void executeCmd(String cmd) {
 		System.out.println("Command to be executed[str]: " + cmd);
 		
-		new LEDAnimationCommand(LEDAnimation.BLINK_GREEN, 0.50f, 1);
+		this.drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_RED, 0.5f, 5);
 	}
 	
 	/**
@@ -43,14 +42,14 @@ public class DroneConnection {
 	 */
 	public synchronized void executeCmd(int cmd) {
 		System.out.println("Command to be executed[int]: " + cmd);
-		System.out.println("DUMME GED");
-		drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_ORANGE, 3, 10);
+		
+		this.drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 0.5f, 5);
 	}
 	
 	/**
 	 * Set the drone instance used for the active connection instance
 	 * 
-	 * @param drone
+	 * @param drone 
 	 */
 	public synchronized void setDrone(IARDrone drone) {
 		this.drone = drone;
