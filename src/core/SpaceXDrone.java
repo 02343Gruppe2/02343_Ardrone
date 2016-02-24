@@ -4,6 +4,7 @@ import java.io.Console;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.command.LEDAnimation;
 import network.DroneConnection;
 
 public class SpaceXDrone {
@@ -31,6 +32,8 @@ public class SpaceXDrone {
 			int i = 0;
 			
 			while(running) {
+				
+				
 				// Keep doing algorithm... (testing for now)
 				if(i < 10) {
 					if(i % 2 == 0)

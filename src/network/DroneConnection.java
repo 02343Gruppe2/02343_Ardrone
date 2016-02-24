@@ -32,7 +32,8 @@ public class DroneConnection {
 	public synchronized void executeCmd(String cmd) {
 		System.out.println("Command to be executed[str]: " + cmd);
 		
-		this.drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_RED, 0.5f, 5);
+		drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_RED, 0.5f, 5);
+		drone.getCommandManager().waitFor(5000);
 	}
 	
 	/**
@@ -43,7 +44,9 @@ public class DroneConnection {
 	public synchronized void executeCmd(int cmd) {
 		System.out.println("Command to be executed[int]: " + cmd);
 		
-		this.drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_GREEN, 0.5f, 5);
+		
+		drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_ORANGE, 0.5f, 5);
+		drone.getCommandManager().waitFor(5000);
 	}
 	
 	/**
