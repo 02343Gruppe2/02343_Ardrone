@@ -47,6 +47,7 @@ public class DroneConnection {
 		
 		drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_ORANGE, 0.5f, 5);
 		drone.getCommandManager().waitFor(5000);
+		
 	}
 	
 	/**
