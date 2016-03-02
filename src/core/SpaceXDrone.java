@@ -1,6 +1,10 @@
 package core;
 
 import java.io.Console;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Scanner;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
@@ -29,22 +33,9 @@ public class SpaceXDrone {
 			dc.setDrone(d);
 			
 			// TEST DATA
-			int i = 0;
-			
 			while(running) {
-				
-				
-				// Keep doing algorithm... (testing for now)
-				if(i < 10) {
-					if(i % 2 == 0)
-						dc.executeCmd(i);
-					else
-						dc.executeCmd(String.valueOf(i));
-				}
-				else
-					running = false;
-				
-				i++;
+				Thread.sleep(10000);
+				running = false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

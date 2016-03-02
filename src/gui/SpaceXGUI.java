@@ -1,10 +1,20 @@
 package gui;
 
-public class SpaceXGUI {
+import javax.swing.JPanel;
+
+public class SpaceXGUI extends JPanel {
+	private static final long serialVersionUID = 1L;
+	
 	private static SpaceXGUI instance = null;
+	private SpaceXControlPanel cPanel;
+	private SpaceXVideoPanel vPanel;
 	
 	private SpaceXGUI() {
-		// Do shiiiieeeet
+		cPanel = new SpaceXControlPanel();
+		vPanel = new SpaceXVideoPanel();
+		
+		add(cPanel);
+		add(vPanel);
 	}
 	
 	public static SpaceXGUI getInstance() {
