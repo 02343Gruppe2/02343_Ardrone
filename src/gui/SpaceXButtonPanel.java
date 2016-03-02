@@ -16,7 +16,7 @@ public class SpaceXButtonPanel extends JPanel {
 	JButton panDown;
 	JButton navHover;
 	JButton navLand;
-	JButton navSome;
+	JButton navKill;
 	JButton camNext;
 	JButton camVert;
 	JButton camHori;
@@ -35,7 +35,7 @@ public class SpaceXButtonPanel extends JPanel {
 		panDown = new JButton("<html><b>&darr;</b></html>");
 		navHover = new JButton("Hover");
 		navLand = new JButton("Land");
-		navSome = new JButton("Somet..");
+		navKill = new JButton("Kill");
 		
 		camNext = new JButton("Next");
 		camHori = new JButton("Hori");
@@ -63,11 +63,51 @@ public class SpaceXButtonPanel extends JPanel {
 		add(panRight, "wrap, center");
 		add(navHover, "center");
 		add(navLand, "center");
-		add(navSome, "wrap, center");
+		add(navKill, "wrap, center");
 		
 		// Camera buttons
 		add(camNext, "center");
 		add(camHori, "center");
 		add(camVert, "wrap, center");
+	}
+
+	public JButton getPanLeft() {
+		return panLeft;
+	}
+
+	public JButton getPanRight() {
+		return panRight;
+	}
+
+	public JButton getPanUp() {
+		return panUp;
+	}
+
+	public JButton getPanDown() {
+		return panDown;
+	}
+
+	public JButton getNavHover() {
+		return navHover;
+	}
+
+	public JButton getNavLand() {
+		return navLand;
+	}
+
+	public JButton getNavKill() {
+		return navKill;
+	}
+
+	public JButton getCamNext() {
+		return camNext;
+	}
+
+	public JButton getCamVert() {
+		return camVert;
+	}
+
+	public JButton getCamHori() {
+		return camHori;
 	}
 }
