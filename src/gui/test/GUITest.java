@@ -33,23 +33,6 @@ public class GUITest {
 		
 		drone.start();
 		
-		try {
-			int i = 0;
-			
-			while(!drone.getVideoManager().isConnected()) {
-				Thread.sleep(500l);
-				
-				SpaceXGUI.updateImage("materials/bufferImage"+i+".png");
-				
-				i++;
-				
-				if(i > 2)
-					i = 0;
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		drone.getVideoManager().addImageListener(new ImageListener() {
             public void imageUpdated(BufferedImage newImage) {
             	SpaceXGUI.updateImage(newImage);
