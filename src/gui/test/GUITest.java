@@ -1,6 +1,7 @@
 package gui.test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -32,7 +33,7 @@ public class GUITest extends JFrame {
 				}
 			});
 			
-			drone.start();
+			//drone.start();
 			
 			while(!drone.getCommandManager().isConnected());
 			
@@ -70,6 +71,7 @@ public class GUITest extends JFrame {
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setBackground(Color.decode("#333333"));
 		f.setResizable(false);
+		f.setPreferredSize(new Dimension((640+240), (480+180)));
 
         // Create the content pane
         JComponent c = SpaceXGUI.getInstance();

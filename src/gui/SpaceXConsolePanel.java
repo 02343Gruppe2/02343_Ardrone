@@ -9,6 +9,11 @@ import javax.swing.JTextArea;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * 
+ * @author Kristin Hansen
+ *
+ */
 public class SpaceXConsolePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	

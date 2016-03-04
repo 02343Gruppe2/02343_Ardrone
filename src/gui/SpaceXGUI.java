@@ -11,6 +11,13 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * GUI designed for SpaceX Drone 5 3/8
+ * 
+ * @author Kristin Hansen
+ *
+ */
+
 public class SpaceXGUI extends JPanel {
 	private static final long serialVersionUID = 1L;
 	

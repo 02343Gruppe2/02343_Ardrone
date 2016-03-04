@@ -11,6 +11,11 @@ import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.LEDAnimation;
 import network.DroneConnection;
 
+/**
+ * 
+ * @author Kristin Hansen
+ *
+ */
 public class SpaceXDrone {
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
@@ -53,17 +58,5 @@ public class SpaceXDrone {
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
 		new SpaceXDrone();
-	}
-	
-	public static void waitForEnter(String message, Object... args) {
-	    Console c = System.console();
-	    
-	    if (c != null) {
-	        // printf-like arguments
-	        if (message != null)
-	            c.format(message, args);
-	        c.format("\nPress ENTER to proceed.\n");
-	        c.readLine();
-	    }
 	}
 }

@@ -7,6 +7,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * @author Kristin Hansen
+ *
+ */
 public class SpaceXButtonPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	

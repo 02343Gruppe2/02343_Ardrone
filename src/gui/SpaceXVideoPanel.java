@@ -13,10 +13,19 @@ import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * VideoPanel containing method to update image, {@link #imageUpdated(BufferedImage)} for usage.<br>
+ * Dimensions have been set as 640x480, 
+ * 
+ * @author Kristin Hansen
+ *
+ */
+
 public class SpaceXVideoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private BufferedImage image = null;
+	private Dimension dim = new Dimension(640,480);
 	
 	/**
 	 * Constructor for GUI's video panel (Spycam). Use {@link #imageUpdated(BufferedImage)} to update image.
@@ -54,6 +63,20 @@ public class SpaceXVideoPanel extends JPanel {
 			}
 		});
     }
+	
+	/**
+	 * Edit the default dimension (640x480) with this method. <br>
+	 * Will throw {@link IllegalArgumentException} if dimensions given are illegal (both width and height has to be greater than 0) 
+	 * 
+	 * @param w new width of dimension
+	 * @param h new height of dimension
+	 */
+	public void setDimensions(int w, int h) {
+		if(w > 0 && h > 0)
+			this.dim.setSize(w, h);
+		else
+			throw new IllegalArgumentException("Width and height has to be greater than 0");
+	}
 	
 	@Override
 	public synchronized void paintComponent(Graphics g) {

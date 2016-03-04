@@ -9,6 +9,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * 
+ * @author Kristin Hansen
+ *
+ */
 public class SpaceXDataPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	

@@ -3,6 +3,11 @@ package network;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.LEDAnimation;
 
+/**
+ * 
+ * @author Kristin Hansen
+ *
+ */
 public class DroneConnection {
 	private static DroneConnection instance = null;
 	private IARDrone drone = null;
