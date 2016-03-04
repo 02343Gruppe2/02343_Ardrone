@@ -127,6 +127,8 @@ public class GUITest extends JFrame implements KeyListener {
 				}
 			});
 			
+			System.out.println(SpaceXGUI.getInstance().getBPanel().getWidth() + "x" + SpaceXGUI.getInstance().getHeight());
+			
 			// Keep running 'till GUI is closed.
 			while(true);
 			

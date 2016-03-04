@@ -38,7 +38,7 @@ public class SpaceXConsolePanel extends JPanel {
 	public SpaceXConsolePanel(String...strings) {
 		// Basic layout for SpaceXConsolePanel object
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(640, 180));
+		setPreferredSize(new Dimension(640, 240));
 		setBorder(BorderFactory.createTitledBorder("Console"));
 		
 		txtArea = new JTextArea();

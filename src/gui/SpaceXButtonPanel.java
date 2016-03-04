@@ -4,7 +4,10 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -18,6 +21,8 @@ public class SpaceXButtonPanel extends JPanel {
 	JButton panRight;
 	JButton panUp;
 	JButton panDown;
+	JButton panForward;
+	JButton panBackward;
 	JButton navHover;
 	JButton navLand;
 	JButton navKill;
@@ -30,13 +35,15 @@ public class SpaceXButtonPanel extends JPanel {
 	 */
 	public SpaceXButtonPanel() {
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(240, 180));
+		setPreferredSize(new Dimension(240, 240));
 		setBorder(BorderFactory.createTitledBorder("Control panel"));
 		
 		panLeft = new JButton("<html><b>&larr;</b></html>");
 		panRight = new JButton("<html><b>&rarr;</b></html>");
-		panUp = new JButton("<html><b>&uarr;</b></html>");
-		panDown = new JButton("<html><b>&darr;</b></html>");
+		panUp = new JButton("U");
+		panDown = new JButton("D");
+		panForward = new JButton("<html><b>&uarr;</b></html>");
+		panBackward = new JButton("<html><b>&darr;</b></html>");
 		navHover = new JButton("Hover");
 		navLand = new JButton("Land");
 		navKill = new JButton("Kill");
@@ -45,34 +52,41 @@ public class SpaceXButtonPanel extends JPanel {
 		camHori = new JButton("Hori");
 		camVert = new JButton("Vert");
 		
-		/* LAYOUT:
-		 *  _____
-		 * |__U__|
-		 * |L|D|R|
-		 * |N|H|V|
-		 *  ¯ ¯ ¯
-		 *  U: Up
-		 *  L: Left
-		 *  R: Right
-		 *  D: Down
-		 *  N: Next camera
-		 *  H: Horizontal
-		 *  V: Vertical
-		 */
+		JLabel nav = new JLabel("Navigation");
+		JLabel con = new JLabel("Control");
+		JLabel cam = new JLabel("Camera");
+		
+		JSeparator sep1 = new JSeparator();
+		JSeparator sep2 = new JSeparator();
+		sep1.setPreferredSize(new Dimension(240, 1));
+		sep2.setPreferredSize(new Dimension(240, 1));
 		
 		// Navigation buttons
-		add(panUp, "wrap, span, center");
-		add(panLeft, "center");
-		add(panDown, "center");
-		add(panRight, "wrap, center");
-		add(navHover, "center");
+		add(nav, "wrap, span, left");
+		add(panUp, "right");
+		add(panForward, "center");
+		add(panDown, "wrap, left");
+		add(panLeft, "right");
+		add(panBackward, "center");
+		add(panRight, "wrap, left");
+		
+		// Eye candy...
+		//add(sep1, "wrap, span");
+		
+		// Critical control
+		add(con, "wrap, span, left");
+		add(navHover, "left");
 		add(navLand, "center");
-		add(navKill, "wrap, center");
+		add(navKill, "wrap, right");
+		
+		// Eye candy...
+		//add(sep2, "wrap, span");
 		
 		// Camera buttons
-		add(camNext, "center");
+		add(cam, "wrap, span, left");
+		add(camNext, "left");
 		add(camHori, "center");
-		add(camVert, "wrap, center");
+		add(camVert, "wrap, right");
 	}
 
 	public JButton getPanLeft() {
