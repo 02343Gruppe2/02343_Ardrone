@@ -37,7 +37,7 @@ public class SpaceXGUI extends JPanel {
 		
 		bPanel = new SpaceXButtonPanel();
 		vPanel = new SpaceXVideoPanel();
-		cPanel = new SpaceXConsolePanel();
+		cPanel = new SpaceXConsolePanel("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI...");
 		dPanel = new SpaceXDataPanel();
 		
 		add(vPanel);
@@ -121,14 +121,14 @@ public class SpaceXGUI extends JPanel {
 	 * 
 	 * @param s Message to be appended.
 	 */
-	public void appendToConsole(String s) {
-		cPanel.getTxtArea().append("\n[" + FormattedTimeStamp.getTime() + "] " + s);
+	public void appendToConsole(String...strings) {
+		cPanel.appendText(strings);
 	}
 	
 	/**
 	 * Clears the console.
 	 */
 	public void clearConsole() {
-		cPanel.getTxtArea().removeAll();
+		cPanel.clearPanel();
 	}
 }

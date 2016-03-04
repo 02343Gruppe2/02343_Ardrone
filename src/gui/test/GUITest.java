@@ -14,6 +14,7 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import gui.SpaceXGUI;
+import gui.utils.FormattedTimeStamp;
 
 public class GUITest extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +50,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: NEXT CAMERA");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: NEXT CAMERA");
 				}
 			});
 			
@@ -57,7 +58,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: HORIZONTAL CAMERA");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: HORIZONTAL CAMERA");
 				}
 			});
 			
@@ -65,7 +66,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: VERTICAL CAMERA");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: VERTICAL CAMERA");
 				}
 			});
 			
@@ -73,7 +74,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().hover();
-					SpaceXGUI.getInstance().appendToConsole("Command sent: HOVER");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: HOVER");
 				}
 			});
 			
@@ -81,7 +82,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().emergency();
-					SpaceXGUI.getInstance().appendToConsole("Command sent: EMERGENCY/KILL");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: EMERGENCY/KILL");
 				}
 			});
 			
@@ -89,7 +90,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().landing();
-					SpaceXGUI.getInstance().appendToConsole("Command sent: LAND");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: LAND");
 				}
 			});
 			
@@ -97,7 +98,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().goLeft(DEFAULT_SPEED);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: LEFT");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: LEFT");
 				}
 			});
 			
@@ -105,7 +106,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().goRight(DEFAULT_SPEED);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: RIGHT");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: RIGHT");
 				}
 			});
 			
@@ -113,7 +114,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().up(DEFAULT_SPEED);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: UP");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: UP");
 				}
 			});
 			
@@ -121,7 +122,7 @@ public class GUITest extends JFrame implements KeyListener {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().down(DEFAULT_SPEED);
-					SpaceXGUI.getInstance().appendToConsole("Command sent: DOWN");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Command sent: DOWN");
 				}
 			});
 			
