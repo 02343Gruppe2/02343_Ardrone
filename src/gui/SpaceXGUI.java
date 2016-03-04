@@ -49,7 +49,7 @@ public class SpaceXGUI extends JPanel {
 	/**
 	 * Will return the current instance of the SpaceX Drone GUI.<br><br>
 	 * 
-	 * NOTE:<br>
+	 * <b>IMPORTANT</b><br>
 	 * Only the first time the instance is called should parameters be given.<br>
 	 * They'll be used as default text for the console panel: String array type with size 0-*, each entry will be treated as a line.<br>
 	 * Any parameters given the second time the instance is called in the same process will be ignored.<br><br>

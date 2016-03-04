@@ -25,7 +25,7 @@ public class GUITest extends JFrame implements KeyListener {
 	public GUITest() {
 		// Instantiate drone and sync with GUI
 		try {
-			// This will create the GUI instance - note that the parameter given can ONLY be used the first time calling the getInstance-method!
+			// This will create the GUI instance - note that the parameter given can ONLY be used the first time calling the getInstance-method, read the method's jdoc!
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
 			
 			drone = new ARDrone();
