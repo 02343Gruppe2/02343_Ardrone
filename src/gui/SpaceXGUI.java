@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import gui.utils.FormattedTimeStamp;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -121,7 +122,7 @@ public class SpaceXGUI extends JPanel {
 	 * @param s Message to be appended.
 	 */
 	public void appendToConsole(String s) {
-		cPanel.getTxtArea().append("[TIMESTAMP] " + s + "\n");
+		cPanel.getTxtArea().append("\n[" + FormattedTimeStamp.getTime() + "] " + s);
 	}
 	
 	/**

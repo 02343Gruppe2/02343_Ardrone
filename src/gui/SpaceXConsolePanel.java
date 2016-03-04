@@ -11,6 +11,8 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.DefaultCaret;
 
+import gui.utils.FormattedTimeStamp;
+import gui.utils.SmartScroller;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -28,19 +30,19 @@ public class SpaceXConsolePanel extends JPanel {
 		setPreferredSize(new Dimension(640, 180));
 		setBorder(BorderFactory.createTitledBorder("Console"));
 		
-		txtArea = new JTextArea("[TIMESTAMP] Initializing...\n");
-		txtArea.setPreferredSize(new Dimension(230,480));
-		txtArea.setLineWrap(true);
-		txtArea.setWrapStyleWord(true);
-		txtArea.setEditable(false);
+		txtArea = new JTextArea("[" + FormattedTimeStamp.getTime() + "] Initializing...");
 		txtArea.setBackground(Color.decode("#EEEEEE"));
+		txtArea.setEditable(false);
+		txtArea.setLineWrap(true);
 		txtArea.setMargin(new Insets(5, 5, 5, 5));
+		txtArea.setWrapStyleWord(true);
 		
 		JScrollPane sp = new JScrollPane(txtArea);
 		sp.setPreferredSize(new Dimension(640, 180));
+		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		DefaultCaret c = (DefaultCaret) txtArea.getCaret();
-		c.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		// This will position the caret (or scrollbar) dynamically at the bottom
+		new SmartScroller(sp);
 		
 		add(sp);
 	}
