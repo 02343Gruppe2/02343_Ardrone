@@ -12,8 +12,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import gui.utils.FormattedTimeStamp;
 import net.miginfocom.swing.MigLayout;
+import utils.FormattedTimeStamp;
 
 /**
  * GUI designed for SpaceX Drone 5 3/8

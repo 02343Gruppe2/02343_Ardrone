@@ -14,7 +14,7 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import gui.SpaceXGUI;
-import gui.utils.FormattedTimeStamp;
+import utils.FormattedTimeStamp;
 
 public class GUITest extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
