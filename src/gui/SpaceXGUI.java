@@ -114,4 +114,20 @@ public class SpaceXGUI extends JPanel {
 	public SpaceXButtonPanel getBPanel(){
 		return bPanel;
 	}
+	
+	/**
+	 * Add a new line to the command window.
+	 * 
+	 * @param s Message to be appended.
+	 */
+	public void appendToConsole(String s) {
+		cPanel.getTxtArea().append("[TIMESTAMP] " + s + "\n");
+	}
+	
+	/**
+	 * Clears the console.
+	 */
+	public void clearConsole() {
+		cPanel.getTxtArea().removeAll();
+	}
 }

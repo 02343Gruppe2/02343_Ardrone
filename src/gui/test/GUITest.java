@@ -2,6 +2,8 @@ package gui.test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
@@ -13,7 +15,7 @@ import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import gui.SpaceXGUI;
 
-public class GUITest extends JFrame {
+public class GUITest extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_SPEED = 1;
 	
@@ -29,9 +31,7 @@ public class GUITest extends JFrame {
 				}
 			});
 			
-			//drone.start();
-			
-			while(!drone.getCommandManager().isConnected());
+			drone.start();
 			
 			drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
 			
@@ -49,6 +49,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.NEXT);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: NEXT CAMERA");
 				}
 			});
 			
@@ -56,6 +57,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: HORIZONTAL CAMERA");
 				}
 			});
 			
@@ -63,6 +65,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: VERTICAL CAMERA");
 				}
 			});
 			
@@ -70,6 +73,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().hover();
+					SpaceXGUI.getInstance().appendToConsole("Command sent: HOVER");
 				}
 			});
 			
@@ -77,6 +81,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().emergency();
+					SpaceXGUI.getInstance().appendToConsole("Command sent: EMERGENCY/KILL");
 				}
 			});
 			
@@ -84,6 +89,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().landing();
+					SpaceXGUI.getInstance().appendToConsole("Command sent: LAND");
 				}
 			});
 			
@@ -91,6 +97,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().goLeft(DEFAULT_SPEED);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: LEFT");
 				}
 			});
 			
@@ -98,6 +105,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().goRight(DEFAULT_SPEED);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: RIGHT");
 				}
 			});
 			
@@ -105,6 +113,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().up(DEFAULT_SPEED);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: UP");
 				}
 			});
 			
@@ -112,6 +121,7 @@ public class GUITest extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					drone.getCommandManager().down(DEFAULT_SPEED);
+					SpaceXGUI.getInstance().appendToConsole("Command sent: DOWN");
 				}
 			});
 			
@@ -131,4 +141,16 @@ public class GUITest extends JFrame {
 	public static void main(String[] args) {
         new GUITest();
 	}
+	
+	public void keyTyped(KeyEvent e) {
+		SpaceXGUI.getInstance().appendToConsole("Key press: " + KeyEvent.KEY_TYPED);
+    }
+
+    public void keyPressed(KeyEvent e) {
+    	SpaceXGUI.getInstance().appendToConsole("Key pressed: " + KeyEvent.KEY_PRESSED);
+    }
+
+    public void keyReleased(KeyEvent e) {
+    	SpaceXGUI.getInstance().appendToConsole("Key released: " + KeyEvent.KEY_RELEASED);
+    }
 }
