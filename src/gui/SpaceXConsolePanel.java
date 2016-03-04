@@ -9,11 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.text.DefaultCaret;
-
 import gui.utils.SmartScroller;
 import net.miginfocom.swing.MigLayout;
-import utils.FormattedTimeStamp;
 
 /**
  * 
