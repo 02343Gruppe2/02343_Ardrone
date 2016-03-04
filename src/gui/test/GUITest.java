@@ -1,13 +1,8 @@
 package gui.test;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import de.yadrone.base.ARDrone;
@@ -20,8 +15,9 @@ import gui.SpaceXGUI;
 
 public class GUITest extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private static final int DEFAULT_SPEED = 1;
 	
-	IARDrone drone = null;
+	private IARDrone drone = null;
 	
 	public GUITest() {
 		// Instantiate drone and sync with GUI
@@ -46,6 +42,9 @@ public class GUITest extends JFrame {
 	            }
 	        });
 			
+			/**							  **/
+			/** Listeners for all buttons **/
+			/**							  **/
 			SpaceXGUI.getInstance().getBPanel().getCamNext().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -53,10 +52,74 @@ public class GUITest extends JFrame {
 				}
 			});
 			
+			SpaceXGUI.getInstance().getBPanel().getCamHori().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getCamVert().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getNavHover().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().hover();
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getNavKill().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().emergency();
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getNavLand().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().landing();
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getPanLeft().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().goLeft(DEFAULT_SPEED);
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getPanRight().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().goRight(DEFAULT_SPEED);
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getPanUp().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().up(DEFAULT_SPEED);
+				}
+			});
+			
+			SpaceXGUI.getInstance().getBPanel().getPanDown().addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					drone.getCommandManager().down(DEFAULT_SPEED);
+				}
+			});
+			
+			// Keep running 'till GUI is closed.
 			while(true);
 			
-		} catch (Exception exc) {
-			exc.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			if (drone != null)
 				drone.stop();
@@ -66,22 +129,6 @@ public class GUITest extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		// Create window
-		JFrame f = new JFrame("Space X");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setBackground(Color.decode("#333333"));
-		f.setResizable(false);
-		f.setPreferredSize(new Dimension((640+240), (480+180)));
-
-        // Create the content pane
-        JComponent c = SpaceXGUI.getInstance();
-        c.setOpaque(false);
-        f.setContentPane(c);
-
-        // Draw the window
-        f.pack();
-        f.setVisible(true);
-		
         new GUITest();
 	}
 }

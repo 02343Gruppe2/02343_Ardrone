@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -7,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -43,8 +46,25 @@ public class SpaceXGUI extends JPanel {
 	}
 	
 	public static SpaceXGUI getInstance() {
-		if(instance == null)
+		if(instance == null) {
 			instance = new SpaceXGUI();
+			
+			// Create window
+			JFrame f = new JFrame("Space X");
+			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			f.setBackground(Color.decode("#333333"));
+			f.setResizable(false);
+			f.setPreferredSize(new Dimension((640+240), (480+180)));
+
+	        // Create the content pane
+	        JComponent c = SpaceXGUI.getInstance();
+	        c.setOpaque(false);
+	        f.setContentPane(c);
+
+	        // Draw the window
+	        f.pack();
+	        f.setVisible(true);
+		}
 		
 		return instance;
 	}

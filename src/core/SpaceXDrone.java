@@ -1,14 +1,7 @@
 package core;
 
-import java.io.Console;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.Scanner;
-
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
-import de.yadrone.base.command.LEDAnimation;
 import network.DroneConnection;
 
 /**
