@@ -46,9 +46,7 @@ public class GUITest extends JFrame implements KeyListener {
 	            }
 	        });
 			
-			/**							  **/
-			/** Listeners for all buttons **/
-			/**							  **/
+			// Listeners for all buttons
 			SpaceXGUI.getInstance().getBPanel().getCamNext().addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
