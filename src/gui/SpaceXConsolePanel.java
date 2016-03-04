@@ -54,7 +54,7 @@ public class SpaceXConsolePanel extends JPanel {
 		// If any strings were given with constructor, append them to textarea
 		if(strings.length > 0)
 			for(String s : strings)
-				txtArea.append("[" + FormattedTimeStamp.getTime() + "] " + s + "\n");
+				txtArea.append(s + "\n");
 		
 		// Add textarea to a JScrollPane with a vertical scrollbar
 		JScrollPane sp = new JScrollPane(txtArea);

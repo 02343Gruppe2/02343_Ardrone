@@ -31,13 +31,13 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
 	
-	private SpaceXGUI() {
+	private SpaceXGUI(String...strings) {
 		setLayout(new MigLayout());
 		setMinimumSize(new Dimension(100, 100));
 		
 		bPanel = new SpaceXButtonPanel();
 		vPanel = new SpaceXVideoPanel();
-		cPanel = new SpaceXConsolePanel("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI...");
+		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
 		
 		add(vPanel);
@@ -46,9 +46,28 @@ public class SpaceXGUI extends JPanel {
 		add(bPanel);
 	}
 	
-	public static SpaceXGUI getInstance() {
+	/**
+	 * Will return the current instance of the SpaceX Drone GUI.<br><br>
+	 * 
+	 * NOTE:<br>
+	 * Only the first time the instance is called should parameters be given.<br>
+	 * They'll be used as default text for the console panel: String array type with size 0-*, each entry will be treated as a line.<br>
+	 * Any parameters given the second time the instance is called in the same process will be ignored.<br><br>
+	 * 
+	 * <b>Example</b><br>
+	 * Calling new {@link SpaceXGUI#getInstance(String...)} with paramters <code>("A line", "Another line", "A third line")</code> will result in 3 lines added upon instantiating the console, like:<br><br>
+	 * 
+	 * A line<br>
+	 * Another line<br>
+	 * A third line<br><br>
+	 * 
+	 * @param strings Array of strings to be used as default text in console window.
+	 * @return the current GUI instance.
+	 * @see {@link FormattedTimeStamp#getTime()} if timestamps are needed.
+	 */
+	public static SpaceXGUI getInstance(String...strings) {
 		if(instance == null) {
-			instance = new SpaceXGUI();
+			instance = new SpaceXGUI(strings);
 			
 			// Create window
 			JFrame f = new JFrame("Space X");
