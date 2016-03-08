@@ -32,6 +32,7 @@ public class GUITest extends JFrame implements KeyListener {
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException e) {
 					System.err.println("Drone exception: " + e.getMessage());
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Critical drone error: " + e.getMessage());
 				}
 			});
 			

@@ -46,7 +46,7 @@ public class SpaceXConsolePanel extends JPanel {
 		setBackground(Color.decode("#333333"));
 		
 		Border b = BorderFactory.createLineBorder(Color.GRAY);
-		setBorder(BorderFactory.createTitledBorder(b, "Console", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
+		setBorder(BorderFactory.createTitledBorder(b, "Console", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.ORANGE));
 		
 		txtArea = new JTextArea();
 		txtArea.setBackground(Color.decode("#EEEEEE"));

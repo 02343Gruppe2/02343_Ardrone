@@ -44,7 +44,7 @@ public class SpaceXButtonPanel extends JPanel {
 		setBackground(Color.decode("#333333"));
 		
 		Border b = BorderFactory.createLineBorder(Color.GRAY);
-		setBorder(BorderFactory.createTitledBorder(b, "Control panel", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
+		setBorder(BorderFactory.createTitledBorder(b, "Control panel", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.ORANGE));
 		
 		panLeft = new JButton("<html><b>&larr;</b></html>");
 		panRight = new JButton("<html><b>&rarr;</b></html>");

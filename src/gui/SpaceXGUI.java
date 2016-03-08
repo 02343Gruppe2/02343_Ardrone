@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -32,9 +33,7 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXVideoPanel vPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
-	// private static SpaceXLinesPanel lPanel;
-	
-	// private JLayeredPane lpPanel;
+	private static SpaceXLinesPanel lPanel;
 	
 	/**
 	 * Private constructor of SpaceXGUI. Only one instance of this must ever exist!<br>
@@ -46,34 +45,38 @@ public class SpaceXGUI extends JPanel {
 	 */
 	private SpaceXGUI(String...strings) {
 		setLayout(new MigLayout());
-		setMinimumSize(new Dimension((640+240), (480+180)));
-		setPreferredSize(new Dimension((640+240), (480+180)));
+		setMinimumSize(new Dimension((640+240), (480+240)));
+		setPreferredSize(new Dimension((640+240), (480+240)));
 		setBackground(Color.decode("#333333"));
 		
 		bPanel = new SpaceXButtonPanel();
 		vPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
-		// lPanel = new SpaceXLinesPanel();
+		lPanel = new SpaceXLinesPanel();
 		
-		/*
-		lpPanel = new JLayeredPane();
-		lpPanel.setLayout(new MigLayout());
+		JPanel layerPanel = new JPanel();
+		layerPanel.setLayout(new MigLayout());
+		layerPanel.setPreferredSize(new Dimension(640,480));
+		
+		JLayeredPane lpPanel = new JLayeredPane();
 		lpPanel.setPreferredSize(new Dimension(640,480));
 		
+		lpPanel.add(vPanel, new Integer(0), 0);
+		lpPanel.add(lPanel, new Integer(1), 0);
+		
+		layerPanel.add(lpPanel);
+		
+		/*
 		lPanel.setSize(lPanel.getSize());
 		lPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
 		lPanel.setLocation(0,0);
 		vPanel.setSize(lPanel.getSize());
 		vPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
 		vPanel.setLocation(0,0);
-		
-		
-		lpPanel.add(vPanel, "width 640px, height 480px", 0);
-		lpPanel.add(lPanel, "width 640px, height 480px", 1);
 		*/
 		
-		add(vPanel);
+		add(layerPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
 		add(dPanel, "wrap");
 		add(cPanel);
 		add(bPanel);

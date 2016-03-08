@@ -37,7 +37,7 @@ public class SpaceXDataPanel extends JPanel {
 		setBackground(Color.decode("#333333"));
 		
 		Border b = BorderFactory.createLineBorder(Color.GRAY);
-		setBorder(BorderFactory.createTitledBorder(b, "NavData", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
+		setBorder(BorderFactory.createTitledBorder(b, "NavData", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.ORANGE));
 		
 		imageNumberLabel = new JLabel("Number of images: " + String.valueOf(imageNumber));
 		imageNumberLabel.setFont(new Font("Arial", 0, 11));
