@@ -17,18 +17,18 @@ import net.miginfocom.swing.MigLayout;
 public class SpaceXButtonPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	JButton panLeft;
-	JButton panRight;
-	JButton panUp;
-	JButton panDown;
-	JButton panForward;
-	JButton panBackward;
-	JButton navHover;
-	JButton navLand;
-	JButton navKill;
-	JButton camNext;
-	JButton camVert;
-	JButton camHori;
+	private JButton panLeft;
+	private JButton panRight;
+	private JButton panUp;
+	private JButton panDown;
+	private JButton panForward;
+	private JButton panBackward;
+	private JButton navHover;
+	private JButton navLand;
+	private JButton navKill;
+	private JButton camNext;
+	private JButton camVert;
+	private JButton camHori;
 	
 	/**
 	 * Constructor for SX's control panel, containing all the buttons.
@@ -76,8 +76,8 @@ public class SpaceXButtonPanel extends JPanel {
 		// Critical control
 		add(con, "wrap, span, left");
 		add(navHover, "left");
-		add(navLand, "center");
-		add(navKill, "wrap, right");
+		add(navLand, "left");
+		add(navKill, "wrap, left");
 		
 		// Eye candy...
 		//add(sep2, "wrap, span");
@@ -85,8 +85,8 @@ public class SpaceXButtonPanel extends JPanel {
 		// Camera buttons
 		add(cam, "wrap, span, left");
 		add(camNext, "left");
-		add(camHori, "center");
-		add(camVert, "wrap, right");
+		add(camHori, "left");
+		add(camVert, "wrap, left");
 	}
 
 	public JButton getPanLeft() {

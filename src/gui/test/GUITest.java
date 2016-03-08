@@ -31,7 +31,7 @@ public class GUITest extends JFrame implements KeyListener {
 			drone = new ARDrone();
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException e) {
-					e.printStackTrace();
+					System.err.println("Drone exception: " + e.getMessage());
 				}
 			});
 			

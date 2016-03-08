@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * DataPanel is used to give current informations regarding the GUI; image information, lines etc.
  * 
  * @author Kristin Hansen
  *
@@ -40,10 +41,6 @@ public class SpaceXDataPanel extends JPanel {
 		add(new JLabel("Image data"), "wrap");
 		add(imageNumberLabel, "wrap");
 		add(imageDimension, "wrap");
-		add(new JLabel("Some data:"), "wrap");
-		add(new JLabel("Some data:"), "wrap");
-		add(new JLabel("Some data:"), "wrap");
-		add(new JLabel("Some data:"), "wrap");
 		
 		// TODO
 	}
@@ -97,7 +94,7 @@ public class SpaceXDataPanel extends JPanel {
 	}
 
 	/**
-	 * Updates the data about current iamge dimensions (height).
+	 * Updates the data about current image dimensions (height).
 	 * 
 	 * @param imageHeight The new height.
 	 */

@@ -1,8 +1,12 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +14,9 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import net.miginfocom.swing.MigLayout;
 import utils.FormattedTimeStamp;
@@ -30,17 +36,46 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXVideoPanel vPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
+	private static SpaceXLinesPanel lPanel;
 	
+	private JLayeredPane lpPanel;
+	
+	/**
+	 * Private constructor of SpaceXGUI. Only one instance of this must ever exist!<br>
+	 * Use {@link #getInstance(String...)} to create or instantiate GUI.
+	 *
+	 * Note that the optional string parameter only works when GUI is instantiated.
+	 * 
+	 * @param strings Optional string array for instantiation.
+	 */
 	private SpaceXGUI(String...strings) {
 		setLayout(new MigLayout());
-		setMinimumSize(new Dimension(100, 100));
+		setMinimumSize(new Dimension((640+240), (480+180)));
+		setPreferredSize(new Dimension((640+240), (480+180)));
 		
 		bPanel = new SpaceXButtonPanel();
 		vPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
+		lPanel = new SpaceXLinesPanel();
 		
-		add(vPanel);
+		lpPanel = new JLayeredPane();
+		lpPanel.setLayout(new MigLayout());
+		lpPanel.setPreferredSize(new Dimension(640,480));
+		
+		/*
+		lPanel.setSize(lPanel.getSize());
+		lPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
+		lPanel.setLocation(0,0);
+		vPanel.setSize(lPanel.getSize());
+		vPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
+		vPanel.setLocation(0,0);
+		*/
+		
+		lpPanel.add(vPanel, "width 640px, height 480px", 0);
+		lpPanel.add(lPanel, "width 640px, height 480px", 1);
+		
+		add(lpPanel);
 		add(dPanel, "wrap");
 		add(cPanel);
 		add(bPanel);
@@ -59,7 +94,7 @@ public class SpaceXGUI extends JPanel {
 	 * 
 	 * A line<br>
 	 * Another line<br>
-	 * A third line<br><br>
+	 * A third line
 	 * 
 	 * @param strings Array of strings to be used as default text in console window.
 	 * @return the current GUI instance.
@@ -69,22 +104,27 @@ public class SpaceXGUI extends JPanel {
 		if(instance == null) {
 			instance = new SpaceXGUI(strings);
 			
-			// Create window
-			JFrame f = new JFrame("Space X");
-			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			f.setBackground(Color.decode("#333333"));
-			f.setResizable(false);
-			f.setPreferredSize(new Dimension((640+240), (480+180)));
-
-	        // Create the content pane
-	        JComponent c = SpaceXGUI.getInstance();
-	        c.setOpaque(false);
-	        f.setContentPane(c);
-
-	        // Draw the window
-	        f.pack();
-	        f.setVisible(true);
-		}
+			SwingUtilities.invokeLater(new Runnable() {
+		        public void run() {
+					// Create window
+					JFrame f = new JFrame("Space X");
+					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					f.setBackground(Color.decode("#333333"));
+					f.setResizable(false);
+					f.setPreferredSize(new Dimension((640+240), (480+180)));
+		
+			        // Create the content pane
+			        JComponent c = SpaceXGUI.getInstance();
+			        c.setOpaque(false);
+			        f.setContentPane(c);
+		
+			        // Draw the window
+			        f.pack();
+			        f.setLocationRelativeTo(null);
+			        f.setVisible(true);
+				}
+            });
+        }
 		
 		return instance;
 	}
@@ -124,10 +164,9 @@ public class SpaceXGUI extends JPanel {
 	 */
 	public static void updateImage(BufferedImage newImage) {
 		vPanel.imageUpdated(newImage);
+		dPanel.setImageWidth(newImage.getWidth());
+		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.incrementImageNumber();
-	}
-	
-	public static void updateData() {
 		dPanel.updateData();
 	}
 	
@@ -149,5 +188,10 @@ public class SpaceXGUI extends JPanel {
 	 */
 	public void clearConsole() {
 		cPanel.clearPanel();
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 	}
 }
