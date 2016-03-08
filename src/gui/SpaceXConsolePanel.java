@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
@@ -9,6 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
 import gui.utils.SmartScroller;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,7 +43,10 @@ public class SpaceXConsolePanel extends JPanel {
 		// Basic layout for SpaceXConsolePanel object
 		setLayout(new MigLayout());
 		setPreferredSize(new Dimension(640, 240));
-		setBorder(BorderFactory.createTitledBorder("Console"));
+		setBackground(Color.decode("#333333"));
+		
+		Border b = BorderFactory.createLineBorder(Color.GRAY);
+		setBorder(BorderFactory.createTitledBorder(b, "Console", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
 		
 		txtArea = new JTextArea();
 		txtArea.setBackground(Color.decode("#EEEEEE"));

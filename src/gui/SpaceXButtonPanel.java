@@ -1,16 +1,21 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
 /**
+ * ButtonPanel contains all buttons for navigation and controls.
+ * 
  * @author Kristin Hansen
  *
  */
@@ -36,7 +41,10 @@ public class SpaceXButtonPanel extends JPanel {
 	public SpaceXButtonPanel() {
 		setLayout(new MigLayout());
 		setPreferredSize(new Dimension(240, 240));
-		setBorder(BorderFactory.createTitledBorder("Control panel"));
+		setBackground(Color.decode("#333333"));
+		
+		Border b = BorderFactory.createLineBorder(Color.GRAY);
+		setBorder(BorderFactory.createTitledBorder(b, "Control panel", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
 		
 		panLeft = new JButton("<html><b>&larr;</b></html>");
 		panRight = new JButton("<html><b>&rarr;</b></html>");
@@ -53,13 +61,16 @@ public class SpaceXButtonPanel extends JPanel {
 		camVert = new JButton("Vert");
 		
 		JLabel nav = new JLabel("Navigation");
-		JLabel con = new JLabel("Control");
-		JLabel cam = new JLabel("Camera");
+		nav.setFont(new Font("Arial", 1, 12));
+		nav.setForeground(Color.WHITE);
 		
-		JSeparator sep1 = new JSeparator();
-		JSeparator sep2 = new JSeparator();
-		sep1.setPreferredSize(new Dimension(240, 1));
-		sep2.setPreferredSize(new Dimension(240, 1));
+		JLabel con = new JLabel("Control");
+		con.setFont(new Font("Arial", 1, 12));
+		con.setForeground(Color.WHITE);
+		
+		JLabel cam = new JLabel("Camera");
+		cam.setFont(new Font("Arial", 1, 12));
+		cam.setForeground(Color.WHITE);
 		
 		// Navigation buttons
 		add(nav, "wrap, span, left");

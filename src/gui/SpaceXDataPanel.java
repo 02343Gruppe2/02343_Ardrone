@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,6 +8,9 @@ import java.awt.Graphics;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -30,15 +34,24 @@ public class SpaceXDataPanel extends JPanel {
 	public SpaceXDataPanel() {
 		setLayout(new MigLayout());
 		setPreferredSize(new Dimension(240, 480));
-		setBorder(BorderFactory.createTitledBorder("NavData"));
+		setBackground(Color.decode("#333333"));
+		
+		Border b = BorderFactory.createLineBorder(Color.GRAY);
+		setBorder(BorderFactory.createTitledBorder(b, "NavData", TitledBorder.LEFT, TitledBorder.CENTER, new Font("Arial", 1, 14), Color.WHITE));
 		
 		imageNumberLabel = new JLabel("Number of images: " + String.valueOf(imageNumber));
 		imageNumberLabel.setFont(new Font("Arial", 0, 11));
+		imageNumberLabel.setForeground(Color.WHITE);
 		
 		imageDimension = new JLabel("Image dimension: " + imageWidth + "x" + imageHeight);
 		imageDimension.setFont(new Font("Arial", 0, 11));
+		imageDimension.setForeground(Color.WHITE);
 		
-		add(new JLabel("Image data"), "wrap");
+		JLabel imageData = new JLabel("Image data");
+		imageData.setFont(new Font("Arial", 1, 12));
+		imageData.setForeground(Color.WHITE);
+		
+		add(imageData, "wrap");
 		add(imageNumberLabel, "wrap");
 		add(imageDimension, "wrap");
 		

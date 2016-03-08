@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -33,6 +34,7 @@ public class SpaceXVideoPanel extends JPanel {
 	public SpaceXVideoPanel() {
 		setLayout(new MigLayout());
 		setPreferredSize(new Dimension(640, 480));
+		setBackground(Color.decode("#333333"));
 		
 		// Add a placeholder image...
 		try {

@@ -1,12 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +11,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -36,9 +32,9 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXVideoPanel vPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
-	private static SpaceXLinesPanel lPanel;
+	// private static SpaceXLinesPanel lPanel;
 	
-	private JLayeredPane lpPanel;
+	// private JLayeredPane lpPanel;
 	
 	/**
 	 * Private constructor of SpaceXGUI. Only one instance of this must ever exist!<br>
@@ -52,30 +48,32 @@ public class SpaceXGUI extends JPanel {
 		setLayout(new MigLayout());
 		setMinimumSize(new Dimension((640+240), (480+180)));
 		setPreferredSize(new Dimension((640+240), (480+180)));
+		setBackground(Color.decode("#333333"));
 		
 		bPanel = new SpaceXButtonPanel();
 		vPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
-		lPanel = new SpaceXLinesPanel();
+		// lPanel = new SpaceXLinesPanel();
 		
+		/*
 		lpPanel = new JLayeredPane();
 		lpPanel.setLayout(new MigLayout());
 		lpPanel.setPreferredSize(new Dimension(640,480));
 		
-		/*
 		lPanel.setSize(lPanel.getSize());
 		lPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
 		lPanel.setLocation(0,0);
 		vPanel.setSize(lPanel.getSize());
 		vPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
 		vPanel.setLocation(0,0);
-		*/
+		
 		
 		lpPanel.add(vPanel, "width 640px, height 480px", 0);
 		lpPanel.add(lPanel, "width 640px, height 480px", 1);
+		*/
 		
-		add(lpPanel);
+		add(vPanel);
 		add(dPanel, "wrap");
 		add(cPanel);
 		add(bPanel);
