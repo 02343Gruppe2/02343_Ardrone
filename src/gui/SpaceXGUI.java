@@ -76,7 +76,7 @@ public class SpaceXGUI extends JPanel {
 		vPanel.setLocation(0,0);
 		*/
 		
-		add(layerPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
+		add(vPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
 		add(dPanel, "wrap");
 		add(cPanel);
 		add(bPanel);
