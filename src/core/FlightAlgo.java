@@ -19,6 +19,14 @@ public class FlightAlgo {
 		default: break;
 		}
 	}
+	
+	public void assignment2() {
+		
+	}
+	
+	public void assignment3() {
+		
+	}
 
 	int [] hula_hoop (int high, int low, int right, int left) {
 		int [] tmp = new int[4];
@@ -30,5 +38,6 @@ public class FlightAlgo {
 		
 		return tmp;
 	}
+	
 }
 
