@@ -66,6 +66,10 @@ public class SpaceXVideoPanel extends JPanel {
 		});
     }
 	
+	public BufferedImage getImg() {
+		return image;
+	}
+	
 	/**
 	 * Edit the default dimension (640x480) with this method. <br>
 	 * Will throw {@link IllegalArgumentException} if dimensions given are illegal (both width and height has to be greater than 0) 

@@ -171,6 +171,10 @@ public class SpaceXGUI extends JPanel {
 		dPanel.updateData();
 	}
 	
+	public SpaceXVideoPanel getVPanel() {
+		return vPanel;
+	}
+	
 	public SpaceXButtonPanel getBPanel(){
 		return bPanel;
 	}
