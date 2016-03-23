@@ -1,23 +1,44 @@
 package core;
 
+/**
+ * 
+ * @author Anders Bækhøj Larsen er en kæmpe kælling
+ * @author Malte Tais Magnussen
+ *
+ */
+
 public class FlightAlgo {
+	int [] hulaHoop = new int[4];
+	int adjustmentTolerance = 0;
+	int forwardControl = 0;
 	
 	public void assignment1 () {
-		switch(hula_hoop()){
-		case ((hula_hoop[0]+hula_hoop)>0):
+		forwardControl = -2;
+		
+		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
-			break;
-		case ((hula_hoop[0]+hula_hoop)<0):
-			//flyv op
-			break;
-		case ((hula_hoop[2]+hula_hoop[3])>0):
-			//fly venstre
-			break;
-		case ((hula_hoop[2]+hula_hoop[3])<0):
-			//flyv højre
-			break;
-		default: break;
 		}
+		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
+			//flyv op
+		}
+		else {
+			forwardControl++;
+		}
+		
+		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
+			//flyv højre
+		}
+		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
+			// flyv venstre
+		}
+		else {
+			forwardControl++;
+		}
+		
+		if (forwardControl == 0) {
+			//flyv frem;
+		}
+		
 	}
 	
 	public void assignment2() {
@@ -28,7 +49,7 @@ public class FlightAlgo {
 		
 	}
 
-	int [] hula_hoop (int high, int low, int right, int left) {
+	int [] hulaHoop (int high, int low, int right, int left) {
 		int [] tmp = new int[4];
 		
 		tmp[0] = high;
