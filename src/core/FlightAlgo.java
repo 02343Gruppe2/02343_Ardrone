@@ -20,8 +20,12 @@ public class FlightAlgo {
 	public void assignment1 () throws InterruptedException {
 		forwardControl = -2;
 		
+		//hulaHoop(high, low, right, left)
+		hulaHoop(200, -100, 50, -250);
+		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
+			System.out.println(hulaHoop[0]);
 			cmd.up(30).doFor(500);
 			cmd.hover();
 		}
