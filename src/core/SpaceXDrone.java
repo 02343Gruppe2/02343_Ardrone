@@ -21,6 +21,7 @@ import network.DroneConnection;
  *
  */
 public class SpaceXDrone {
+	FlightAlgo flightAlgo;
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
 		IARDrone drone = null;
@@ -47,11 +48,19 @@ public class SpaceXDrone {
 	            	SpaceXGUI.updateImage(newImage);
 	            }
 	        });
-			
 			running = true;
-
-			Thread.sleep(10000);
-			PicAnal.analyse();
+			Thread.sleep(7000);
+			flightAlgo = new FlightAlgo(drone);
+			drone.getCommandManager().takeOff().doFor(5000);
+			Thread.sleep(5000);
+			flightAlgo.assignment1();
+			int counter = 0;
+			
+			while(true) {
+				//PicAnal.savePic("hulaHopQR"+counter+".png");
+				counter++;
+				Thread.sleep(2000);
+			}
 			
 			//infinite loop should go here
 		} catch (Exception e) {
@@ -69,8 +78,7 @@ public class SpaceXDrone {
 	
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
-		//new SpaceXDrone();
-		PicAnal.analyse();
+		new SpaceXDrone();
 	}
 }
 
