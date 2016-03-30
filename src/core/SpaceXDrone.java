@@ -69,6 +69,7 @@ public class SpaceXDrone {
 	
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
-		new SpaceXDrone();
+		//new SpaceXDrone();
+		PicAnal.analyse();
 	}
 }

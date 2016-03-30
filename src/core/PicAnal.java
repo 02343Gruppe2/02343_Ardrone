@@ -42,8 +42,12 @@ public class PicAnal {
         
 		Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
-        Imgproc.Canny(grayImg, circles, 5, 60);
-        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1, 15, 10, 20, 100, 200);
+        //Imgproc.Canny(grayImg, circles, 5, 60);
+        //Param1 = higher value of the two to canny, smaller = 50%
+        //Param2 = accumulator threshold
+        int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
+        		, minDist, param1, param2, minRadius, maxRadius);
         for (int x = 0; x < circles.cols(); x++) {
         	vCircle = circles.get(0,x);
         	if (vCircle == null) {
@@ -56,10 +60,9 @@ public class PicAnal {
 	        
 	        // draw the found circle
 	        Imgproc.circle(imageMat, pt, radius, scalarColorB, 2);
-	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 0);
+	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
 	        
         }
-
-		Imgcodecs.imwrite("materials\\test1.png",imageMat);
+		Imgcodecs.imwrite("materials\\test10.png",imageMat);
 	}
 }
