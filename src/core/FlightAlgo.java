@@ -1,9 +1,10 @@
 package core;
 import de.yadrone.base.IARDrone;
+import de.yadrone.base.command.CommandManager;
 
 /**
  * 
- * @author Anders Bækhøj Larsen er en kæmpe kælling
+ * @author Anders Bækhøj Larsen
  * @author Malte Tais Magnussen
  *
  */
@@ -14,17 +15,20 @@ public class FlightAlgo {
 	int forwardControl = 0;
 	
 	IARDrone drone = null;
+	CommandManager cmd = drone.getCommandManager();
 	
-	public void assignment1 () {
+	public void assignment1 () throws InterruptedException {
 		forwardControl = -2;
 		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
-			drone.down();
+			cmd.up(30).doFor(500);
+			cmd.hover();
 		}
 		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
 			//flyv op
-			drone.up();
+			cmd.down(30).doFor(500);
+			cmd.hover();
 		}
 		else {
 			forwardControl++;
@@ -32,11 +36,13 @@ public class FlightAlgo {
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
 			//flyv højre
-			drone.goRight();
+			cmd.goRight(30).doFor(500);
+			cmd.hover();
 		}
 		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
 			// flyv venstre
-			drone.goLeft();
+			cmd.goLeft(30).doFor(500);
+			cmd.hover();
 		}
 		else {
 			forwardControl++;
@@ -44,7 +50,8 @@ public class FlightAlgo {
 		
 		if (forwardControl == 0) {
 			//flyv frem;
-			drone.forward();
+			cmd.forward(30).doFor(500);
+			cmd.hover();
 		}
 		
 	}
