@@ -1,5 +1,7 @@
 package core;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import gui.SpaceXGUI;
@@ -23,7 +25,10 @@ import network.DroneConnection;
 public class SpaceXDrone {
 
 	public static boolean isHorizontal = true;
+	private FlightAlgo flightAlgo;
+	
 	public SpaceXDrone() {
+		
 		// We instantiate a null-object with the ARDrone interface
 		IARDrone drone = null;
 		boolean running = false;
@@ -48,20 +53,24 @@ public class SpaceXDrone {
 					SpaceXGUI.updateImage(newImage, isHorizontal);
 	            }
 	        });
-			Thread.sleep(10000);
+			flightAlgo = new FlightAlgo(drone);
+			
+			Thread.sleep(5000);
+			drone.getCommandManager().takeOff().doFor(5000);
 			running = true;
-			while(running) {
+			flightAlgo.assignment1();
+			/*while(running) {
 				PicAnal.analyse(isHorizontal);
 				if(isHorizontal) {
-					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
+					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
 					isHorizontal = false;
 				} else {
-					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
+					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
 					isHorizontal = true;
 				}
-				Thread.sleep(200);
+				Thread.sleep(25);
 			
-			}
+			}*/
 			//infinite loop should go here
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,5 +89,18 @@ public class SpaceXDrone {
 	public static void main(String[] args) {
 		new SpaceXDrone();
 		//PicAnal.analyse();
+	}
+	
+	public void setupGUIBtn(ARDrone drone) {
+		SpaceXGUI.getInstance().getBPanel().getNavHover().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					flightAlgo.assignment1();
+				} catch (Exception ex) {
+					
+				}
+			}
+		});
 	}
 }

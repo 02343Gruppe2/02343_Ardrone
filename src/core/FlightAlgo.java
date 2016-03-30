@@ -15,23 +15,30 @@ public class FlightAlgo {
 	int forwardControl = 0;
 	
 	IARDrone drone = null;
-	CommandManager cmd = drone.getCommandManager();
+	CommandManager cmd;
+	
+	public FlightAlgo(IARDrone drone) {
+		this.drone = drone;
+		cmd = drone.getCommandManager();
+	}
 	
 	public void assignment1 () throws InterruptedException {
 		forwardControl = -2;
 		
 		//hulaHoop(high, low, right, left)
-		hulaHoop(200, -100, 50, -250);
+		hulaHoop(100, -200, 50, -250);
 		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
 			System.out.println(hulaHoop[0]);
-			cmd.up(30).doFor(500);
+			cmd.up(30).doFor(1000);
+			Thread.sleep(1000);
 			cmd.hover();
 		}
 		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
 			//flyv op
-			cmd.down(30).doFor(500);
+			cmd.down(30).doFor(1000);
+			Thread.sleep(1000);
 			cmd.hover();
 		}
 		else {
@@ -40,12 +47,14 @@ public class FlightAlgo {
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
 			//flyv højre
-			cmd.goRight(30).doFor(500);
+			cmd.goRight(30).doFor(1000);
+			Thread.sleep(1000);
 			cmd.hover();
 		}
 		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
 			// flyv venstre
-			cmd.goLeft(30).doFor(500);
+			cmd.goLeft(30).doFor(1000);
+			Thread.sleep(100);
 			cmd.hover();
 		}
 		else {
@@ -54,9 +63,12 @@ public class FlightAlgo {
 		
 		if (forwardControl == 0) {
 			//flyv frem;
-			cmd.forward(30).doFor(500);
+			cmd.forward(30).doFor(1000);
+			Thread.sleep(1000);
 			cmd.hover();
 		}
+		Thread.sleep(2000);
+		cmd.landing();
 		
 	}
 	
