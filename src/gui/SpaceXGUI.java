@@ -31,6 +31,7 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXGUI instance = null;
 	private static SpaceXButtonPanel bPanel;
 	private static SpaceXVideoPanel vPanel;
+	
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
 	private static SpaceXLinesPanel lPanel;
@@ -45,8 +46,8 @@ public class SpaceXGUI extends JPanel {
 	 */
 	private SpaceXGUI(String...strings) {
 		setLayout(new MigLayout());
-		setMinimumSize(new Dimension((640+240), (480+240)));
-		setPreferredSize(new Dimension((640+240), (480+240)));
+		setMinimumSize(new Dimension((640+640+240), (480+240)));
+		setPreferredSize(new Dimension((640+640+240), (480+240)));
 		setBackground(Color.decode("#333333"));
 		
 		bPanel = new SpaceXButtonPanel();
@@ -57,7 +58,7 @@ public class SpaceXGUI extends JPanel {
 		
 		JPanel layerPanel = new JPanel();
 		layerPanel.setLayout(new MigLayout());
-		layerPanel.setPreferredSize(new Dimension(640,480));
+		layerPanel.setPreferredSize(new Dimension(1280,480));
 		
 		JLayeredPane lpPanel = new JLayeredPane();
 		lpPanel.setPreferredSize(new Dimension(640,480));
@@ -112,7 +113,7 @@ public class SpaceXGUI extends JPanel {
 					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					f.setBackground(Color.decode("#333333"));
 					f.setResizable(false);
-					f.setPreferredSize(new Dimension((640+240), (480+180)));
+					f.setPreferredSize(new Dimension((640+640+240), (480+180)));
 		
 			        // Create the content pane
 			        JComponent c = SpaceXGUI.getInstance();
@@ -152,7 +153,7 @@ public class SpaceXGUI extends JPanel {
 			e.printStackTrace();
 		}
 		
-		vPanel.imageUpdated(newImage);
+		vPanel.imageUpdated(newImage, true);
 		dPanel.incrementImageNumber();
 		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.setImageWidth(newImage.getWidth());
@@ -163,8 +164,8 @@ public class SpaceXGUI extends JPanel {
 	 * 
 	 * @param newImage New image given as type BufferedImage
 	 */
-	public static void updateImage(BufferedImage newImage) {
-		vPanel.imageUpdated(newImage);
+	public static void updateImage(BufferedImage newImage, boolean isHorizontal) {
+		vPanel.imageUpdated(newImage, isHorizontal);
 		dPanel.setImageWidth(newImage.getWidth());
 		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.incrementImageNumber();

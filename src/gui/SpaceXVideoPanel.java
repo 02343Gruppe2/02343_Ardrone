@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import core.PicAnal;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -25,15 +26,17 @@ import net.miginfocom.swing.MigLayout;
 public class SpaceXVideoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private BufferedImage image = null;
-	private Dimension dim = new Dimension(640,480);
+	private BufferedImage horizontal = null;
+	private BufferedImage vertical = null;
+	private BufferedImage analPic = null;
+	private Dimension dim = new Dimension(1280,480);
 	
 	/**
 	 * Constructor for GUI's video panel (Spycam). Use {@link #imageUpdated(BufferedImage)} to update image.
 	 */
 	public SpaceXVideoPanel() {
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(640, 480));
+		setPreferredSize(dim);
 		setBackground(Color.decode("#333333"));
 		
 		// Add a placeholder image...
@@ -41,9 +44,9 @@ public class SpaceXVideoPanel extends JPanel {
 			File img = new File("materials/bufferImage0.png");
 			BufferedImage in = ImageIO.read(img);
 			
-			image = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			horizontal = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			
-			Graphics2D g2d = image.createGraphics();
+			Graphics2D g2d = horizontal.createGraphics();
 			g2d.drawImage(in, 0, 0, null);
 			g2d.dispose();
 		} catch (IOException e) {
@@ -56,18 +59,24 @@ public class SpaceXVideoPanel extends JPanel {
 	 * 
 	 * @param newImage New image to be painted.
 	 */
-	public void imageUpdated(BufferedImage newImage) {
+	public void imageUpdated(BufferedImage newImage, boolean isHorizontal) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				image = newImage;
-				
-				repaint();
-			}
+					analPic = newImage;
+					if (PicAnal.horizontalImg != null) {
+							horizontal = PicAnal.horizontalImg;
+					} 
+					if (PicAnal.verticalImg != null) {
+							vertical =  PicAnal.verticalImg;
+					}
+
+					repaint();
+				}
 		});
     }
 	
 	public BufferedImage getImg() {
-		return image;
+		return analPic;
 	}
 	
 	/**
@@ -86,9 +95,10 @@ public class SpaceXVideoPanel extends JPanel {
 	
 	@Override
 	public synchronized void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		
-        if (image != null)
-			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+		super.paintComponent(g);	
+        if (horizontal != null)
+			g.drawImage(horizontal, 0, 0, horizontal.getWidth(), horizontal.getHeight(), null);
+        if(vertical != null) 
+        	g.drawImage(vertical, 640, 0 , vertical.getWidth(), vertical.getHeight(), null);
     }
 }

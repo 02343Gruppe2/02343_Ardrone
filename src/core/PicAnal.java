@@ -15,22 +15,29 @@ import org.opencv.imgproc.Imgproc;
 import gui.SpaceXGUI;
 
 public class PicAnal {
-	private static BufferedImage img;
-	public static  void analyse() {
+	public static BufferedImage horizontalImg;
+	public static BufferedImage verticalImg;
+	public static  void analyse(boolean isHorizontal) {
 
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		//get buffedimage from gui and convert to byte[]
-		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
-		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
 		
+		if(isHorizontal) {
+			horizontalImg = analyseByteArr("horizontal.png");
+		} else {
+			verticalImg = analyseByteArr("vertical.png");
+		}
+	}
+	
+	private static BufferedImage analyseByteArr(String fileName) {
+		//get buffedimage from gui and convert to byte[]
+		BufferedImage img = SpaceXGUI.getInstance().getVPanel().getImg();
+		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
 		//create Mat from byte[]
 		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
 		imageMat.put(0, 0, pixels);
 		
 		
-		// save the picture
-		Imgcodecs.imwrite("materials\\test.png",imageMat);*/
-		Mat imageMat = Imgcodecs.imread("materials\\hulaHop.jpeg");
+		//Mat imageMat = Imgcodecs.imread("materials\\hulaHop.jpeg");
 		Mat circles = new Mat();
 		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
 		double[] vCircle = new double[3];
@@ -63,6 +70,13 @@ public class PicAnal {
 	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
 	        
         }
-		Imgcodecs.imwrite("materials\\test10.png",imageMat);
+        img = new BufferedImage(imageMat.width(),imageMat.height(),BufferedImage.TYPE_3BYTE_BGR);
+        int bufferSize = imageMat.channels()*imageMat.cols()*imageMat.rows();
+        byte [] b = new byte[bufferSize];
+        imageMat.get(0,0,b); // get all the pixels
+        final byte[] targetPixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+        System.arraycopy(b, 0, targetPixels, 0, b.length);  
+		Imgcodecs.imwrite("materials\\"+fileName,imageMat);
+		return img;
 	}
 }

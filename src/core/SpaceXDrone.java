@@ -21,11 +21,12 @@ import network.DroneConnection;
  *
  */
 public class SpaceXDrone {
+
+	public static boolean isHorizontal = true;
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
 		IARDrone drone = null;
 		boolean running = false;
-		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
 			// Create instance of new ARDrone
@@ -40,19 +41,27 @@ public class SpaceXDrone {
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
 			
-			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
+			drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-	            	SpaceXGUI.updateImage(newImage);
+					SpaceXGUI.updateImage(newImage, isHorizontal);
 	            }
 	        });
-			
-			running = true;
-
 			Thread.sleep(10000);
-			PicAnal.analyse();
+			running = true;
+			while(running) {
+				PicAnal.analyse(isHorizontal);
+				if(isHorizontal) {
+					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
+					isHorizontal = false;
+				} else {
+					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
+					isHorizontal = true;
+				}
+				Thread.sleep(200);
 			
+			}
 			//infinite loop should go here
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,7 +78,7 @@ public class SpaceXDrone {
 	
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
-		//new SpaceXDrone();
-		PicAnal.analyse();
+		new SpaceXDrone();
+		//PicAnal.analyse();
 	}
 }
