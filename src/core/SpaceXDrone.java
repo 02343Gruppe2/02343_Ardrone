@@ -1,7 +1,5 @@
 package core;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
 import gui.SpaceXGUI;
@@ -23,15 +21,11 @@ import network.DroneConnection;
  *
  */
 public class SpaceXDrone {
-
-	public static boolean isHorizontal = true;
-	private FlightAlgo flightAlgo;
-	private IARDrone drone = null;
 	public SpaceXDrone() {
-		
 		// We instantiate a null-object with the ARDrone interface
-		
+		IARDrone drone = null;
 		boolean running = false;
+		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
 			// Create instance of new ARDrone
@@ -46,35 +40,19 @@ public class SpaceXDrone {
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
 			
-			drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-					if(isHorizontal) {
-						SpaceXGUI.updateImage(newImage);
-						drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);	
-						isHorizontal = false;
-					} else {
-						drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);	
-						isHorizontal = true;
-					}
-					try {
-						Thread.sleep(25);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+	            	SpaceXGUI.updateImage(newImage);
 	            }
 	        });
-			//flightAlgo = new FlightAlgo(drone);
 			
-			Thread.sleep(10000);
 			running = true;
-			while(running) {
-				//PicAnal.analyse(isHorizontal);
-				Thread.sleep(1000);
+
+			Thread.sleep(10000);
+			PicAnal.analyse();
 			
-			}
 			//infinite loop should go here
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,23 +69,9 @@ public class SpaceXDrone {
 	
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
-		new SpaceXDrone();
-		//PicAnal.analyse();
-	}
-	
-	public void setupGUIBtn(ARDrone drone) {
-		SpaceXGUI.getInstance().getBPanel().getNavHover().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					flightAlgo.assignment1();
-				} catch (Exception ex) {
-					
-				}
-			}
-		});
-	}
-	private void changeVideoChannel(boolean isHori) {
-
+		//new SpaceXDrone();
+		PicAnal.analyse();
 	}
 }
+
+

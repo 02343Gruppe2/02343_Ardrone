@@ -31,7 +31,6 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXGUI instance = null;
 	private static SpaceXButtonPanel bPanel;
 	private static SpaceXVideoPanel horiVPanel;
-	private static SpaceXVideoPanel vertVPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
 	private static SpaceXLinesPanel lPanel;
@@ -52,7 +51,6 @@ public class SpaceXGUI extends JPanel {
 		
 		bPanel = new SpaceXButtonPanel();
 		horiVPanel = new SpaceXVideoPanel();
-		vertVPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
 		lPanel = new SpaceXLinesPanel();

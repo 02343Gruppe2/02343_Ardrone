@@ -15,27 +15,22 @@ import org.opencv.imgproc.Imgproc;
 import gui.SpaceXGUI;
 
 public class PicAnal {
-	public static BufferedImage horizontalImg;
-	public static BufferedImage verticalImg;
-	public static  void analyse(boolean isHorizontal) {
+	private static BufferedImage img;
+	public static  void analyse() {
 
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		if(isHorizontal) {
-			horizontalImg = analyseByteArr(SpaceXGUI.getInstance().getVPanel().getHoriImg(), "horizontal.png");
-		} else {
-			verticalImg = analyseByteArr(SpaceXGUI.getInstance().getVPanel().getVertImg(), "vertical.png");
-		}
-	}
-	
-	private static BufferedImage analyseByteArr(BufferedImage img, String fileName) {
 		//get buffedimage from gui and convert to byte[]
+		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
 		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+		
 		//create Mat from byte[]
 		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
 		imageMat.put(0, 0, pixels);
 		
 		
-		//Mat imageMat = Imgcodecs.imread("materials\\hulaHop.jpeg");
+		// save the picture
+		Imgcodecs.imwrite("materials\\test.png",imageMat);*/
+		Mat imageMat = Imgcodecs.imread("materials\\hulaHop.jpeg");
 		Mat circles = new Mat();
 		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
 		double[] vCircle = new double[3];
@@ -68,13 +63,8 @@ public class PicAnal {
 	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
 	        
         }
-        img = new BufferedImage(imageMat.width(),imageMat.height(),BufferedImage.TYPE_3BYTE_BGR);
-        int bufferSize = imageMat.channels()*imageMat.cols()*imageMat.rows();
-        byte [] b = new byte[bufferSize];
-        imageMat.get(0,0,b); // get all the pixels
-        final byte[] targetPixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-        System.arraycopy(b, 0, targetPixels, 0, b.length);  
-		Imgcodecs.imwrite("materials\\"+fileName,imageMat);
-		return img;
+		Imgcodecs.imwrite("materials\\test10.png",imageMat);
 	}
 }
+
+

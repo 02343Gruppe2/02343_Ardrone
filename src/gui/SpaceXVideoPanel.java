@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import core.PicAnal;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -27,17 +26,14 @@ public class SpaceXVideoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private BufferedImage image = null;
-	private BufferedImage vertical = null;
-	private BufferedImage horiAnalPic = null;
-	private BufferedImage vertAnalPic = null;
-	private Dimension dim = new Dimension(1280,480);
+	private Dimension dim = new Dimension(640,480);
 	
 	/**
 	 * Constructor for GUI's video panel (Spycam). Use {@link #imageUpdated(BufferedImage)} to update image.
 	 */
 	public SpaceXVideoPanel() {
 		setLayout(new MigLayout());
-		setPreferredSize(dim);
+		setPreferredSize(new Dimension(640, 480));
 		setBackground(Color.decode("#333333"));
 		
 		// Add a placeholder image...
@@ -46,11 +42,9 @@ public class SpaceXVideoPanel extends JPanel {
 			BufferedImage in = ImageIO.read(img);
 			
 			image = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			vertical = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
 			Graphics2D g2d = image.createGraphics();
 			g2d.drawImage(in, 0, 0, null);
-			g2d = vertical.createGraphics();
-			g2d.drawImage(in, 640, 0, null);
 			g2d.dispose();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -65,18 +59,15 @@ public class SpaceXVideoPanel extends JPanel {
 	public void imageUpdated(BufferedImage newImage) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-					image = newImage;
-					repaint();
-				}
+				image = newImage;
+				
+				repaint();
+			}
 		});
     }
 	
-	public BufferedImage getHoriImg() {
-		return horiAnalPic;
-	}
-	
-	public BufferedImage getVertImg() {
-		return vertAnalPic;
+	public BufferedImage getImg() {
+		return image;
 	}
 	
 	/**
@@ -95,8 +86,11 @@ public class SpaceXVideoPanel extends JPanel {
 	
 	@Override
 	public synchronized void paintComponent(Graphics g) {
-		super.paintComponent(g);	
+		super.paintComponent(g);
+		
         if (image != null)
 			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
     }
 }
+
+
