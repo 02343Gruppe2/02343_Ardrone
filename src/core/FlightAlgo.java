@@ -28,19 +28,19 @@ public class FlightAlgo {
 	
 	public void assignment1 () throws InterruptedException {
 		forwardControl = -2;
-		
+	
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
-			SpaceXGUI.getInstance().appendToConsole("Gonna get low low low low low!");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Gonna get low low low low low!");
 			System.out.println(hulaHoop[0]);
-			cmd.up(30).doFor(doTime);
+			cmd.down(30).doFor(doTime);
 			Thread.sleep(sleepTime);
 			cmd.hover();
 		}
 		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
 			//flyv op
-			SpaceXGUI.getInstance().appendToConsole("Because i got high!");
-			cmd.down(30).doFor(doTime);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Because i got high!");
+			cmd.up(30).doFor(doTime);
 			Thread.sleep(sleepTime);
 			cmd.hover();
 		}
@@ -50,14 +50,14 @@ public class FlightAlgo {
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
 			//flyv højre
-			SpaceXGUI.getInstance().appendToConsole("You spin med right round");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "You spin med right round");
 			cmd.goRight(30).doFor(doTime);
 			Thread.sleep(sleepTime);
 			cmd.hover();
 		}
 		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
 			// flyv venstre
-			SpaceXGUI.getInstance().appendToConsole("everything you own in the box to the left");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "everything you own in the box to the left");
 			cmd.goLeft(30).doFor(doTime);
 			Thread.sleep(sleepTime);
 			cmd.hover();
@@ -68,7 +68,7 @@ public class FlightAlgo {
 		
 		if (forwardControl == 0) {
 			//flyv frem;
-			SpaceXGUI.getInstance().appendToConsole("Run niggauh Run niggauh!");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Run niggauh Run niggauh!");
 			cmd.forward(30).doFor(doTime);
 			Thread.sleep(sleepTime);
 			cmd.hover();
