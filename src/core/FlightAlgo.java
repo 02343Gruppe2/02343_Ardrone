@@ -30,6 +30,7 @@ public class FlightAlgo {
 		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
+			System.out.println("Flyver ned fordi anders mor vil ha den ned i sin hals");
 			System.out.println(hulaHoop[0]);
 			cmd.up(30).doFor(1000);
 			Thread.sleep(1000);
@@ -37,6 +38,7 @@ public class FlightAlgo {
 		}
 		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
 			//flyv op
+			System.out.println("Flyver op fordi anders mor vil ha den op i røven");
 			cmd.down(30).doFor(1000);
 			Thread.sleep(1000);
 			cmd.hover();
@@ -47,12 +49,14 @@ public class FlightAlgo {
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
 			//flyv højre
+			System.out.println("Flyver til højre fordi fuck anders");
 			cmd.goRight(30).doFor(1000);
 			Thread.sleep(1000);
 			cmd.hover();
 		}
 		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
 			// flyv venstre
+			System.out.println("Flyver til venstre fordi anders mor best kan li at få den i røven");
 			cmd.goLeft(30).doFor(1000);
 			Thread.sleep(100);
 			cmd.hover();
@@ -63,6 +67,7 @@ public class FlightAlgo {
 		
 		if (forwardControl == 0) {
 			//flyv frem;
+			System.out.println("Flyver frem fordi Anders er grim");
 			cmd.forward(30).doFor(1000);
 			Thread.sleep(1000);
 			cmd.hover();
