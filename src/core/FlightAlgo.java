@@ -1,4 +1,5 @@
 package core;
+import de.yadrone.base.IARDrone;
 
 /**
  * 
@@ -12,14 +13,18 @@ public class FlightAlgo {
 	int adjustmentTolerance = 0;
 	int forwardControl = 0;
 	
+	IARDrone drone = null;
+	
 	public void assignment1 () {
 		forwardControl = -2;
 		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
+			drone.down();
 		}
 		else if((hulaHoop[0] + hulaHoop[1]) < (0 - adjustmentTolerance)) {
 			//flyv op
+			drone.up();
 		}
 		else {
 			forwardControl++;
@@ -27,9 +32,11 @@ public class FlightAlgo {
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
 			//flyv højre
+			drone.goRight();
 		}
 		else if((hulaHoop[2] + hulaHoop[3]) < (0 - adjustmentTolerance)) {
 			// flyv venstre
+			drone.goLeft();
 		}
 		else {
 			forwardControl++;
@@ -37,6 +44,7 @@ public class FlightAlgo {
 		
 		if (forwardControl == 0) {
 			//flyv frem;
+			drone.forward();
 		}
 		
 	}
