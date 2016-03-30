@@ -20,17 +20,15 @@ public class PicAnal {
 	public static  void analyse(boolean isHorizontal) {
 
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		
 		if(isHorizontal) {
-			horizontalImg = analyseByteArr("horizontal.png");
+			horizontalImg = analyseByteArr(SpaceXGUI.getInstance().getVPanel().getHoriImg(), "horizontal.png");
 		} else {
-			verticalImg = analyseByteArr("vertical.png");
+			verticalImg = analyseByteArr(SpaceXGUI.getInstance().getVPanel().getVertImg(), "vertical.png");
 		}
 	}
 	
-	private static BufferedImage analyseByteArr(String fileName) {
+	private static BufferedImage analyseByteArr(BufferedImage img, String fileName) {
 		//get buffedimage from gui and convert to byte[]
-		BufferedImage img = SpaceXGUI.getInstance().getVPanel().getImg();
 		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
 		//create Mat from byte[]
 		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);

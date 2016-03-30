@@ -26,11 +26,11 @@ public class SpaceXDrone {
 
 	public static boolean isHorizontal = true;
 	private FlightAlgo flightAlgo;
-	
+	private IARDrone drone = null;
 	public SpaceXDrone() {
 		
 		// We instantiate a null-object with the ARDrone interface
-		IARDrone drone = null;
+		
 		boolean running = false;
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
@@ -50,27 +50,31 @@ public class SpaceXDrone {
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-					SpaceXGUI.updateImage(newImage, isHorizontal);
+					if(isHorizontal) {
+						SpaceXGUI.updateImage(newImage);
+						drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);	
+						isHorizontal = false;
+					} else {
+						drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);	
+						isHorizontal = true;
+					}
+					try {
+						Thread.sleep(25);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 	            }
 	        });
-			flightAlgo = new FlightAlgo(drone);
+			//flightAlgo = new FlightAlgo(drone);
 			
-			Thread.sleep(5000);
-			drone.getCommandManager().takeOff().doFor(5000);
+			Thread.sleep(10000);
 			running = true;
-			flightAlgo.assignment1();
-			/*while(running) {
-				PicAnal.analyse(isHorizontal);
-				if(isHorizontal) {
-					drone.getCommandManager().setVideoChannel(VideoChannel.HORI);
-					isHorizontal = false;
-				} else {
-					drone.getCommandManager().setVideoChannel(VideoChannel.VERT);
-					isHorizontal = true;
-				}
-				Thread.sleep(25);
+			while(running) {
+				//PicAnal.analyse(isHorizontal);
+				Thread.sleep(1000);
 			
-			}*/
+			}
 			//infinite loop should go here
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -102,5 +106,8 @@ public class SpaceXDrone {
 				}
 			}
 		});
+	}
+	private void changeVideoChannel(boolean isHori) {
+
 	}
 }

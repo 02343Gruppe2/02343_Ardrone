@@ -30,8 +30,8 @@ public class SpaceXGUI extends JPanel {
 	
 	private static SpaceXGUI instance = null;
 	private static SpaceXButtonPanel bPanel;
-	private static SpaceXVideoPanel vPanel;
-	
+	private static SpaceXVideoPanel horiVPanel;
+	private static SpaceXVideoPanel vertVPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
 	private static SpaceXLinesPanel lPanel;
@@ -51,7 +51,8 @@ public class SpaceXGUI extends JPanel {
 		setBackground(Color.decode("#333333"));
 		
 		bPanel = new SpaceXButtonPanel();
-		vPanel = new SpaceXVideoPanel();
+		horiVPanel = new SpaceXVideoPanel();
+		vertVPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
 		lPanel = new SpaceXLinesPanel();
@@ -63,7 +64,7 @@ public class SpaceXGUI extends JPanel {
 		JLayeredPane lpPanel = new JLayeredPane();
 		lpPanel.setPreferredSize(new Dimension(640,480));
 		
-		lpPanel.add(vPanel, new Integer(0), 0);
+		lpPanel.add(horiVPanel, new Integer(0), 0);
 		lpPanel.add(lPanel, new Integer(1), 0);
 		
 		layerPanel.add(lpPanel);
@@ -77,7 +78,7 @@ public class SpaceXGUI extends JPanel {
 		vPanel.setLocation(0,0);
 		*/
 		
-		add(vPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
+		add(horiVPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
 		add(dPanel, "wrap");
 		add(cPanel);
 		add(bPanel);
@@ -132,40 +133,14 @@ public class SpaceXGUI extends JPanel {
 	}
 	
 	// Available GUI commands
-	/**
-	 * Updates the image shown in the GUI.
-	 * 
-	 * @param path Path to new image
-	 */
-	public static void updateImage(String path) {
-		BufferedImage newImage = null;
-		
-		try {
-			File img = new File(path);
-			BufferedImage in = ImageIO.read(img);
-			
-			newImage = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			Graphics2D g2d = newImage.createGraphics();
-			g2d.drawImage(in, 0, 0, null);
-			g2d.dispose();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		vPanel.imageUpdated(newImage, true);
-		dPanel.incrementImageNumber();
-		dPanel.setImageHeight(newImage.getHeight());
-		dPanel.setImageWidth(newImage.getWidth());
-	}
 	
 	/**
 	 * Updates the image shown in the GUI.
 	 * 
 	 * @param newImage New image given as type BufferedImage
 	 */
-	public static void updateImage(BufferedImage newImage, boolean isHorizontal) {
-		vPanel.imageUpdated(newImage, isHorizontal);
+	public static void updateImage(BufferedImage newImage) {
+		horiVPanel.imageUpdated(newImage);
 		dPanel.setImageWidth(newImage.getWidth());
 		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.incrementImageNumber();
@@ -173,7 +148,7 @@ public class SpaceXGUI extends JPanel {
 	}
 	
 	public SpaceXVideoPanel getVPanel() {
-		return vPanel;
+		return horiVPanel;
 	}
 	
 	public SpaceXButtonPanel getBPanel(){

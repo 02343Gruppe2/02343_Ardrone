@@ -26,9 +26,10 @@ import net.miginfocom.swing.MigLayout;
 public class SpaceXVideoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private BufferedImage horizontal = null;
+	private BufferedImage image = null;
 	private BufferedImage vertical = null;
-	private BufferedImage analPic = null;
+	private BufferedImage horiAnalPic = null;
+	private BufferedImage vertAnalPic = null;
 	private Dimension dim = new Dimension(1280,480);
 	
 	/**
@@ -44,10 +45,12 @@ public class SpaceXVideoPanel extends JPanel {
 			File img = new File("materials/bufferImage0.png");
 			BufferedImage in = ImageIO.read(img);
 			
-			horizontal = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			Graphics2D g2d = horizontal.createGraphics();
+			image = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			vertical = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = image.createGraphics();
 			g2d.drawImage(in, 0, 0, null);
+			g2d = vertical.createGraphics();
+			g2d.drawImage(in, 640, 0, null);
 			g2d.dispose();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -59,24 +62,21 @@ public class SpaceXVideoPanel extends JPanel {
 	 * 
 	 * @param newImage New image to be painted.
 	 */
-	public void imageUpdated(BufferedImage newImage, boolean isHorizontal) {
+	public void imageUpdated(BufferedImage newImage) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-					analPic = newImage;
-					if (PicAnal.horizontalImg != null) {
-							horizontal = PicAnal.horizontalImg;
-					} 
-					if (PicAnal.verticalImg != null) {
-							vertical =  PicAnal.verticalImg;
-					}
-
+					image = newImage;
 					repaint();
 				}
 		});
     }
 	
-	public BufferedImage getImg() {
-		return analPic;
+	public BufferedImage getHoriImg() {
+		return horiAnalPic;
+	}
+	
+	public BufferedImage getVertImg() {
+		return vertAnalPic;
 	}
 	
 	/**
@@ -96,9 +96,7 @@ public class SpaceXVideoPanel extends JPanel {
 	@Override
 	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);	
-        if (horizontal != null)
-			g.drawImage(horizontal, 0, 0, horizontal.getWidth(), horizontal.getHeight(), null);
-        if(vertical != null) 
-        	g.drawImage(vertical, 640, 0 , vertical.getWidth(), vertical.getHeight(), null);
+        if (image != null)
+			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
     }
 }
