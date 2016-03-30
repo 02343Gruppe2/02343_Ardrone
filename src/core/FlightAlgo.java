@@ -26,9 +26,15 @@ public class FlightAlgo {
 		cmd = drone.getCommandManager();
 	}
 	
+	public void testHover() {
+		cmd.hover().doFor(5000);
+		cmd.landing();
+		
+	}
+	
 	public void assignment1 () throws InterruptedException {
 		forwardControl = -2;
-	
+		
 		if((hulaHoop[0] + hulaHoop[1]) > (0 + adjustmentTolerance)) {
 			//flyv ned
 			SpaceXGUI.getInstance().appendToConsole("\n" + "Gonna get low low low low low!");

@@ -41,7 +41,7 @@ public class SpaceXDrone {
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
 			
-			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
@@ -53,7 +53,7 @@ public class SpaceXDrone {
 			flightAlgo = new FlightAlgo(drone);
 			drone.getCommandManager().takeOff().doFor(5000);
 			Thread.sleep(5000);
-			flightAlgo.assignment1();
+			flightAlgo.testHover();
 			int counter = 0;
 			
 			while(true) {
