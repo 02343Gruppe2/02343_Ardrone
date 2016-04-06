@@ -2,6 +2,10 @@ package core;
 
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.navdata.GyroListener;
+import de.yadrone.base.navdata.GyroPhysData;
+import de.yadrone.base.navdata.GyroRawData;
+import de.yadrone.base.navdata.NavDataManager;
 import gui.SpaceXGUI;
 
 /**
@@ -17,6 +21,7 @@ public class FlightAlgo {
 	int forwardControl = 0;
 	int doTime = 1000;
 	int sleepTime = 1000;
+	int flightState = 0; //flightState, 0 = hovering, 1 = flying 
 	
 	IARDrone drone = null;
 	CommandManager cmd;
@@ -27,11 +32,43 @@ public class FlightAlgo {
 	}
 	
 	public void testHover() {
+		GyroListener mGyroListener = new GyroListener() {
+			
+			@Override
+			public void receivedRawData(GyroRawData arg0) {
+				// TODO Auto-generated method stub
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedRawData, getRawGyros(): " + arg0.getRawGyros().toString());
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedRawData, getRawGyros110(): " + arg0.getRawGyros110().toString());
+			}
+			
+			@Override
+			public void receivedPhysData(GyroPhysData arg0) {
+				// TODO Auto-generated method stub
+				
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getAlim3v3(): " + arg0.getAlim3v3());
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getGyroTemp(): " + arg0.getGyroTemp());
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getPhysGyros(): " + arg0.getPhysGyros().toString());
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getVrefEpson(): " + arg0.getVrefEpson());
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getVrefIDG(): " + arg0.getVrefIDG());
+			}
+			
+			@Override
+			public void receivedOffsets(float[] arg0) {
+				// TODO Auto-generated method stub
+				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedOffSets: ");
+				for(int i = 0; i < arg0.length; i++) {
+					SpaceXGUI.getInstance().appendToConsole("\n[" + i + "](" + arg0[i] + "), ");
+				}
+				SpaceXGUI.getInstance().appendToConsole(".\n");
+			}
+		};
 		
+		drone.getNavDataManager().addGyroListener(mGyroListener);
+				
 		try {
 			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve frem");
 			cmd.forward(10).doFor(500);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Færdig med at flyve frem" + "\n" + "Starter på hover");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Fï¿½rdig med at flyve frem" + "\n" + "Starter pï¿½ hover");
 			cmd.up(5).doFor(2000);
 			Thread.sleep(2000);
 			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve ned");
@@ -39,7 +76,7 @@ public class FlightAlgo {
 			Thread.sleep(2000);
 			SpaceXGUI.getInstance().appendToConsole("\n" + "Lander nu");
 			cmd.landing();
-			cmd.manualTrim(pitch, roll, yaw);
+
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -69,7 +106,7 @@ public class FlightAlgo {
 		}
 		
 		if((hulaHoop[2] + hulaHoop[3]) > (0 + adjustmentTolerance)) {
-			//flyv højre
+			//flyv hï¿½jre
 			SpaceXGUI.getInstance().appendToConsole("\n" + "You spin med right round");
 			cmd.goRight(30).doFor(doTime);
 			Thread.sleep(sleepTime);
