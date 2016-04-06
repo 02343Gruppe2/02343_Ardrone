@@ -22,10 +22,12 @@ import network.DroneConnection;
  */
 public class SpaceXDrone {
 	FlightAlgo flightAlgo;
+	
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
 		IARDrone drone = null;
 		boolean running = false;
+
 		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
@@ -51,9 +53,14 @@ public class SpaceXDrone {
 			running = true;
 			Thread.sleep(7000);
 			flightAlgo = new FlightAlgo(drone);
-			drone.getCommandManager().takeOff().doFor(5000);
-			Thread.sleep(5000);
-			flightAlgo.testHover();
+			//drone.getCommandManager().takeOff().doFor(2000);
+			Thread.sleep(2000);
+			
+			Boolean b = true;
+			while(b) {
+				flightAlgo.testHover();
+			}
+			
 			int counter = 0;
 			
 			while(true) {

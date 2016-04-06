@@ -7,6 +7,7 @@ import de.yadrone.base.navdata.GyroPhysData;
 import de.yadrone.base.navdata.GyroRawData;
 import de.yadrone.base.navdata.NavDataManager;
 import gui.SpaceXGUI;
+import utils.FormattedTimeStamp;
 
 /**
  * 
@@ -31,51 +32,71 @@ public class FlightAlgo {
 		cmd = drone.getCommandManager();
 	}
 	
-	public void testHover() {
+	public void testListener () {
 		GyroListener mGyroListener = new GyroListener() {
 			
 			@Override
 			public void receivedRawData(GyroRawData arg0) {
 				// TODO Auto-generated method stub
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedRawData, getRawGyros(): " + arg0.getRawGyros().toString());
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedRawData, getRawGyros110(): " + arg0.getRawGyros110().toString());
+				short[] mRawGyros = arg0.getRawGyros();
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedRawData, getRawGyros(): ");
+				for(int i = 0; i < mRawGyros.length; i++) {
+					SpaceXGUI.getInstance().appendToConsole("[" + i + "](" +mRawGyros[i] + "), ");	
+				}
+				
+				short[] mRawGyros110 = arg0.getRawGyros110();
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedRawData, getRawGyros110(): ");
+				for(int i = 0; i < mRawGyros110.length; i++) {
+					SpaceXGUI.getInstance().appendToConsole("[" + i + "](" +mRawGyros110[i] + "), ");	
+				}
 			}
 			
 			@Override
 			public void receivedPhysData(GyroPhysData arg0) {
 				// TODO Auto-generated method stub
 				
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getAlim3v3(): " + arg0.getAlim3v3());
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getGyroTemp(): " + arg0.getGyroTemp());
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getPhysGyros(): " + arg0.getPhysGyros().toString());
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getVrefEpson(): " + arg0.getVrefEpson());
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedPhysData, getVrefIDG(): " + arg0.getVrefIDG());
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getAlim3v3(): " + arg0.getAlim3v3());
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getGyroTemp(): " + arg0.getGyroTemp());
+				
+				float[] mPhysGyros = arg0.getPhysGyros();
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getPhysGyros(): ");
+				for(int i = 0; i < mPhysGyros.length; i++) {
+					SpaceXGUI.getInstance().appendToConsole("[" + i + "](" +mPhysGyros[i] + "), ");	
+				}
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getVrefEpson(): " + arg0.getVrefEpson());
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getVrefIDG(): " + arg0.getVrefIDG());
 			}
 			
 			@Override
 			public void receivedOffsets(float[] arg0) {
 				// TODO Auto-generated method stub
-				SpaceXGUI.getInstance().appendToConsole("\n" + "receivedOffSets: ");
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedOffSets: ");
 				for(int i = 0; i < arg0.length; i++) {
-					SpaceXGUI.getInstance().appendToConsole("\n[" + i + "](" + arg0[i] + "), ");
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] " + i + "](" + arg0[i] + "), ");
 				}
 				SpaceXGUI.getInstance().appendToConsole(".\n");
 			}
 		};
 		
 		drone.getNavDataManager().addGyroListener(mGyroListener);
-				
+	}
+	
+	public void testHover() {		
 		try {
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve frem");
+			testListener();
+			//SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve frem");
 			cmd.forward(10).doFor(500);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Fï¿½rdig med at flyve frem" + "\n" + "Starter pï¿½ hover");
+			//SpaceXGUI.getInstance().appendToConsole("\n" + "Fï¿½rdig med at flyve frem" + "\n" + "Starter pï¿½ hover");
 			cmd.up(5).doFor(2000);
 			Thread.sleep(2000);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve ned");
+		//	SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve ned");
 			cmd.down(5).doFor(2000);
 			Thread.sleep(2000);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Lander nu");
-			cmd.landing();
+		//	SpaceXGUI.getInstance().appendToConsole("\n" + "Lander nu");
+			//cmd.landing();
+			cmd.hover().doFor(1000);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Hover færdig");
+			
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
