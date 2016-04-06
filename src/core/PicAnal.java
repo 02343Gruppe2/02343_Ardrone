@@ -2,10 +2,13 @@ package core;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -79,6 +82,33 @@ public class PicAnal {
         }
 		Imgcodecs.imwrite("materials\\test"+i+".png",imageMat);
 		}
+	}
+	
+	public static void findRecs() {
+		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+		img = SpaceXGUI.getInstance().getVPanel().getImg();
+		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+		
+		//create Mat from byte[]
+		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
+		imageMat.put(0, 0, pixels);
+		
+		//create grayscale and blur
+		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
+		Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
+		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
+		
+		//find contours
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Mat hierarchy = new Mat();
+		int mode = Imgproc.RETR_LIST;
+		int method = Imgproc.CHAIN_APPROX_SIMPLE;
+		Imgproc.findContours(imageMat, contours, hierarchy, mode, method);
+		for(int i = 0;i <contours.size();i++) {
+			//check for qrcode in contour
+		}
+		
+		
 	}
 }
 
