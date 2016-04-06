@@ -27,8 +27,22 @@ public class FlightAlgo {
 	}
 	
 	public void testHover() {
-		cmd.hover().doFor(5000);
-		cmd.landing();
+		
+		try {
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve frem");
+			cmd.forward(10).doFor(500);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Færdig med at flyve frem" + "\n" + "Starter på hover");
+			cmd.up(5).doFor(2000);
+			Thread.sleep(2000);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Starter med at flyve ned");
+			cmd.down(5).doFor(2000);
+			Thread.sleep(2000);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Lander nu");
+			cmd.landing();
+			cmd.manualTrim(pitch, roll, yaw);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 		
 	}
 	
