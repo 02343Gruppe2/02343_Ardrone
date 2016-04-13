@@ -24,6 +24,8 @@ public class FlightAlgo {
 	int sleepTime = 1000;
 	int flightState = 0; //flightState, 0 = hovering, 1 = flying 
 	
+	static float physGyros[] = {0,0,0};
+	
 	IARDrone drone = null;
 	CommandManager cmd;
 	
@@ -32,6 +34,24 @@ public class FlightAlgo {
 		cmd = drone.getCommandManager();
 	}
 	
+	/**
+	 * testListener
+	 * 
+	 * Will printout every GyroListener Data there is into our SpaceXConsole.
+	 * Data is given in this order:
+	 * 
+	 * - RawGyros
+	 * - RawGyros110
+	 * 
+	 * - Alim3v3
+	 * - GyroTemp
+	 * - PhysGyros
+	 * - VrefEpson
+	 * - VrefIDG
+	 * 
+	 * - OffSets
+	 * 
+	 */
 	public void testListener () {
 		GyroListener mGyroListener = new GyroListener() {
 			
@@ -59,6 +79,7 @@ public class FlightAlgo {
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getGyroTemp(): " + arg0.getGyroTemp());
 				
 				float[] mPhysGyros = arg0.getPhysGyros();
+				physGyros = mPhysGyros;
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] receivedPhysData, getPhysGyros(): ");
 				for(int i = 0; i < mPhysGyros.length; i++) {
 					SpaceXGUI.getInstance().appendToConsole("[" + i + "](" +mPhysGyros[i] + "), ");	
@@ -95,13 +116,91 @@ public class FlightAlgo {
 		//	SpaceXGUI.getInstance().appendToConsole("\n" + "Lander nu");
 			//cmd.landing();
 			cmd.hover().doFor(1000);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Hover færdig");
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Hover fï¿½rdig");
 			
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
+	}
+	
+	/**
+	 * TheAmazingHoverMode
+	 * @author Anders
+	 * 
+	 * It's the ultimate hovering mode you will ever experience! it is unnecessarily precise and still!
+	 * You can even place your beer on it without spilling it! (SpaceXDrone A/S does not insure any beer placed
+	 * ontop our Drones or any other brewage)
+	 */
+	public void theAmazingHoverMode(long millis) {
+		GyroListener mGyroListener = new GyroListener() {
+			
+			@Override
+			public void receivedRawData(GyroRawData arg0) {}
+			
+			@Override
+			public void receivedPhysData(GyroPhysData arg0) {
+				physGyros = arg0.getPhysGyros();
+			}
+			
+			@Override
+			public void receivedOffsets(float[] arg0) {}
+		};
+		
+		float pitch = 0; 
+		float roll = 0; 
+		float yaw = 0;
+		boolean isHardCheck = false;
+		double hardCheck = 2.0;
+		double softCheck = 0.4;
+		
+		if(physGyros[0] > hardCheck) {
+			//If the Drone is tilting alot to the Right
+			isHardCheck = true;
+			roll = -5;
+		} else if (physGyros[0] < (-1*hardCheck) ) {
+			//If the Drone is tilting alot to the Left
+			isHardCheck = true;
+			roll = 5;
+		}
+		
+		if(physGyros[1] > hardCheck) {
+			//If the Drone is tilting alot backward
+			isHardCheck = true;
+			pitch = -5;
+		} else if (physGyros[1] < (-1*hardCheck) ) {
+			//If the Drone is tilting alot forward
+			isHardCheck = true;
+			pitch = 5;
+		}
+		
+		if(!isHardCheck) {
+			if(physGyros[0] > softCheck) {
+				//If the Drone is tilting abit to the Right
+				roll = -2;
+			} else if (physGyros[0] < (-1*softCheck) ) {
+				//If the Drone is tilting abit to the Left
+				roll = 2;
+			}
+			
+			if(physGyros[1] > softCheck) {
+				//If the Drone is tilting abit backward
+				pitch = -2;
+			} else if (physGyros[1] < (-1*softCheck) ) {
+				//If the Drone is tilting abit forward
+				pitch = 2;
+			}
+		}
+		
+		try {
+			SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
+			cmd.manualTrim(pitch, roll, yaw).doFor(millis);
+			Thread.sleep(millis);
+			SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
+		} catch (Exception e) {
+			SpaceXGUI.getInstance().appendToConsole("\n" + "Error in TheAmazingHoveringMode");
+		}
 	}
 	
 	public void assignment1 () throws InterruptedException {
