@@ -21,6 +21,14 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+
 import gui.SpaceXGUI;
 
 public class PicAnal {
@@ -31,22 +39,10 @@ public class PicAnal {
 		PicAnal.findRecs();
 	}
 	
-	public static void savePic(String fileName) {
+	public static  void findCircles() {
 
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		img = SpaceXGUI.getInstance().getVPanel().getImg();
-		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-		
-		//create Mat from byte[]
-		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
-		imageMat.put(0, 0, pixels);
-		Imgcodecs.imwrite("materials\\"+fileName,imageMat);
-	}
-	
-	public static  void analyse() {
-
-		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		//get buffedimage from gui and convert to byte[]
+		//get buffedimage from gui and convert to byte[] and put in Mat
 		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
 		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
 		
@@ -107,10 +103,11 @@ public class PicAnal {
 
 		//image from local file
 		Mat imageMat = Imgcodecs.imread("materials\\06.png");
-		//create grayscale and blur
-		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
-		Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
-		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
+		
+		//create grayscale, blur, canny and dilate
+		Mat grayImg = new Mat();
+		Imgproc.GaussianBlur(imageMat, grayImg, new Size(3,3),0,0);
+		Imgproc.cvtColor(grayImg, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
 		Imgproc.dilate(grayImg, grayImg, new Mat());
 		
@@ -121,9 +118,8 @@ public class PicAnal {
 		int method = Imgproc.CHAIN_APPROX_SIMPLE;
 		Imgcodecs.imwrite("materials\\09.png",grayImg);
 		Imgproc.findContours(grayImg, contours, hierarchy, mode, method);
-		Scalar scalarColorB = new Scalar(0,255,0); // black scalar
+		Scalar scalarColorB = new Scalar(0,255,0); // green scalar
 		List<Rect> rects = new ArrayList<Rect>();
-		//Imgproc.drawContours(imageMat, contours, -1, scalarColorB,3);
 		System.out.println(contours.size());
 		for(int i = 0;i <contours.size();i++) {
 			MatOfPoint2f outArray = new  MatOfPoint2f();
@@ -132,14 +128,40 @@ public class PicAnal {
 			Rect rect =  Imgproc.boundingRect(mop);
 			rects.add(rect);
 			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 100) {
+				//drawing found rects
 				Imgproc.rectangle(imageMat, rect.tl(), rect.br(), scalarColorB, 2);
+				Mat qr = imageMat.submat(rect);
+				BufferedImage image = new BufferedImage(qr.width(),qr.height(),BufferedImage.TYPE_3BYTE_BGR);
+				byte[] data = new byte[qr.cols()*qr.rows()*(int)qr.elemSize()];
+				qr.get(0, 0,data);
+				image.getRaster().setDataElements(0, 0, qr.cols(),qr.rows(), data);
+				//image.getRaster().setDataElements(0, 0, qr.get(0, 0));
+				lookForQr(image);
 			}
-			//check for qrcode in contour
 			
 		}
 		Imgcodecs.imwrite("materials\\08.png",grayImg);
 		Imgcodecs.imwrite("materials\\07.png",imageMat);
 	}
+	
+	public static void lookForQr(BufferedImage image) {
+		
+		LuminanceSource source = new BufferedImageLuminanceSource(image);
+		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+		// decode the barcode (if only QR codes are used, the QRCodeReader might be a better choice)
+		MultiFormatReader reader = new MultiFormatReader();
+		try {
+			Result scanResult = reader.decode(bitmap);
+			String res =scanResult.getText();
+			System.out.println(res);
+			
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+	}
+	
 	
 	public static void findRecsv2() {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
