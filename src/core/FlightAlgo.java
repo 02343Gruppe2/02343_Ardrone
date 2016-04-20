@@ -32,6 +32,20 @@ public class FlightAlgo {
 	public FlightAlgo(IARDrone drone) {
 		this.drone = drone;
 		cmd = drone.getCommandManager();
+		
+		GyroListener mGyroListener = new GyroListener() {
+			
+			@Override
+			public void receivedRawData(GyroRawData arg0) {}
+			
+			@Override
+			public void receivedPhysData(GyroPhysData arg0) {
+				physGyros = arg0.getPhysGyros();
+			}
+			
+			@Override
+			public void receivedOffsets(float[] arg0) {}
+		};
 	}
 	
 	/**
@@ -134,19 +148,7 @@ public class FlightAlgo {
 	 * ontop our Drones or any other brewage)
 	 */
 	public void theAmazingHoverMode(long millis) {
-		GyroListener mGyroListener = new GyroListener() {
-			
-			@Override
-			public void receivedRawData(GyroRawData arg0) {}
-			
-			@Override
-			public void receivedPhysData(GyroPhysData arg0) {
-				physGyros = arg0.getPhysGyros();
-			}
-			
-			@Override
-			public void receivedOffsets(float[] arg0) {}
-		};
+		
 		
 		float pitch = 0; 
 		float roll = 0; 
