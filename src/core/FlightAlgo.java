@@ -43,6 +43,7 @@ public class FlightAlgo {
 			@Override
 			public void receivedPhysData(GyroPhysData arg0) {
 				physGyros = arg0.getPhysGyros();
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]ReceivedPhysData");	
 			}
 			
 			@Override
@@ -161,6 +162,11 @@ public class FlightAlgo {
 		double timeLeft = millis / timer;
 		
 		for (int i = 0; i < timeLeft; i++) {
+			pitch = 0;
+			roll = 0;
+			yaw = 0;
+			isHardCheck = false;
+			
 			if(physGyros[0] > hardCheck) {
 				//If the Drone is tilting alot to the Right
 				isHardCheck = true;
@@ -202,7 +208,7 @@ public class FlightAlgo {
 			try {
 				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
 				cmd.manualTrim(pitch, roll, yaw).doFor(timer);
-				Thread.sleep(millis);
+				Thread.sleep(timer);
 				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
 			} catch (Exception e) {
 				SpaceXGUI.getInstance().appendToConsole("\n" + "Error in TheAmazingHoveringMode");
