@@ -208,6 +208,8 @@ public class FlightAlgo {
 			try {
 				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
 				cmd.manualTrim(pitch, roll, yaw).doFor(timer);
+				SpaceXGUI.getInstance().appendToConsole("\n" + "Pitch: " + pitch + ". Roll: " + roll + ". Yaw: " + yaw + ".");
+				SpaceXGUI.getInstance().appendToConsole("\n" + "physGyros[0]: " + physGyros[0] + ". physGyros[1]: " + physGyros[1]);
 				Thread.sleep(timer);
 				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
 			} catch (Exception e) {

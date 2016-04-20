@@ -55,13 +55,8 @@ public class SpaceXDrone {
 			flightAlgo = new FlightAlgo(drone);
 			drone.getCommandManager().takeOff().doFor(2000);
 			Thread.sleep(2000);
-			/*
-			Boolean b = true;
-			while(b) {
-				flightAlgo.testHover();
-			}
-			*/
-			flightAlgo.theAmazingHoverMode(10000);
+		
+			flightAlgo.theAmazingHoverMode(30000);
 			drone.getCommandManager().landing().doFor(2000);
 			int counter = 0;
 			
