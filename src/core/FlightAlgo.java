@@ -1,5 +1,7 @@
 package core;
 
+import java.util.Date;
+
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.navdata.GyroListener;
@@ -145,10 +147,9 @@ public class FlightAlgo {
 	 * 
 	 * It's the ultimate hovering mode you will ever experience! it is unnecessarily precise and still!
 	 * You can even place your beer on it without spilling it! (SpaceXDrone A/S does not insure any beer placed
-	 * ontop our Drones or any other brewage)
+	 * ontop of our Drones or any other brewage)
 	 */
 	public void theAmazingHoverMode(long millis) {
-		
 		
 		float pitch = 0; 
 		float roll = 0; 
@@ -156,52 +157,56 @@ public class FlightAlgo {
 		boolean isHardCheck = false;
 		double hardCheck = 2.0;
 		double softCheck = 0.4;
+		int timer = 500;
+		double timeLeft = millis / timer;
 		
-		if(physGyros[0] > hardCheck) {
-			//If the Drone is tilting alot to the Right
-			isHardCheck = true;
-			roll = -5;
-		} else if (physGyros[0] < (-1*hardCheck) ) {
-			//If the Drone is tilting alot to the Left
-			isHardCheck = true;
-			roll = 5;
-		}
-		
-		if(physGyros[1] > hardCheck) {
-			//If the Drone is tilting alot backward
-			isHardCheck = true;
-			pitch = -5;
-		} else if (physGyros[1] < (-1*hardCheck) ) {
-			//If the Drone is tilting alot forward
-			isHardCheck = true;
-			pitch = 5;
-		}
-		
-		if(!isHardCheck) {
-			if(physGyros[0] > softCheck) {
-				//If the Drone is tilting abit to the Right
-				roll = -2;
-			} else if (physGyros[0] < (-1*softCheck) ) {
-				//If the Drone is tilting abit to the Left
-				roll = 2;
+		for (int i = 0; i < timeLeft; i++) {
+			if(physGyros[0] > hardCheck) {
+				//If the Drone is tilting alot to the Right
+				isHardCheck = true;
+				roll = -5;
+			} else if (physGyros[0] < (-1*hardCheck) ) {
+				//If the Drone is tilting alot to the Left
+				isHardCheck = true;
+				roll = 5;
 			}
 			
-			if(physGyros[1] > softCheck) {
-				//If the Drone is tilting abit backward
-				pitch = -2;
-			} else if (physGyros[1] < (-1*softCheck) ) {
-				//If the Drone is tilting abit forward
-				pitch = 2;
+			if(physGyros[1] > hardCheck) {
+				//If the Drone is tilting alot backward
+				isHardCheck = true;
+				pitch = -5;
+			} else if (physGyros[1] < (-1*hardCheck) ) {
+				//If the Drone is tilting alot forward
+				isHardCheck = true;
+				pitch = 5;
 			}
-		}
-		
-		try {
-			SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
-			cmd.manualTrim(pitch, roll, yaw).doFor(millis);
-			Thread.sleep(millis);
-			SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
-		} catch (Exception e) {
-			SpaceXGUI.getInstance().appendToConsole("\n" + "Error in TheAmazingHoveringMode");
+			
+			if(!isHardCheck) {
+				if(physGyros[0] > softCheck) {
+					//If the Drone is tilting abit to the Right
+					roll = -2;
+				} else if (physGyros[0] < (-1*softCheck) ) {
+					//If the Drone is tilting abit to the Left
+					roll = 2;
+				}
+				
+				if(physGyros[1] > softCheck) {
+					//If the Drone is tilting abit backward
+					pitch = -2;
+				} else if (physGyros[1] < (-1*softCheck) ) {
+					//If the Drone is tilting abit forward
+					pitch = 2;
+				}
+			}
+			
+			try {
+				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
+				cmd.manualTrim(pitch, roll, yaw).doFor(timer);
+				Thread.sleep(millis);
+				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
+			} catch (Exception e) {
+				SpaceXGUI.getInstance().appendToConsole("\n" + "Error in TheAmazingHoveringMode");
+			}	
 		}
 	}
 	
