@@ -2,6 +2,7 @@ package core;
 
 import java.util.Date;
 
+import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.navdata.GyroListener;
@@ -25,8 +26,9 @@ public class FlightAlgo {
 	int doTime = 1000;
 	int sleepTime = 1000;
 	int flightState = 0; //flightState, 0 = hovering, 1 = flying 
+	GyroListener mGyroListener;
 	
-	static float physGyros[] = {0,0,0};
+	float physGyros[] = {0,0,0};
 	
 	IARDrone drone = null;
 	CommandManager cmd;
@@ -34,21 +36,23 @@ public class FlightAlgo {
 	public FlightAlgo(IARDrone drone) {
 		this.drone = drone;
 		cmd = drone.getCommandManager();
-		
-		GyroListener mGyroListener = new GyroListener() {
+		mGyroListener = new GyroListener() {
 			
 			@Override
 			public void receivedRawData(GyroRawData arg0) {}
 			
 			@Override
 			public void receivedPhysData(GyroPhysData arg0) {
-				physGyros = arg0.getPhysGyros();
+				//physGyros = arg0.getPhysGyros();
+				GyroData.ourIstance.physGyros = arg0.getPhysGyros();
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]ReceivedPhysData");	
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] PhysThings: " + GyroData.ourIstance.physGyros[0] + ". " + GyroData.ourIstance.physGyros[1] + ". " + GyroData.ourIstance.physGyros[2]);
 			}
 			
 			@Override
 			public void receivedOffsets(float[] arg0) {}
 		};
+		this.drone.getNavDataManager().addGyroListener(mGyroListener);
 	}
 	
 	/**
@@ -160,6 +164,7 @@ public class FlightAlgo {
 		double softCheck = 0.4;
 		int timer = 500;
 		double timeLeft = millis / timer;
+		SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
 		
 		for (int i = 0; i < timeLeft; i++) {
 			pitch = 0;
@@ -167,51 +172,51 @@ public class FlightAlgo {
 			yaw = 0;
 			isHardCheck = false;
 			
-			if(physGyros[0] > hardCheck) {
+			if(GyroData.ourIstance.physGyros[0] > hardCheck) {
 				//If the Drone is tilting alot to the Right
 				isHardCheck = true;
 				roll = -5;
-			} else if (physGyros[0] < (-1*hardCheck) ) {
+			} else if (GyroData.ourIstance.physGyros[0] < (-1*hardCheck) ) {
 				//If the Drone is tilting alot to the Left
 				isHardCheck = true;
 				roll = 5;
 			}
 			
-			if(physGyros[1] > hardCheck) {
+			if(GyroData.ourIstance.physGyros[1] > hardCheck) {
 				//If the Drone is tilting alot backward
 				isHardCheck = true;
 				pitch = -5;
-			} else if (physGyros[1] < (-1*hardCheck) ) {
+			} else if (GyroData.ourIstance.physGyros[1] < (-1*hardCheck) ) {
 				//If the Drone is tilting alot forward
 				isHardCheck = true;
 				pitch = 5;
 			}
 			
 			if(!isHardCheck) {
-				if(physGyros[0] > softCheck) {
+				if(GyroData.ourIstance.physGyros[0] > softCheck) {
 					//If the Drone is tilting abit to the Right
 					roll = -2;
-				} else if (physGyros[0] < (-1*softCheck) ) {
+				} else if (GyroData.ourIstance.physGyros[0] < (-1*softCheck) ) {
 					//If the Drone is tilting abit to the Left
 					roll = 2;
 				}
 				
-				if(physGyros[1] > softCheck) {
+				if(GyroData.ourIstance.physGyros[1] > softCheck) {
 					//If the Drone is tilting abit backward
 					pitch = -2;
-				} else if (physGyros[1] < (-1*softCheck) ) {
+				} else if (GyroData.ourIstance.physGyros[1] < (-1*softCheck) ) {
 					//If the Drone is tilting abit forward
 					pitch = 2;
 				}
 			}
 			
 			try {
-				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
+				
 				cmd.manualTrim(pitch, roll, yaw).doFor(timer);
 				SpaceXGUI.getInstance().appendToConsole("\n" + "Pitch: " + pitch + ". Roll: " + roll + ". Yaw: " + yaw + ".");
-				SpaceXGUI.getInstance().appendToConsole("\n" + "physGyros[0]: " + physGyros[0] + ". physGyros[1]: " + physGyros[1]);
+				SpaceXGUI.getInstance().appendToConsole("\n" + "physGyros[0]: " + GyroData.ourIstance.physGyros[0] + ". physGyros[1]: " + GyroData.ourIstance.physGyros[1]);
 				Thread.sleep(timer);
-				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has finished, after " + millis + "milliSeconds");
+				SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has Runned, " + i + "/" + timeLeft);
 			} catch (Exception e) {
 				SpaceXGUI.getInstance().appendToConsole("\n" + "Error in TheAmazingHoveringMode");
 			}	
