@@ -51,64 +51,94 @@ public class PicAnal {
 		originalMat.put(0, 0, pixels); 
 		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
 	}
-	
-	public  void findCircles(Boolean isFromDrone) {
-		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		//get buffedimage from gui and convert to byte[] and put in Mat
-		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
-		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+
+	public void picRunDown(int method) {
+		Mat originalMat;
+		Mat grayImg = new Mat();
+		//image from drone cam
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(true);
+		byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
 		
 		//create Mat from byte[]
-		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
-		imageMat.put(0, 0, pixels);
+		originalMat = new Mat(imgIn.getHeight(),imgIn.getWidth(),CvType.CV_8UC3);
+		originalMat.put(0, 0, pixels);
+		Imgproc.cvtColor(grayImg, grayImg, Imgproc.COLOR_BGRA2GRAY); 
+		Imgproc.GaussianBlur(originalMat, grayImg, new Size(3,3),0,0);
+		Imgproc.Canny(grayImg, grayImg, 10, 50);
+		Imgproc.dilate(grayImg, grayImg, new Mat());
 		
-		
-		// save the picture
-		Imgcodecs.imwrite("materials\\test.png",imageMat);*/
-		for(int i =100;i<220;i++) {
-			try {
-				Mat imageMat = Imgcodecs.imread("materials\\picture_"+i+".png");
-				Mat circles = new Mat();
-				Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
-				double[] vCircle = new double[3];
-		        int radius;
-		        Point pt = new Point();
-				Scalar scalarColorB = new Scalar(0,0,0); // black scalar
-				Scalar scalarColorT = new Scalar(0,255,0); //T scalar, initial color = green
-		        
-				Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
-				Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
-		        //Imgproc.Canny(grayImg, circles, 5, 60);
-		        //Param1 = higher value of the two to canny, smaller = 50%
-		        //Param2 = accumulator threshold
-		        int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
-		        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
-		        		, minDist, param1, param2, minRadius, maxRadius);
-		        for (int x = 0; x < circles.cols(); x++) {
-		        	vCircle = circles.get(0,x);
-		        	if (vCircle == null) {
-		        		//TODO return so that we know that there are no more balls
-		        		System.err.println("no circles found");
-			            break;
-			        }
-		        	Boolean isBlackCircle = false;
-		        	
-		        	
-		        	
-		        	if(isBlackCircle) {
-			    		pt.set(vCircle);
-				        radius = (int)Math.round(vCircle[2]);
-				        
-				        // draw the found circle
-				        Imgproc.circle(imageMat, pt, radius, scalarColorB, 2);
-				        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
-		        	}
-		        }
-		        Imgcodecs.imwrite("materials\\fixedpicture_"+i+".png", imageMat);
-			} catch (Exception ex) {
-				
+		switch (method) {
+		case 0: 
+			findPosibleQr(grayImg);
+			break;
+		case 1: 
+			findHulahops(grayImg,findPosibleQr(grayImg));
+			break;
+		default:
+			
+			break;
+		}
+	}
+	
+	public List<String> checkForQrText(List<Rect> rects, Mat originalMat) {
+		List<String> qrCodes = new ArrayList<String>();
+		Boolean qrExist;
+		for(int i = 0;i<rects.size();i++) {
+			Mat possibleQrMat = originalMat.submat(rects.get(i));
+			
+			BufferedImage possibleQrBufImg = new BufferedImage(possibleQrMat.width(),possibleQrMat.height(),BufferedImage.TYPE_3BYTE_BGR);
+			byte[] data = new byte[possibleQrMat.cols()*possibleQrMat.rows()*(int)possibleQrMat.elemSize()];
+			possibleQrMat.get(0, 0,data);
+			possibleQrBufImg.getRaster().setDataElements(0, 0, possibleQrMat.cols(),possibleQrMat.rows(), data);
+			//image.getRaster().setDataElements(0, 0, qr.get(0, 0));
+			String qrText = lookForQr(possibleQrBufImg);
+			
+			if(!qrText.isEmpty()){
+				qrExist =false;
+				for(int z =0; z < qrCodes.size();z++){
+					
+					if(qrText.equals(qrCodes.get(z))){
+						qrExist = true;	
+					}		
+				}
+				if (qrExist == false){
+					qrCodes.add(qrText);
+					System.out.println(qrText);
+				}
 			}
 		}
+		return qrCodes;
+	}
+	
+	public  ArrayList<double[]> findHulahops(Mat grayImg, List<Rect> rects) {
+		double[] vCircle = new double[3];
+        int radius;
+        Point pt = new Point();
+        Mat circles = new Mat();
+		ArrayList<double[]> hulahops = new ArrayList<double[]>();
+		int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
+        		, minDist, param1, param2, minRadius, maxRadius);
+        for (int x = 0; x < circles.cols(); x++) {
+        	vCircle = circles.get(0,x);
+        	if (vCircle == null) {
+        		//TODO return so that we know that there are no more balls
+        		System.err.println("no circles found");
+	            break;
+	        }
+    		pt.set(vCircle);
+	        radius = (int)Math.round(vCircle[2]);
+	      //checking if there is a rect below the circle, if there 
+	        int distanceBetweenRectAndCircle = 30;
+        	for(int c = 0;c<rects.size();c++) {
+        		if((pt.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (pt.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > pt.x &&  rects.get(c).tl().x < pt.x) {
+        			
+        			hulahops.add(vCircle);
+    		        // draw the found circle
+        		}
+        	}
+        }
+		return hulahops;
 	}
 	
 	public List<Rect> findPosibleQr(Mat grayImg) {
