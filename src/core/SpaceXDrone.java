@@ -21,14 +21,15 @@ import network.DroneConnection;
 public class SpaceXDrone {
 	FlightAlgo flightAlgo;
 	Boolean isFront;
-	
+	Boolean imageIsReady;
 	public void swapCamera(IARDrone drone) {
+		imageIsReady = false;
 		if(isFront) {
-			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 			isFront = false;
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 		} else {
-			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);
 			isFront = true;
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);
 		}
 	}
 	
@@ -37,6 +38,7 @@ public class SpaceXDrone {
 		IARDrone drone = null;
 		boolean running = false;
 		isFront = true;
+		imageIsReady = true;
 		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
@@ -56,6 +58,7 @@ public class SpaceXDrone {
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
+					if(imageIsReady)
 	            	SpaceXGUI.updateImage(newImage, isFront);
 	            }
 	        });
@@ -73,6 +76,8 @@ public class SpaceXDrone {
 				
 				counter++;
 				swapCamera(drone);
+				Thread.sleep(200);
+				imageIsReady = true;
 				Thread.sleep(200);
 				if(counter > 1000000)
 					running = false;
