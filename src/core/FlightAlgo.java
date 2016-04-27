@@ -45,7 +45,7 @@ public class FlightAlgo {
 			public void receivedPhysData(GyroPhysData arg0) {
 				//physGyros = arg0.getPhysGyros();
 				GyroData.ourIstance.physGyros = arg0.getPhysGyros();
-				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]ReceivedPhysData");	
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] ReceivedPhysData");	
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] PhysThings: " + GyroData.ourIstance.physGyros[0] + ". " + GyroData.ourIstance.physGyros[1] + ". " + GyroData.ourIstance.physGyros[2]);
 			}
 			
