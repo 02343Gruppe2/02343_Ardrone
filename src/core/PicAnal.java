@@ -1,17 +1,14 @@
 package core;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -32,15 +29,19 @@ import com.google.zxing.common.HybridBinarizer;
 import gui.SpaceXGUI;
 
 public class PicAnal {
-	private static BufferedImage imgIn;
-	private static BufferedImage imgOut = null;
+	private  BufferedImage imgIn;
+	private  BufferedImage imgOut = null;
 	
 	public static void main(String[] args) {
-		PicAnal.findRecs(false);
+		PicAnal obj = new PicAnal();
+		obj.findRecs(false);
 	}
 	
-	public static void savePicture(String fileName, Boolean isFront) {
+	public PicAnal() {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+	}
+	
+	public void savePicture(String fileName, Boolean isFront) {
 		Mat originalMat;
 		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
 		byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
@@ -51,7 +52,7 @@ public class PicAnal {
 		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
 	}
 	
-	public static  void findCircles(Boolean isFromDrone) {
+	public  void findCircles(Boolean isFromDrone) {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		//get buffedimage from gui and convert to byte[] and put in Mat
 		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
@@ -64,42 +65,74 @@ public class PicAnal {
 		
 		// save the picture
 		Imgcodecs.imwrite("materials\\test.png",imageMat);*/
-		
-		Mat imageMat = Imgcodecs.imread("materials\\hulaHop.png");
-		Mat circles = new Mat();
-		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
-		double[] vCircle = new double[3];
-        int radius;
-        Point pt = new Point();
-		Scalar scalarColorB = new Scalar(0,0,0); // black scalar
-		Scalar scalarColorT = new Scalar(0,255,0); //T scalar, initial color = green
-        
-		Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
-		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
-        //Imgproc.Canny(grayImg, circles, 5, 60);
-        //Param1 = higher value of the two to canny, smaller = 50%
-        //Param2 = accumulator threshold
-        int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
-        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
-        		, minDist, param1, param2, minRadius, maxRadius);
-        for (int x = 0; x < circles.cols(); x++) {
-        	vCircle = circles.get(0,x);
-        	if (vCircle == null) {
-        		//TODO return so that we know that there are no more balls
-        		System.err.println("no circles found");
-	            break;
-	        }
-    		pt.set(vCircle);
-	        radius = (int)Math.round(vCircle[2]);
-	        
-	        // draw the found circle
-	        Imgproc.circle(imageMat, pt, radius, scalarColorB, 2);
-	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
-	        
-        }
+		for(int i =100;i<220;i++) {
+			try {
+				Mat imageMat = Imgcodecs.imread("materials\\picture_"+i+".png");
+				Mat circles = new Mat();
+				Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
+				double[] vCircle = new double[3];
+		        int radius;
+		        Point pt = new Point();
+				Scalar scalarColorB = new Scalar(0,0,0); // black scalar
+				Scalar scalarColorT = new Scalar(0,255,0); //T scalar, initial color = green
+		        
+				Imgproc.cvtColor(imageMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
+				Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
+		        //Imgproc.Canny(grayImg, circles, 5, 60);
+		        //Param1 = higher value of the two to canny, smaller = 50%
+		        //Param2 = accumulator threshold
+		        int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+		        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
+		        		, minDist, param1, param2, minRadius, maxRadius);
+		        for (int x = 0; x < circles.cols(); x++) {
+		        	vCircle = circles.get(0,x);
+		        	if (vCircle == null) {
+		        		//TODO return so that we know that there are no more balls
+		        		System.err.println("no circles found");
+			            break;
+			        }
+		        	Boolean isBlackCircle = false;
+		        	
+		        	
+		        	
+		        	if(isBlackCircle) {
+			    		pt.set(vCircle);
+				        radius = (int)Math.round(vCircle[2]);
+				        
+				        // draw the found circle
+				        Imgproc.circle(imageMat, pt, radius, scalarColorB, 2);
+				        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
+		        	}
+		        }
+		        Imgcodecs.imwrite("materials\\fixedpicture_"+i+".png", imageMat);
+			} catch (Exception ex) {
+				
+			}
+		}
 	}
 	
-	public static Object[] findRecs(Boolean isFromDrone) {
+	public List<Rect> findPosibleQr(Mat grayImg) {
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Mat hierarchy = new Mat();
+		int mode = Imgproc.RETR_LIST;
+		int method = Imgproc.CHAIN_APPROX_SIMPLE;
+		Imgproc.findContours(grayImg, contours, hierarchy, mode, method);
+		List<Rect> rects = new ArrayList<Rect>();
+		for(int i = 0;i <contours.size();i++) {
+			MatOfPoint2f outArray = new  MatOfPoint2f();
+			Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), outArray, 5, true);
+			MatOfPoint mop = new MatOfPoint(outArray.toArray());
+			Rect rect =  Imgproc.boundingRect(mop);
+			//checks distance between topleft and bottomright
+			//QR codes are on A3, which height is sqrt(2) times bigger than width - 1.4, which is why we check for 1.25 and 1.55
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50 && rect.height < (rect.width*1.55) && rect.height > (rect.width*1.25)) {
+				rects.add(rect);
+			} 
+		}
+		return rects;
+	}
+	
+	public Object[] findRecs(Boolean isFromDrone) {
 		
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		ArrayList<String> qrCodes = new ArrayList<String>(); 
@@ -107,7 +140,7 @@ public class PicAnal {
 		
 		
 		String saveFile = "materials\\qrt4out.png";
-		Mat originalMat;
+		Mat originalMat;/*
 		if(isFromDrone) {
 			//image from drone cam
 			imgIn = SpaceXGUI.getInstance().getVPanel().getImg(true);
@@ -120,21 +153,20 @@ public class PicAnal {
 			String filename = "materials\\qrt4.png";
 			originalMat = Imgcodecs.imread(filename);
 		}
+		*/
 		
-		/*for(int k = 11; k<37; k++){
-			QRres = new ArrayList<String>(); 
-			filename = "materials\\";
-			String saveFile = "materials\\output";
-			filename += k+".png";
-			saveFile +=k+".png";
-			*/
+		for(int k = 0; k<160; k++){
+			try {
+			String filename = "materials\\picture_"+k+".png";
+			originalMat = Imgcodecs.imread(filename);
 		
 		 
 		Mat drawingMat = originalMat.clone();
 		//create grayscale, blur, canny and dilate
 		Mat grayImg = new Mat();
-		Imgproc.GaussianBlur(originalMat, grayImg, new Size(3,3),0,0);
+
 		Imgproc.cvtColor(grayImg, grayImg, Imgproc.COLOR_BGRA2GRAY); 
+		Imgproc.GaussianBlur(originalMat, grayImg, new Size(3,3),0,0);
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
 		Imgproc.dilate(grayImg, grayImg, new Mat());
 		
@@ -153,9 +185,10 @@ public class PicAnal {
 			Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), outArray, 5, true);
 			MatOfPoint mop = new MatOfPoint(outArray.toArray());
 			Rect rect =  Imgproc.boundingRect(mop);
-			rects.add(rect);
+			
 			//checks distance between topleft and bottomright
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50) {
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50 && rect.height < (rect.width*1.55) && rect.height > (rect.width*1.25)) {
+				rects.add(rect);
 				//drawing found rects
 				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), scalarColorGreen, 2);
 				Mat possibleQrMat = originalMat.submat(rect);
@@ -172,7 +205,6 @@ public class PicAnal {
 					for(int z =0; z < qrCodes.size();z++){
 						
 						if(qrText.equals(qrCodes.get(z))){
-							
 							qrExist = true;	
 						}		
 					}
@@ -181,7 +213,7 @@ public class PicAnal {
 						System.out.println(qrText);
 					}
 				}
-			}
+			} 
 		}
 		
 		/*******************************Circles start*********************************************/
@@ -189,8 +221,8 @@ public class PicAnal {
         int radius;
         Point pt = new Point();
         Mat circles = new Mat();
-		Scalar scalarColorRed = new Scalar(255,0,0); //T scalar, initial color = red
-		Scalar scalarColorBlack = new Scalar(255,255,255); //T scalar, initial color = black
+		Scalar scalarColorBlue = new Scalar(255,0,0); //T scalar, initial color = red
+		Scalar scalarColorRed = new Scalar(0,0,255); //T scalar, initial color = black
 		ArrayList<double[]> hulahops = new ArrayList<double[]>();
 		
 		int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
@@ -205,11 +237,17 @@ public class PicAnal {
 	        }
     		pt.set(vCircle);
 	        radius = (int)Math.round(vCircle[2]);
-	        hulahops.add(vCircle);
-	        // draw the found circle
-	        Imgproc.circle(drawingMat, pt, radius, scalarColorRed, 2);
-	        Imgproc.circle(drawingMat, pt, 1, scalarColorBlack, 2);
-	        
+	      //checking if there is a rect below the circle, if there 
+	        int distanceBetweenRectAndCircle = 30;
+        	for(int c = 0;c<rects.size();c++) {
+        		if((pt.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (pt.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > pt.x &&  rects.get(c).tl().x < pt.x) {
+        			
+        			hulahops.add(vCircle);
+    		        // draw the found circle
+    		        Imgproc.circle(drawingMat, pt, radius, scalarColorBlue, 2);
+    		        Imgproc.circle(drawingMat, pt, 1, scalarColorRed, 2);
+        		}
+        	}
         }
 		
         /*********************************Circles end******************************************/
@@ -223,17 +261,22 @@ public class PicAnal {
 		byte[] data = new byte[drawingMat.cols()*drawingMat.rows()*(int)drawingMat.elemSize()];
 		drawingMat.get(0, 0,data);
 		imgOut.getRaster().setDataElements(0, 0, drawingMat.cols(),drawingMat.rows(), data);
+		Imgcodecs.imwrite("materials\\fixedpicture_"+k+".png",drawingMat);
 		//saving images
 		/*Imgcodecs.imwrite("materials\\08.png",grayImg);
 		Imgcodecs.imwrite(saveFile,drawingMat);*/
-		//}
+			} catch (Exception ex) {
+				
+			}
+		}
 		
 		
-		Object[] result = { qrCodes, hulahops };
+		//Object[] result = { qrCodes, hulahops };
+		Object[] result = null;
 		return result;
 	}
 	
-	public static String lookForQr(BufferedImage image) {
+	public String lookForQr(BufferedImage image) {
 		String res = "";
 		
 		LuminanceSource source = new BufferedImageLuminanceSource(image);
@@ -254,10 +297,6 @@ public class PicAnal {
 		}
 		return res;
 	}
-	
-	
-
-	
 }
 
 
