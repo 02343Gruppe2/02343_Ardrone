@@ -34,7 +34,7 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
 	private static SpaceXLinesPanel lPanel;
-	
+	private Dimension dim = new Dimension(1520, 720);
 	/**
 	 * Private constructor of SpaceXGUI. Only one instance of this must ever exist!<br>
 	 * Use {@link #getInstance(String...)} to create or instantiate GUI.
@@ -45,8 +45,8 @@ public class SpaceXGUI extends JPanel {
 	 */
 	private SpaceXGUI(String...strings) {
 		setLayout(new MigLayout());
-		setMinimumSize(new Dimension((640+640+240), (480+240)));
-		setPreferredSize(new Dimension((640+640+240), (480+240)));
+		setMinimumSize(dim);
+		setPreferredSize(dim);
 		setBackground(Color.decode("#333333"));
 		
 		bPanel = new SpaceXButtonPanel();
@@ -137,8 +137,8 @@ public class SpaceXGUI extends JPanel {
 	 * 
 	 * @param newImage New image given as type BufferedImage
 	 */
-	public static void updateImage(BufferedImage newImage) {
-		horiVPanel.imageUpdated(newImage);
+	public static void updateImage(BufferedImage newImage, Boolean isFront) {
+		horiVPanel.imageUpdated(newImage, isFront);
 		dPanel.setImageWidth(newImage.getWidth());
 		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.incrementImageNumber();

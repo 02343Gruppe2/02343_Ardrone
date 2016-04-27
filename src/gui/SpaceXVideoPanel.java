@@ -25,25 +25,25 @@ import net.miginfocom.swing.MigLayout;
 public class SpaceXVideoPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private BufferedImage image = null;
-	private Dimension dim = new Dimension(640,480);
+	private BufferedImage frontImage = null;
+	private BufferedImage bottomImage = null;
+	private Dimension dim = new Dimension(1280,480);
 	
 	/**
 	 * Constructor for GUI's video panel (Spycam). Use {@link #imageUpdated(BufferedImage)} to update image.
 	 */
 	public SpaceXVideoPanel() {
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(640, 480));
+		setPreferredSize(dim);
 		setBackground(Color.decode("#333333"));
 		
 		// Add a placeholder image...
 		try {
 			File img = new File("materials/bufferImage0.png");
 			BufferedImage in = ImageIO.read(img);
+			frontImage = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			
-			image = new BufferedImage(in.getWidth(), in.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			Graphics2D g2d = image.createGraphics();
+			Graphics2D g2d = frontImage.createGraphics();
 			g2d.drawImage(in, 0, 0, null);
 			g2d.dispose();
 		} catch (IOException e) {
@@ -56,18 +56,22 @@ public class SpaceXVideoPanel extends JPanel {
 	 * 
 	 * @param newImage New image to be painted.
 	 */
-	public void imageUpdated(BufferedImage newImage) {
+	public void imageUpdated(BufferedImage newImage, Boolean isFront) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				image = newImage;
+				if(isFront) {
+					frontImage = newImage;
 				
+				} else {
+					
+				}
 				repaint();
 			}
 		});
     }
 	
 	public BufferedImage getImg() {
-		return image;
+		return frontImage;
 	}
 	
 	/**
@@ -88,8 +92,10 @@ public class SpaceXVideoPanel extends JPanel {
 	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-        if (image != null)
-			g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), null);
+        if (frontImage != null)
+			g.drawImage(frontImage, 0, 0, frontImage.getWidth(), frontImage.getHeight(), null);
+        if (bottomImage != null)
+        	g.drawImage(bottomImage, 640, 0, bottomImage.getWidth(), bottomImage.getHeight(), null);
     }
 }
 

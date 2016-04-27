@@ -32,15 +32,14 @@ import com.google.zxing.common.HybridBinarizer;
 import gui.SpaceXGUI;
 
 public class PicAnal {
-	private static BufferedImage img;
-	
+	private static BufferedImage imgIn;
+	private static BufferedImage imgOut = null;
 	
 	public static void main(String[] args) {
-		PicAnal.findRecs();
+		PicAnal.findRecs(false);
 	}
 	
-	public static  void findCircles() {
-
+	public static  void findCircles(Boolean isFromDrone) {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		//get buffedimage from gui and convert to byte[] and put in Mat
 		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
@@ -53,14 +52,13 @@ public class PicAnal {
 		
 		// save the picture
 		Imgcodecs.imwrite("materials\\test.png",imageMat);*/
-		for(int i = 0; i<11;i++) {
-		Mat imageMat = Imgcodecs.imread("materials\\hulaHop"+i+".png");
+		
+		Mat imageMat = Imgcodecs.imread("materials\\hulaHop.png");
 		Mat circles = new Mat();
 		Mat grayImg = new Mat(imageMat.rows(),imageMat.cols(),imageMat.type());
 		double[] vCircle = new double[3];
         int radius;
         Point pt = new Point();
-
 		Scalar scalarColorB = new Scalar(0,0,0); // black scalar
 		Scalar scalarColorT = new Scalar(0,255,0); //T scalar, initial color = green
         
@@ -87,36 +85,43 @@ public class PicAnal {
 	        Imgproc.circle(imageMat, pt, 1, scalarColorT, 2);
 	        
         }
-		Imgcodecs.imwrite("materials\\test"+i+".png",imageMat);
-		}
 	}
 	
-	public static ArrayList<String> findRecs() {
-		ArrayList<String> QRres = new ArrayList<String>(); 
-		boolean QRexist = false;
+	public static Object[] findRecs(Boolean isFromDrone) {
 		
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
-		//image from drone cam
-		/*img = SpaceXGUI.getInstance().getVPanel().getImg();
-		byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+		ArrayList<String> qrCodes = new ArrayList<String>(); 
+		boolean qrExist = false;
 		
-		//create Mat from byte[]
-		Mat imageMat = new Mat(img.getHeight(),img.getWidth(),CvType.CV_8UC3);
-		imageMat.put(0, 0, pixels);*/
 		
-		for(int k = 11; k<37; k++){
+		String saveFile = "materials\\qrt4out.png";
+		Mat originalMat;
+		if(isFromDrone) {
+			//image from drone cam
+			imgIn = SpaceXGUI.getInstance().getVPanel().getImg();
+			byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
+			
+			//create Mat from byte[]
+			originalMat = new Mat(imgIn.getHeight(),imgIn.getWidth(),CvType.CV_8UC3);
+			originalMat.put(0, 0, pixels);
+		} else {
+			String filename = "materials\\qrt4.png";
+			originalMat = Imgcodecs.imread(filename);
+		}
+		
+		/*for(int k = 11; k<37; k++){
 			QRres = new ArrayList<String>(); 
-			String filename = "materials\\";
+			filename = "materials\\";
 			String saveFile = "materials\\output";
 			filename += k+".png";
 			saveFile +=k+".png";
-			
+			*/
 		
-		Mat imageMat = Imgcodecs.imread(filename);
-		
+		 
+		Mat drawingMat = originalMat.clone();
 		//create grayscale, blur, canny and dilate
 		Mat grayImg = new Mat();
-		Imgproc.GaussianBlur(imageMat, grayImg, new Size(3,3),0,0);
+		Imgproc.GaussianBlur(originalMat, grayImg, new Size(3,3),0,0);
 		Imgproc.cvtColor(grayImg, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
 		Imgproc.dilate(grayImg, grayImg, new Mat());
@@ -128,7 +133,7 @@ public class PicAnal {
 		int method = Imgproc.CHAIN_APPROX_SIMPLE;
 		Imgcodecs.imwrite("materials\\09.png",grayImg);
 		Imgproc.findContours(grayImg, contours, hierarchy, mode, method);
-		Scalar scalarColorB = new Scalar(0,255,0); // green scalar
+		Scalar scalarColorGreen = new Scalar(0,255,0); // green scalar
 		List<Rect> rects = new ArrayList<Rect>();
 		//System.out.println(contours.size());
 		for(int i = 0;i <contours.size();i++) {
@@ -137,46 +142,83 @@ public class PicAnal {
 			MatOfPoint mop = new MatOfPoint(outArray.toArray());
 			Rect rect =  Imgproc.boundingRect(mop);
 			rects.add(rect);
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 100) {
+			//checks distance between topleft and bottomright
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50) {
 				//drawing found rects
-				Imgproc.rectangle(imageMat, rect.tl(), rect.br(), scalarColorB, 2);
-				Mat qr = imageMat.submat(rect);
-				BufferedImage image = new BufferedImage(qr.width(),qr.height(),BufferedImage.TYPE_3BYTE_BGR);
-				byte[] data = new byte[qr.cols()*qr.rows()*(int)qr.elemSize()];
-				qr.get(0, 0,data);
-				image.getRaster().setDataElements(0, 0, qr.cols(),qr.rows(), data);
-				//image.getRaster().setDataElements(0, 0, qr.get(0, 0));
-				String QRtext = lookForQr(image);
+				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), scalarColorGreen, 2);
+				Mat possibleQrMat = originalMat.submat(rect);
 				
-				if(!QRtext.isEmpty()){
-					QRexist =false;
-					System.out.println(QRtext);
-					for(int z =0; z < QRres.size();z++){
+				BufferedImage possibleQrBufImg = new BufferedImage(possibleQrMat.width(),possibleQrMat.height(),BufferedImage.TYPE_3BYTE_BGR);
+				byte[] data = new byte[possibleQrMat.cols()*possibleQrMat.rows()*(int)possibleQrMat.elemSize()];
+				possibleQrMat.get(0, 0,data);
+				possibleQrBufImg.getRaster().setDataElements(0, 0, possibleQrMat.cols(),possibleQrMat.rows(), data);
+				//image.getRaster().setDataElements(0, 0, qr.get(0, 0));
+				String qrText = lookForQr(possibleQrBufImg);
+				
+				if(!qrText.isEmpty()){
+					qrExist =false;
+					for(int z =0; z < qrCodes.size();z++){
 						
-						if(QRtext.equals(QRres.get(z))){
+						if(qrText.equals(qrCodes.get(z))){
 							
-							QRexist = true;
-							
-						}
-								
+							qrExist = true;	
+						}		
 					}
-					if (QRexist == false){
-						QRres.add(QRtext);
+					if (qrExist == false){
+						qrCodes.add(qrText);
+						System.out.println(qrText);
 					}
 				}
-				
-				
-				
 			}
-			
 		}
-		Imgcodecs.imwrite("materials\\08.png",grayImg);
-		Imgcodecs.imwrite(saveFile,imageMat);
-		for(int i = 0; i < QRres.size(); i++){
-			System.out.println(k+" "+QRres.get(i));
-		}
-		}
-		return QRres;
+		
+		/*******************************Circles start*********************************************/
+		double[] vCircle = new double[3];
+        int radius;
+        Point pt = new Point();
+        Mat circles = new Mat();
+		Scalar scalarColorRed = new Scalar(255,0,0); //T scalar, initial color = red
+		Scalar scalarColorBlack = new Scalar(255,255,255); //T scalar, initial color = black
+		ArrayList<double[]> hulahops = new ArrayList<double[]>();
+		
+		int dp = 2, minDist = 150, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
+        		, minDist, param1, param2, minRadius, maxRadius);
+        for (int x = 0; x < circles.cols(); x++) {
+        	vCircle = circles.get(0,x);
+        	if (vCircle == null) {
+        		//TODO return so that we know that there are no more balls
+        		System.err.println("no circles found");
+	            break;
+	        }
+    		pt.set(vCircle);
+	        radius = (int)Math.round(vCircle[2]);
+	        hulahops.add(vCircle);
+	        // draw the found circle
+	        Imgproc.circle(drawingMat, pt, radius, scalarColorRed, 2);
+	        Imgproc.circle(drawingMat, pt, 1, scalarColorBlack, 2);
+	        
+        }
+		
+        /*********************************Circles end******************************************/
+		
+		
+		
+		
+		
+		
+		imgOut = new BufferedImage(drawingMat.width(),drawingMat.height(),BufferedImage.TYPE_3BYTE_BGR);
+		byte[] data = new byte[drawingMat.cols()*drawingMat.rows()*(int)drawingMat.elemSize()];
+		drawingMat.get(0, 0,data);
+		imgOut.getRaster().setDataElements(0, 0, drawingMat.cols(),drawingMat.rows(), data);
+		//saving images
+		/*Imgcodecs.imwrite("materials\\08.png",grayImg);
+		Imgcodecs.imwrite(saveFile,drawingMat);*/
+		//}
+		
+		
+		Object[] result = { qrCodes, hulahops };
+		return result;
 	}
 	
 	public static String lookForQr(BufferedImage image) {
@@ -188,6 +230,7 @@ public class PicAnal {
 		// decode the barcode (if only QR codes are used, the QRCodeReader might be a better choice)
 		MultiFormatReader reader = new MultiFormatReader();
 		try {
+			//System.out.println("H: "+ bitmap.getHeight()+ " W: "+ bitmap.getWidth());
 			Result scanResult = reader.decode(bitmap);
 			res =scanResult.getText();
 			//System.out.println(res);
@@ -195,6 +238,7 @@ public class PicAnal {
 		} catch (NotFoundException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
+		} catch (Exception ex) {
 		}
 		return res;
 	}
