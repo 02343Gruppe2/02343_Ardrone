@@ -39,6 +39,18 @@ public class PicAnal {
 		PicAnal.findRecs(false);
 	}
 	
+	public static void savePicture(String fileName, Boolean isFront) {
+		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
+		Mat originalMat;
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
+		
+		//create Mat from byte[]
+		originalMat = new Mat(imgIn.getHeight(),imgIn.getWidth(),CvType.CV_8UC3);
+		originalMat.put(0, 0, pixels); 
+		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
+	}
+	
 	public static  void findCircles(Boolean isFromDrone) {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 		//get buffedimage from gui and convert to byte[] and put in Mat

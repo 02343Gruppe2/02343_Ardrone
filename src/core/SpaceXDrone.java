@@ -58,8 +58,11 @@ public class SpaceXDrone {
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-					if(imageIsReady)
-	            	SpaceXGUI.updateImage(newImage, isFront);
+					if(imageIsReady) {
+
+		            	SpaceXGUI.updateImage(newImage, isFront);
+		            	SpaceXGUI.getInstance().appendToConsole("Height: "+newImage.getHeight() + " width: "+newImage.getWidth());
+					}
 	            }
 	        });
 			running = true;
@@ -71,7 +74,7 @@ public class SpaceXDrone {
 			flightAlgo.theAmazingHoverMode(5000);
 			drone.getCommandManager().landing().doFor(2000);*/
 			int counter = 0;
-			
+			Thread.sleep(5000);
 			while(running) {
 				
 				counter++;
@@ -81,6 +84,8 @@ public class SpaceXDrone {
 				Thread.sleep(200);
 				if(counter > 1000000)
 					running = false;
+				
+				//PicAnal.savePicture("picture_"+counter, isFront);
 			}
 			
 			//infinite loop should go here
