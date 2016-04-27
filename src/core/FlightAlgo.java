@@ -46,7 +46,7 @@ public class FlightAlgo {
 				//physGyros = arg0.getPhysGyros();
 				GyroData.ourIstance.physGyros = arg0.getPhysGyros();
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] ReceivedPhysData");	
-				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] PhysThings: " + GyroData.ourIstance.physGyros[0] + ". " + GyroData.ourIstance.physGyros[1] + ". " + GyroData.ourIstance.physGyros[2]);
+				//SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] PhysThings: " + GyroData.ourIstance.physGyros[0] + ". " + GyroData.ourIstance.physGyros[1] + ". " + GyroData.ourIstance.physGyros[2]);
 			}
 			
 			@Override
@@ -155,14 +155,16 @@ public class FlightAlgo {
 	 * ontop of our Drones or any other brewage)
 	 */
 	public void theAmazingHoverMode(long millis) {
-		
+		this.drone.getNavDataManager().addGyroListener(mGyroListener);
 		float pitch = 0; 
 		float roll = 0; 
 		float yaw = 0;
 		boolean isHardCheck = false;
-		double hardCheck = 2.0;
-		double softCheck = 0.4;
-		int timer = 500;
+		double hardCheck = 1.5;
+		double softCheck = 0.2;
+		float hardTurn = 150;
+		float softTurn = 100;
+		int timer = 1000;
 		double timeLeft = millis / timer;
 		SpaceXGUI.getInstance().appendToConsole("\n" + "AmazingHovering has initiated");
 		
@@ -171,42 +173,53 @@ public class FlightAlgo {
 			roll = 0;
 			yaw = 0;
 			isHardCheck = false;
+			float rollGyro = GyroData.ourIstance.physGyros[0];
+			float pitchGyro = GyroData.ourIstance.physGyros[1];
 			
-			if(GyroData.ourIstance.physGyros[0] > hardCheck) {
+			
+			if(rollGyro > hardCheck) {
 				//If the Drone is tilting alot to the Right
 				isHardCheck = true;
-				roll = -5;
-			} else if (GyroData.ourIstance.physGyros[0] < (-1*hardCheck) ) {
+				//roll = -hardTurn;
+				roll = -hardTurn*rollGyro;
+			} else if (rollGyro < (-1*hardCheck) ) {
 				//If the Drone is tilting alot to the Left
 				isHardCheck = true;
-				roll = 5;
+				//roll = hardTurn;
+				roll = hardTurn*rollGyro;
 			}
 			
-			if(GyroData.ourIstance.physGyros[1] > hardCheck) {
+			if(pitchGyro > hardCheck) {
 				//If the Drone is tilting alot backward
 				isHardCheck = true;
-				pitch = -5;
-			} else if (GyroData.ourIstance.physGyros[1] < (-1*hardCheck) ) {
+				//pitch = -hardTurn;
+				pitch = -hardTurn*pitchGyro;
+			} else if (pitchGyro < (-1*hardCheck) ) {
 				//If the Drone is tilting alot forward
 				isHardCheck = true;
-				pitch = 5;
+				//pitch = hardTurn;
+				pitch = hardTurn*pitchGyro;
 			}
 			
 			if(!isHardCheck) {
-				if(GyroData.ourIstance.physGyros[0] > softCheck) {
+				if(rollGyro > softCheck) {
 					//If the Drone is tilting abit to the Right
-					roll = -2;
-				} else if (GyroData.ourIstance.physGyros[0] < (-1*softCheck) ) {
+					//roll = -softTurn;
+					roll = -softTurn*rollGyro;
+				} else if (rollGyro < (-1*softCheck) ) {
 					//If the Drone is tilting abit to the Left
-					roll = 2;
+					//roll = softTurn;
+					roll = softTurn*rollGyro;
 				}
 				
-				if(GyroData.ourIstance.physGyros[1] > softCheck) {
+				if(pitchGyro > softCheck) {
 					//If the Drone is tilting abit backward
-					pitch = -2;
-				} else if (GyroData.ourIstance.physGyros[1] < (-1*softCheck) ) {
+					//pitch = -softTurn;
+					pitch = -softTurn*pitchGyro;
+				} else if (pitchGyro < (-1*softCheck) ) {
 					//If the Drone is tilting abit forward
-					pitch = 2;
+					//pitch = softTurn;
+					pitch = softTurn*pitchGyro;
 				}
 			}
 			
