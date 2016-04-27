@@ -98,7 +98,7 @@ public class PicAnal {
 		Mat originalMat;
 		if(isFromDrone) {
 			//image from drone cam
-			imgIn = SpaceXGUI.getInstance().getVPanel().getImg();
+			imgIn = SpaceXGUI.getInstance().getVPanel().getImg(true);
 			byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
 			
 			//create Mat from byte[]

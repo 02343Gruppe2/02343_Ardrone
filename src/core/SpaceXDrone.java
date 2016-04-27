@@ -47,7 +47,7 @@ public class SpaceXDrone {
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-	            	SpaceXGUI.updateImage(newImage);
+	            	SpaceXGUI.updateImage(newImage, true);
 	            }
 	        });
 			running = true;

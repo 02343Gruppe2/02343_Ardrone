@@ -70,8 +70,12 @@ public class SpaceXVideoPanel extends JPanel {
 		});
     }
 	
-	public BufferedImage getImg() {
-		return frontImage;
+	public BufferedImage getImg(Boolean isFront) {
+		if(isFront) {
+			return frontImage;
+		} else {
+			return bottomImage;
+		}
 	}
 	
 	/**
