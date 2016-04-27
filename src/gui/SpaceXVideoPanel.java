@@ -63,7 +63,7 @@ public class SpaceXVideoPanel extends JPanel {
 					frontImage = newImage;
 				
 				} else {
-					
+					bottomImage = newImage;
 				}
 				repaint();
 			}

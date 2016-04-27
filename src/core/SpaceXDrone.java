@@ -1,6 +1,8 @@
 package core;
 
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import gui.SpaceXGUI;
 
@@ -15,19 +17,26 @@ import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import network.DroneConnection;
 
-/**
- * 
- * @author Kristin Hansen
- *
- */
+
 public class SpaceXDrone {
 	FlightAlgo flightAlgo;
+	Boolean isFront;
+	
+	public void swapCamera(IARDrone drone) {
+		if(isFront) {
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
+			isFront = false;
+		} else {
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);
+			isFront = true;
+		}
+	}
 	
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
 		IARDrone drone = null;
 		boolean running = false;
-
+		isFront = true;
 		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
@@ -47,23 +56,26 @@ public class SpaceXDrone {
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
-	            	SpaceXGUI.updateImage(newImage, true);
+	            	SpaceXGUI.updateImage(newImage, isFront);
 	            }
 	        });
 			running = true;
-			flightAlgo = new FlightAlgo(drone);
+			/*flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
 			drone.getCommandManager().takeOff().doFor(2000);
 			Thread.sleep(2000);
 		
 			flightAlgo.theAmazingHoverMode(5000);
-			drone.getCommandManager().landing().doFor(2000);
+			drone.getCommandManager().landing().doFor(2000);*/
 			int counter = 0;
 			
-			while(true) {
-				//PicAnal.savePic("hulaHopQR"+counter+".png");
+			while(running) {
+				
 				counter++;
-				Thread.sleep(2000);
+				swapCamera(drone);
+				Thread.sleep(200);
+				if(counter > 1000000)
+					running = false;
 			}
 			
 			//infinite loop should go here
@@ -73,7 +85,7 @@ public class SpaceXDrone {
 			// We're done using the drone, now close everything
 			// If drone was actually instantiated and started, close all services
 			if (drone != null)
-				drone.stop();
+				drone.getCommandManager().landing().doFor(2000);
 			
 			// Exit local program
 			System.exit(0);
