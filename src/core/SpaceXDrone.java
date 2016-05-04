@@ -68,13 +68,19 @@ public class SpaceXDrone {
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
-			drone.getCommandManager().takeOff().doFor(2000);
-			Thread.sleep(2000);
-		
+			drone.getCommandManager().takeOff().doFor(3000);	
+//			drone.getCommandManager().move((int)30,(int)0,(int)0,(int)0).doFor(1000);
 			flightAlgo.theAmazingHoverMode(5000);
-			drone.getCommandManager().forward(10).doFor(500);
-			//Thread.sleep(200);
+			//flightAlgo.theAmazingHoverMode(5000);
+			drone.getCommandManager().forward(10).doFor(4000);
+			//drone.move3D(10, 0, 0, 0); // speedY , speedX , speedZ, speedSpin
 			flightAlgo.theAmazingHoverMode(5000);
+			//drone.getCommandManager().manualTrim(0, 0, 50).doFor(4000);
+			//drone.getCommandManager().manualTrim(0, 0, -50).doFor(4000);
+			//drone.getCommandManager().move(0, 0, 10, 50).doFor(4000); // speedX , speedY , speedZ, speedSpin
+			//drone.getCommandManager().move(0, 0, -10, -50).doFor(4000); // speedX , speedY , speedZ, speedSpin
+			//Thread.sleep(6000);
+			//flightAlgo.theAmazingHoverMode(5000);
 			drone.getCommandManager().landing().doFor(2000);
 			int counter = 0;
 			Thread.sleep(5000);
