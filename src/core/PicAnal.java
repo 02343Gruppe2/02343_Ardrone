@@ -52,11 +52,12 @@ public class PicAnal {
 		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
 	}
 
-	public void picRunDown(int method) {
+	public Object[] picRunDown(int assignment, boolean isFront) {
+		Object[] res = new Object[2];
 		Mat originalMat;
 		Mat grayImg = new Mat();
 		//image from drone cam
-		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(true);
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
 		byte[] pixels = ((DataBufferByte) imgIn.getRaster().getDataBuffer()).getData();
 		
 		//create Mat from byte[]
@@ -67,17 +68,29 @@ public class PicAnal {
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
 		Imgproc.dilate(grayImg, grayImg, new Mat());
 		
-		switch (method) {
-		case 0: 
-			findPosibleQr(grayImg);
+		switch (assignment) {
+		case 0:
+			//hulahops assignment
+			if(isFront) {
+				List<Rect> rects = findPosibleQr(grayImg);
+				res[0] = checkForQrText(rects, originalMat);
+				res[1] = findHulahops(grayImg,rects);
+			} else {
+				
+			}
 			break;
 		case 1: 
-			findHulahops(grayImg,findPosibleQr(grayImg));
+			//cube finding assignment
+			
+			break;
+		case 2:
+			//air fields assignment
 			break;
 		default:
 			
 			break;
 		}
+		return res;
 	}
 	
 	public List<String> checkForQrText(List<Rect> rects, Mat originalMat) {
@@ -90,7 +103,6 @@ public class PicAnal {
 			byte[] data = new byte[possibleQrMat.cols()*possibleQrMat.rows()*(int)possibleQrMat.elemSize()];
 			possibleQrMat.get(0, 0,data);
 			possibleQrBufImg.getRaster().setDataElements(0, 0, possibleQrMat.cols(),possibleQrMat.rows(), data);
-			//image.getRaster().setDataElements(0, 0, qr.get(0, 0));
 			String qrText = lookForQr(possibleQrBufImg);
 			
 			if(!qrText.isEmpty()){
