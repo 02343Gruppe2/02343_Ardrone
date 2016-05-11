@@ -35,7 +35,7 @@ public class SpaceXDrone {
 	
 	public SpaceXDrone() {
 		// We instantiate a null-object with the ARDrone interface
-		IARDrone drone = null;
+		ARDrone drone = null;
 		boolean running = false;
 		isFront = true;
 		imageIsReady = true;
@@ -68,13 +68,17 @@ public class SpaceXDrone {
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
-			drone.getCommandManager().takeOff().doFor(3000);	
+			drone.getCommandManager().takeOff().doFor(5000);	
 //			drone.getCommandManager().move((int)30,(int)0,(int)0,(int)0).doFor(1000);
-			flightAlgo.theAmazingHoverMode(5000);
 			//flightAlgo.theAmazingHoverMode(5000);
-			drone.getCommandManager().forward(10).doFor(4000);
+			//flightAlgo.theAmazingHoverMode(5000);
+			//drone.getCommandManager().forward(10).doFor(2000);
+			drone.forward();
+			Thread.sleep(2000);
+			drone.hover();
+			Thread.sleep(5000);
 			//drone.move3D(10, 0, 0, 0); // speedY , speedX , speedZ, speedSpin
-			flightAlgo.theAmazingHoverMode(5000);
+			//flightAlgo.theAmazingHoverMode(5000);
 			//drone.getCommandManager().manualTrim(0, 0, 50).doFor(4000);
 			//drone.getCommandManager().manualTrim(0, 0, -50).doFor(4000);
 			//drone.getCommandManager().move(0, 0, 10, 50).doFor(4000); // speedX , speedY , speedZ, speedSpin

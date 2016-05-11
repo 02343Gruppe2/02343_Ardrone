@@ -188,7 +188,7 @@ public class FlightAlgo {
 		double softCheck = 0.1;
 		float hardTurn = 1f;
 		float softTurn = 0.8f;
-		int timer = 1000;
+		int timer = 250;
 		double timeLeft = millis / timer;
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] AmazingHovering has initiated");
 		this.drone.getNavDataManager().addGyroListener(mGyroListener);
@@ -259,11 +259,11 @@ public class FlightAlgo {
 			}
 			
 			try {
-				
 				//cmd.manualTrim(pitch, roll, yaw);  //.doFor(timer);
+				cmd.manualTrim(0, 0, 0);
 			//	drone.getCommandManager().move(0, 0, 0, 0).doFor(timer/2);
 				//drone.getCommandManager().move(roll, pitch, 0, yaw).doFor(timer); // speedX , speedY , speedZ, speedSpin
-				drone.getCommandManager().move((int)pitch, (int)roll, 0, 0).doFor(timer);
+				drone.getCommandManager().move((int)-roll, pitch, 0, yaw).doFor(timer);
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Pitch: " + pitch + ". Roll: " + roll + ". Yaw: " + yaw + ".");
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] physGyros[0]: " + rollGyro + ". physGyros[1]: " + pitchGyro);
 				//Thread.sleep(timer);
