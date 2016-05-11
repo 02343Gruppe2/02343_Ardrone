@@ -4,7 +4,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -18,7 +21,9 @@ import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
@@ -31,9 +36,9 @@ import gui.SpaceXGUI;
 public class PicAnal {
 	private  BufferedImage imgIn;
 	private  BufferedImage imgOut = null;
-	private Scalar greenScalar = new Scalar(0,200,0);
-	private Scalar redScalar = new Scalar(200,0,0);
-	private Scalar blueScalar = new Scalar(0,0,200);
+	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
+	private Scalar redScalar = new Scalar(200,0,0); // found a square
+	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
 	public static void main(String[] args) {
 		PicAnal obj = new PicAnal();
 		obj.analysePicture(0,true);
@@ -53,7 +58,7 @@ public class PicAnal {
 		Object[] res = null;
 		
 		//picture from file
-		/*for(int index = 0;index<400;index++) {
+		for(int index = 0;index<400;index++) {
 			try {
 				
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\front\\picture_"+index+".png"));
@@ -63,12 +68,12 @@ public class PicAnal {
 			} catch (Exception ex) {
 				
 			}
-		}*/
+		}
 		
 		
 		//picture from drone
-		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		res = picRunDown(assignment,isFront,imgIn);
+		//imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		//res = picRunDown(assignment,isFront,imgIn);
 		
 		return res;
 	}
@@ -84,7 +89,8 @@ public class PicAnal {
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
-		//Imgproc.dilate(grayImg, grayImg, new Mat());
+		Imgproc.dilate(grayImg, grayImg, new Mat());
+		//Imgproc.erode(grayImg, grayImg, new Mat());
 		
 		switch (assignment) {
 		case 0:
@@ -233,8 +239,12 @@ public class PicAnal {
 		// decode the barcode (if only QR codes are used, the QRCodeReader might be a better choice)
 		MultiFormatReader reader = new MultiFormatReader();
 		try {
+			Map<DecodeHintType,Object> tmpHintsMap = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
+            tmpHintsMap.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+            tmpHintsMap.put(DecodeHintType.POSSIBLE_FORMATS, EnumSet.allOf(BarcodeFormat.class));
 			//System.out.println("H: "+ bitmap.getHeight()+ " W: "+ bitmap.getWidth());
-			Result scanResult = reader.decode(bitmap);
+			
+            Result scanResult = reader.decode(bitmap,tmpHintsMap);
 			res =scanResult.getText();
 			//System.out.println(res);
 			
