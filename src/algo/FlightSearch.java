@@ -1,7 +1,8 @@
-package core;
+package algo;
 
 import java.util.ArrayList;
 
+import core.PicAnal;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 
