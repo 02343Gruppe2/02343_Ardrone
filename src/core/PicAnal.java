@@ -36,7 +36,6 @@ import gui.SpaceXGUI;
 
 public class PicAnal {
 	private  BufferedImage imgIn;
-	private  BufferedImage imgOut = null;
 	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
 	private Scalar redScalar = new Scalar(200,0,0); // found a square
 	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
@@ -55,11 +54,27 @@ public class PicAnal {
 		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
 	}
 
-	public Object[] analysePicture(int assignment, boolean isFront) {
+	public Object[] findQRCodes() {
+		return analysePicture(-1,true);
+	}
+	
+	public Object[] findHulahops() {
+		return analysePicture(0, true);
+	}
+	
+	public Object[] findAirfield() {
+		return analysePicture(2, false);
+	}
+	
+	public Object[] findCube() {
+		return analysePicture(1, false);
+	}
+	
+	private Object[] analysePicture(int assignment, boolean isFront) {
 		Object[] res = null;
 		
 		//picture from file
-		for(int index = 0;index<400;index++) {
+		/*for(int index = 0;index<400;index++) {
 			try {
 				
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\front\\picture_"+index+".png"));
@@ -68,17 +83,17 @@ public class PicAnal {
 				
 			} catch (Exception ex) {
 			}
-		}
+		}*/
 		
 		
 		//picture from drone
-		//imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		//res = picRunDown(assignment,isFront,imgIn);
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);
 		
 		return res;
 	}
 	
-	public Object[] picRunDown(int assignment, boolean isFront, BufferedImage test) {
+	private Object[] picRunDown(int assignment, boolean isFront, BufferedImage test) {
 		Object[] res = new Object[3];
 		Mat originalMat;
 		Mat drawingMat;
@@ -97,8 +112,8 @@ public class PicAnal {
 			//hulahops assignment
 			if(isFront) {
 				List<Rect> rects = findPosibleQrPortrait(grayImg, drawingMat);
-				res[0] = checkForQrText(rects, originalMat, drawingMat);
-				res[1] = findHulahops(grayImg, rects, originalMat, drawingMat);
+				res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
+				res[1] = checkImageForHulahops(grayImg, rects, originalMat, drawingMat);
 				res[2] = rects;
 			} else {
 				
@@ -111,17 +126,19 @@ public class PicAnal {
 		case 2:
 			//air fields assignment
 			List<Rect> rects = findPosibleQrBoth(grayImg, drawingMat);
-			res[0] = checkForQrText(rects, originalMat, drawingMat);
+			res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
 			break;
 		default:
-			
+			List<Rect> rectss = findPosibleQrPortrait(grayImg, drawingMat);
+			res[0] = checkRectsForQrText(rectss, originalMat, drawingMat);
+			res[1] = rectss;
 			break;
 		}
-		imgOut = convertMatToBufferedImage(drawingMat);
+		SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage(drawingMat), isFront);
 		return res;
 	}
 	
-	public List<String> checkForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	public List<String> checkRectsForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		List<String> qrCodes = new ArrayList<String>();
 		Boolean qrExist;
 		for(int i = 0;i<rects.size();i++) {
@@ -156,7 +173,7 @@ public class PicAnal {
 		return qrCodes;
 	}
 	
-	public  ArrayList<Object[]> findHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	public  ArrayList<Object[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
         int radius;
         Point center = new Point();
@@ -199,7 +216,7 @@ public class PicAnal {
         			}
         			List<Rect> hulahopRect = new ArrayList<Rect>();
         			hulahopRect.add(rects.get(c));
-        			List<String> qrTextList = checkForQrText(hulahopRect, originalMat, drawingMat);
+        			List<String> qrTextList = checkRectsForQrText(hulahopRect, originalMat, drawingMat);
         			String qrText = null;
         			if(!qrTextList.isEmpty()) {
         				qrText = qrTextList.get(0);

@@ -27,6 +27,8 @@ public class SpaceXVideoPanel extends JPanel {
 	
 	private BufferedImage frontImage = null;
 	private BufferedImage bottomImage = null;
+	private BufferedImage frontImageProcessed = null;
+	private BufferedImage bottomImageProcessed = null;
 	private Dimension dim = new Dimension(1280,480);
 	
 	/**
@@ -61,7 +63,6 @@ public class SpaceXVideoPanel extends JPanel {
 			public void run() {
 				if(isFront) {
 					frontImage = newImage;
-				
 				} else {
 					bottomImage = newImage;
 				}
@@ -75,6 +76,14 @@ public class SpaceXVideoPanel extends JPanel {
 			return frontImage;
 		} else {
 			return bottomImage;
+		}
+	}
+	
+	public void setImg(BufferedImage image,Boolean isFront) {
+		if(isFront) {
+			frontImageProcessed = image;
+		} else {
+			bottomImageProcessed = image;
 		}
 	}
 	
@@ -97,9 +106,9 @@ public class SpaceXVideoPanel extends JPanel {
 		super.paintComponent(g);
 		
         if (frontImage != null)
-			g.drawImage(frontImage, 0, 0, frontImage.getWidth(), frontImage.getHeight(), null);
+			g.drawImage(frontImageProcessed, 0, 0, frontImageProcessed.getWidth(), frontImageProcessed.getHeight(), null);
         if (bottomImage != null)
-        	g.drawImage(bottomImage, 640, 0, bottomImage.getWidth(), bottomImage.getHeight(), null);
+        	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
 }
 
