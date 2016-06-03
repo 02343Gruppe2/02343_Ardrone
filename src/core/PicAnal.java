@@ -138,7 +138,7 @@ public class PicAnal {
 		return res;
 	}
 	
-	public List<String> checkRectsForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private List<String> checkRectsForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		List<String> qrCodes = new ArrayList<String>();
 		Boolean qrExist;
 		for(int i = 0;i<rects.size();i++) {
@@ -173,7 +173,7 @@ public class PicAnal {
 		return qrCodes;
 	}
 	
-	public  ArrayList<Object[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private  ArrayList<Object[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
         int radius;
         Point center = new Point();
