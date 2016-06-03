@@ -9,10 +9,10 @@ import de.yadrone.base.command.CommandManager;
  */
 public class GeneralMotorCon {
 	private static GeneralMotorCon ourInstance = new GeneralMotorCon();
-	ARDrone drone;		//The drone object (might be unused because of CommandManager)
-	CommandManager cmd;	//The CommandManager for the drone command
-	int speed = 10;		//The speed the drone will move with
-	int time90 = 1500;	//The time for the drone to spin 90degress with given speed, TODO test the time.
+	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
+	private CommandManager cmd;	//The CommandManager for the drone command
+	private int speed = 10;		//The speed the drone will move with
+	private int time90 = 1500;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	
 	private GeneralMotorCon() {
 		drone = null;
