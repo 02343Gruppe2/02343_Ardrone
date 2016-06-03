@@ -31,8 +31,8 @@ public class FlightSearch {
 			
 		for(int i = 0; i < 10; i++){
 			cmd.spinLeft(10);
-			res = obj.analysePicture(0, true);
-			square = (ArrayList<String>)res[2];
+			res = obj.findQRCodes();
+			square = (ArrayList<String>)res[1];
 			qrcode = (ArrayList<String>)res[0];
 
 				if(!qrcode.isEmpty()){
@@ -47,8 +47,8 @@ public class FlightSearch {
 		while(squareFound == false && qrcodeFound == false){
 			
 			cmd.forward(5).doFor(2000);
-			res = obj.analysePicture(0, true);
-			square = (ArrayList<String>)res[2];
+			res = obj.findQRCodes();
+			square = (ArrayList<String>)res[1];
 			qrcode = (ArrayList<String>)res[0];
 			
 			if(!qrcode.isEmpty()){
@@ -60,7 +60,7 @@ public class FlightSearch {
 		
 		if(qrcodeFound == true){
 
-			res = obj.analysePicture(0, true);
+			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>)res[0];
 						
 			for(int j = 0; j < qrcode.size(); j++){
@@ -110,7 +110,7 @@ public class FlightSearch {
 			
 
 			cmd.forward(5).doFor(2000);
-			res = obj.analysePicture(0, true);
+			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>)res[0];
 			
 			if(!qrcode.isEmpty()){
