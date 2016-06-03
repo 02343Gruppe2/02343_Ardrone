@@ -20,6 +20,7 @@ import utils.FormattedTimeStamp;
  *
  */
 
+@Deprecated
 public class FlightAlgo {
 	int [] hulaHoop = setHulaHoop(100, -200, 50, -250);
 	int adjustmentTolerance = 0;
