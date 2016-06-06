@@ -105,10 +105,10 @@ public class SpaceXVideoPanel extends JPanel {
 	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-        if (frontImage != null)
+        if (frontImageProcessed != null)
 			g.drawImage(frontImageProcessed, 0, 0, frontImageProcessed.getWidth(), frontImageProcessed.getHeight(), null);
         
-        if (bottomImage != null)
+        if (bottomImageProcessed != null)
         	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
 }

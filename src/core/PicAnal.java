@@ -36,12 +36,13 @@ import gui.SpaceXGUI;
 
 public class PicAnal {
 	private  BufferedImage imgIn;
+	private BufferedImage imgOut;
 	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
 	private Scalar redScalar = new Scalar(200,0,0); // found a square
 	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
 	public static void main(String[] args) {
 		PicAnal obj = new PicAnal();
-		obj.analysePicture(0,true);
+		obj.findCube();
 	}
 	
 	public PicAnal() {
@@ -74,21 +75,21 @@ public class PicAnal {
 		Object[] res = null;
 		
 		//picture from file
-		/*for(int index = 0;index<400;index++) {
+		for(int index = 0;index<400;index++) {
 			try {
 				
-				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\front\\picture_"+index+".png"));
+				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\bottom\\picture_"+index+".png"));
 				res = picRunDown(assignment,isFront,imgIn);
-				Imgcodecs.imwrite("materials\\front\\tested\\"+index+".png",convertBufferedImageToMa(imgOut));
+				Imgcodecs.imwrite("materials\\bottom\\tested\\"+index+".png",convertBufferedImageToMa(imgOut));
 				
 			} catch (Exception ex) {
 			}
-		}*/
+		}
 		
 		
 		//picture from drone
-		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		res = picRunDown(assignment,isFront,imgIn);
+		/*imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);*/
 		
 		return res;
 	}
@@ -104,14 +105,14 @@ public class PicAnal {
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
-		Imgproc.dilate(grayImg, grayImg, new Mat());
+		//Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
 		//Imgproc.erode(grayImg, grayImg, new Mat());
-		
+		List<Rect> rects;
 		switch (assignment) {
 		case 0:
 			//hulahops assignment
 			if(isFront) {
-				List<Rect> rects = findPosibleQrPortrait(grayImg, drawingMat);
+				rects = findPosibleQrPortrait(grayImg, drawingMat);
 				res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
 				res[1] = checkImageForHulahops(grayImg, rects, originalMat, drawingMat);
 				res[2] = rects;
@@ -121,20 +122,28 @@ public class PicAnal {
 			break;
 		case 1: 
 			//cube finding assignment
-			
+			rects = findPosibleQrBoth(grayImg, drawingMat);
+			checkForCubes(originalMat, drawingMat, rects);
 			break;
 		case 2:
 			//air fields assignment
-			List<Rect> rects = findPosibleQrBoth(grayImg, drawingMat);
-			res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
+			rects = findPosibleQrBoth(grayImg, drawingMat);
+			List<String> qrTexts =  checkRectsForQrText(rects, originalMat, drawingMat);
+			if(qrTexts.size() > 0) {
+				res[0] = qrTexts;
+				break;
+			}
+			res[1] = checkForPosibleAirfield(originalMat, drawingMat, grayImg, rects);
 			break;
 		default:
-			List<Rect> rectss = findPosibleQrPortrait(grayImg, drawingMat);
-			res[0] = checkRectsForQrText(rectss, originalMat, drawingMat);
-			res[1] = rectss;
+			rects = findPosibleQrPortrait(grayImg, drawingMat);
+			res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
+			res[1] = rects;
 			break;
 		}
-		SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage(drawingMat), isFront);
+		
+		imgOut = convertMatToBufferedImage(drawingMat);
+		//SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		return res;
 	}
 	
@@ -178,11 +187,14 @@ public class PicAnal {
 		double[] lineVec = new double[4];
         int radius;
         Point center = new Point();
-        Mat circles = findCircles(grayImg);
+        Mat circles = new Mat();
+		int dp = 2, minDist = 75, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+        Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
+        		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<Object[]> hulahops = new ArrayList<Object[]>();
-		Mat lines = new Mat();
-		int lineLength = 150, threshold = 50, maxLineGap = 10;
-		Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
+		//Mat lines = new Mat();
+		//int lineLength = 200, threshold = 100, maxLineGap = 50;
+		//Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
         for (int x = 0; x < circles.cols(); x++) {
         	circlePoints = circles.get(0,x);
         	if (circlePoints == null) {
@@ -195,19 +207,23 @@ public class PicAnal {
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
 	        int distanceBetweenRectAndCircle = 35;
-        	for(int c = 0;c<rects.size();c++) {
+	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
-        			
+        		
         			//check if we can find a stand
-        			for(int v = 0;v < lines.cols() ; v++) {
+        			/*for(int v = 0;v < lines.cols() ; v++) {
         				lineVec = lines.get(0, v); // lineVec: [0] = x1, [1] = y1, [2] = x2, [3] = y2
+        				Imgproc.line(drawingMat, new Point(lineVec[0],lineVec[1]), new Point(lineVec[2],lineVec[3]), greenScalar,2);
+        					
         				int errorMargin = 10;
         				if((lineVec[0] >= center.x-radius - errorMargin && lineVec[2] <= center.x-radius + errorMargin) || 
         						(lineVec[0] <= center.x+radius + errorMargin && lineVec[2] >= center.x+radius - errorMargin) &&
-        						((lineVec[3] - lineVec[1] > 100 ) || lineVec[1] - lineVec[3] > 100 )) { //check if x1 - x2 > min line length or x2 - x1 > min line length
+        						(lineVec[0] +errorMargin > lineVec[3] && lineVec[0] - errorMargin < lineVec[3]) &&
+        						((lineVec[3] - lineVec[1] > 100 ) || lineVec[1] - lineVec[3] > 100 )) { //check if x1 - x2 > min line length or x2 - x1 > min line length*/
                 			//In our picture we have 0,0 in the top left corner, but we want the 0,0 to be the center of the picture 
                 			//which is why we do the following calculations depending on where it is
-                			
+                			//Imgproc.line(drawingMat, new Point(lineVec[0],lineVec[1]), new Point(lineVec[2],lineVec[3]), greenScalar,2);
+        			
                 			// draw the found circle
                 			Imgproc.circle(drawingMat, center, radius, greenScalar,2);
                 			
@@ -236,8 +252,8 @@ public class PicAnal {
                 				qrText = qrTextList.get(0);
                 			}
                 			hulahops.add(new Object[] {circlePoints[0],circlePoints[1], circlePoints[2], qrText});
-        				}
-        			}
+        				//}
+        			//}
 
     		        
         		}
@@ -283,25 +299,79 @@ public class PicAnal {
 		return Imgproc.boundingRect(mop);
 	}
 	
-	private void findAirfield(Mat grayImg) {
-		Mat circles = findCircles(grayImg);
+	private Object[] checkForPosibleAirfield(Mat originalMat, Mat drawingMat, Mat grayImg, List<Rect> rects) {
+		Object[]  res = null;
+		Mat circles = new Mat();
+		int dp = 2, minDist = 150, minRadius = 35, maxRadius = 100, param1 = 50, param2 = 100;
 		double[] circlePoints = new double[3];
 		Point center = new Point();;
 		int radius;
-		for(int i = 0 ; i<circles.cols();i++) {
-			circlePoints = circles.get(0, i);
-			radius = (int)Math.round(circlePoints[2]);
-			center.set(circlePoints);
-			
+		
+		for(int z = 0;z<rects.size();z ++) {
+			Imgproc.HoughCircles(grayImg.submat(rects.get(z)), circles, Imgproc.CV_HOUGH_GRADIENT, dp
+	        		, minDist, param1, param2, minRadius, maxRadius);
+			if(circles.cols() > 0) {
+				int rectCount = 0;
+				for(int c = 0; c < rects.size();c++) {
+					if(rects.get(z).tl().x < rects.get(c).tl().x && rects.get(z).tl().y < rects.get(c).tl().y && 
+							rects.get(z).br().x > rects.get(c).br().x && rects.get(z).br().y > rects.get(c).br().y) {
+						rectCount ++;
+					}
+				}
+				if(rectCount > 5) {
+					
+					//used for testing
+					if(circles.cols()> 1)
+						System.out.println(circles.cols());
+					
+					Imgproc.rectangle(drawingMat, rects.get(z).tl(), rects.get(z).br(), redScalar,2);
+					circlePoints = circles.get(0, 0);
+					radius = (int)Math.round(circlePoints[2]);
+					circlePoints[0] += rects.get(z).tl().x;
+					circlePoints[1] += rects.get(z).tl().y;
+					center.set(circlePoints);
+					
+					Imgproc.circle(drawingMat, center, radius, greenScalar,2);
+					//return 1
+					
+				} else {
+					//return 0
+				}
+			}
 		}
+		return res;
 	}
 	
-	private Mat findCircles(Mat image) {
-		//The circles mat got circle center and radius at 0,column for each circle in a double[] with x,y,radius
-		Mat res = new Mat();
-		int dp = 2, minDist = 75, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
-        Imgproc.HoughCircles(image, res, Imgproc.CV_HOUGH_GRADIENT, dp
-        		, minDist, param1, param2, minRadius, maxRadius);
+	private Object[] checkForCubes(Mat orignalMat, Mat drawingMat, List<Rect> rects) {
+		Object[] res = null;
+		for(int z = 0; z < rects.size(); z ++) {
+			if(rects.get(z).height > rects.get(z).width-5 && rects.get(z).height < rects.get(z).width+5) {
+				Mat posibleCube = orignalMat.submat(rects.get(z));
+				int redCount = 0;
+				int greenCount = 0;
+				int totalCount = posibleCube.cols()/5 + posibleCube.rows() / 5;
+				for(int x = 0 ; x < posibleCube.cols();x+=5) {
+					for (int c = 0; c < posibleCube.rows();c+=5) {
+						double[] point = posibleCube.get(c, x);
+						// point[] 0 = red, 1 = green, 2 = blue RGB
+						if(point[0] > 100 && point[1] < 10 && point[2] <50)
+							redCount ++;
+						if(point[0] < 50 && point[1] > 50 && point[2] < 50) {
+							greenCount ++;
+						}
+						
+					}
+				}
+				String text = "is none";
+				if(totalCount*0.69 < redCount) {
+					text = "is red";
+				} else if (totalCount*0.69 < greenCount) {
+					text = "is green";
+				} 
+				Imgproc.putText(drawingMat, text, rects.get(z).tl(), Core.FONT_HERSHEY_PLAIN, 1, greenScalar,2);
+			}
+		}
+		
 		return res;
 	}
 	
