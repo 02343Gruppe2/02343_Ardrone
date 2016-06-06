@@ -175,10 +175,14 @@ public class PicAnal {
 	
 	private  ArrayList<Object[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
+		double[] lineVec = new double[4];
         int radius;
         Point center = new Point();
         Mat circles = findCircles(grayImg);
 		ArrayList<Object[]> hulahops = new ArrayList<Object[]>();
+		Mat lines = new Mat();
+		int lineLength = 150, threshold = 50, maxLineGap = 10;
+		Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
         for (int x = 0; x < circles.cols(); x++) {
         	circlePoints = circles.get(0,x);
         	if (circlePoints == null) {
@@ -189,40 +193,53 @@ public class PicAnal {
     		center.set(circlePoints);
 	        radius = (int)Math.round(circlePoints[2]);
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
-	      //checking if there is a rect below the circle, if there 
+	        //checking if there is a rect below the circle, if there 
 	        int distanceBetweenRectAndCircle = 35;
         	for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
-        			//In our picture we have 0,0 in the top left corner, but we want the 0,0 to be the center of the picture 
-        			//which is why we do the following calculations depending on where it is
-        			Imgproc.circle(drawingMat, center, radius, greenScalar,2);
         			
-        			 if (circlePoints[0] > 320 && circlePoints[1] < 240){
-        				//1. qaudrant
-        				circlePoints[0] = circlePoints[0] - 320;
-        				circlePoints[1] = -circlePoints[1] + 240;
-        			}else if(circlePoints[0] > 320 && circlePoints[1] > 240) {
-        				//2. qaudrant
-        				circlePoints[0] = circlePoints[0] - 320;
-        				circlePoints[1] = -circlePoints[1] + 240;
-        			} else if (circlePoints[0] < 320 && circlePoints[1] > 240) {
-        				//3. qaudrant
-        				circlePoints[0] = circlePoints[0] - 320;
-        				circlePoints[1] = -circlePoints[1] + 240;
-        			} else if(circlePoints[0] < 320 && circlePoints[1] < 240) {
-        				//4. qaudrant
-        				circlePoints[0] = circlePoints[0] - 320;
-        				circlePoints[1] = -circlePoints[1] + 240;
+        			//check if we can find a stand
+        			for(int v = 0;v < lines.cols() ; v++) {
+        				lineVec = lines.get(0, v); // lineVec: [0] = x1, [1] = y1, [2] = x2, [3] = y2
+        				int errorMargin = 10;
+        				if((lineVec[0] >= center.x-radius - errorMargin && lineVec[2] <= center.x-radius + errorMargin) || 
+        						(lineVec[0] <= center.x+radius + errorMargin && lineVec[2] >= center.x+radius - errorMargin) &&
+        						((lineVec[3] - lineVec[1] > 100 ) || lineVec[1] - lineVec[3] > 100 )) { //check if x1 - x2 > min line length or x2 - x1 > min line length
+                			//In our picture we have 0,0 in the top left corner, but we want the 0,0 to be the center of the picture 
+                			//which is why we do the following calculations depending on where it is
+                			
+                			// draw the found circle
+                			Imgproc.circle(drawingMat, center, radius, greenScalar,2);
+                			
+                			 if (circlePoints[0] > 320 && circlePoints[1] < 240){
+                				//1. qaudrant
+                				circlePoints[0] = circlePoints[0] - 320;
+                				circlePoints[1] = -circlePoints[1] + 240;
+                			}else if(circlePoints[0] > 320 && circlePoints[1] > 240) {
+                				//2. qaudrant
+                				circlePoints[0] = circlePoints[0] - 320;
+                				circlePoints[1] = -circlePoints[1] + 240;
+                			} else if (circlePoints[0] < 320 && circlePoints[1] > 240) {
+                				//3. qaudrant
+                				circlePoints[0] = circlePoints[0] - 320;
+                				circlePoints[1] = -circlePoints[1] + 240;
+                			} else if(circlePoints[0] < 320 && circlePoints[1] < 240) {
+                				//4. qaudrant
+                				circlePoints[0] = circlePoints[0] - 320;
+                				circlePoints[1] = -circlePoints[1] + 240;
+                			}
+                			List<Rect> hulahopRect = new ArrayList<Rect>();
+                			hulahopRect.add(rects.get(c));
+                			List<String> qrTextList = checkRectsForQrText(hulahopRect, originalMat, drawingMat);
+                			String qrText = null;
+                			if(!qrTextList.isEmpty()) {
+                				qrText = qrTextList.get(0);
+                			}
+                			hulahops.add(new Object[] {circlePoints[0],circlePoints[1], circlePoints[2], qrText});
+        				}
         			}
-        			List<Rect> hulahopRect = new ArrayList<Rect>();
-        			hulahopRect.add(rects.get(c));
-        			List<String> qrTextList = checkRectsForQrText(hulahopRect, originalMat, drawingMat);
-        			String qrText = null;
-        			if(!qrTextList.isEmpty()) {
-        				qrText = qrTextList.get(0);
-        			}
-        			hulahops.add(new Object[] {circlePoints[0],circlePoints[1], circlePoints[2], qrText});
-    		        // draw the found circle
+
+    		        
         		}
         	}
         }
@@ -303,7 +320,7 @@ public class PicAnal {
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 		// decode the barcode (if only QR codes are used, the QRCodeReader might be a better choice)
 		MultiFormatReader reader = new MultiFormatReader();
-		//QRCodeReader qrreader = new QRCodeReader();
+		//QRCodeReader qrreader = new QRCodeReader();	
 		try {
 			Result scanResult;
 			if(useHint) {

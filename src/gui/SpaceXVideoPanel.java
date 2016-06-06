@@ -107,6 +107,7 @@ public class SpaceXVideoPanel extends JPanel {
 		
         if (frontImage != null)
 			g.drawImage(frontImageProcessed, 0, 0, frontImageProcessed.getWidth(), frontImageProcessed.getHeight(), null);
+        
         if (bottomImage != null)
         	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
