@@ -16,6 +16,7 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import network.DroneConnection;
+import algo.GeneralMotorCon;
 
 
 public class SpaceXDrone {
@@ -61,31 +62,23 @@ public class SpaceXDrone {
 					if(imageIsReady) {
 
 		            	SpaceXGUI.updateImage(newImage, isFront);
-		            	SpaceXGUI.getInstance().appendToConsole("Height: "+newImage.getHeight() + " width: "+newImage.getWidth());
 					}
 	            }
 	        });
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
-			drone.getCommandManager().takeOff().doFor(5000);	
-//			drone.getCommandManager().move((int)30,(int)0,(int)0,(int)0).doFor(1000);
-			//flightAlgo.theAmazingHoverMode(5000);
-			//flightAlgo.theAmazingHoverMode(5000);
-			//drone.getCommandManager().forward(10).doFor(2000);
-			drone.forward();
-			Thread.sleep(2000);
-			drone.hover();
-			Thread.sleep(5000);
-			//drone.move3D(10, 0, 0, 0); // speedY , speedX , speedZ, speedSpin
-			//flightAlgo.theAmazingHoverMode(5000);
-			//drone.getCommandManager().manualTrim(0, 0, 50).doFor(4000);
-			//drone.getCommandManager().manualTrim(0, 0, -50).doFor(4000);
-			//drone.getCommandManager().move(0, 0, 10, 50).doFor(4000); // speedX , speedY , speedZ, speedSpin
-			//drone.getCommandManager().move(0, 0, -10, -50).doFor(4000); // speedX , speedY , speedZ, speedSpin
-			//Thread.sleep(6000);
-			//flightAlgo.theAmazingHoverMode(5000);
-			drone.getCommandManager().landing().doFor(2000);
+
+		
+			GeneralMotorCon.getInstance().setDrone(drone);
+			GeneralMotorCon.getInstance().takeoff();
+			GeneralMotorCon.getInstance().spin90Left();
+			GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().spin90Right();
+			GeneralMotorCon.getInstance().waitFor(5000);
+			GeneralMotorCon.getInstance().landing();
+			
+			
 			int counter = 0;
 			Thread.sleep(5000);
 			while(running) {

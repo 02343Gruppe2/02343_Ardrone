@@ -1,7 +1,13 @@
 package algo;
 
+import gui.SpaceXGUI;
+
+import java.awt.event.ActionListener;
+
+import utils.FormattedTimeStamp;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.command.LEDAnimation;
 
 /**
  * General Motor Controller
@@ -10,12 +16,14 @@ import de.yadrone.base.command.CommandManager;
  * @author Anders Bækhøj Larsen
  *
  */
-public class GeneralMotorCon {
+public class GeneralMotorCon implements GeneralMotorListener{
 	private static GeneralMotorCon ourInstance = new GeneralMotorCon();
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
 	private int speed = 10;		//The speed the drone will move with
-	private int time90 = 1500;	//The time for the drone to spin 90degress with given speed, TODO test the time.
+	private int spinTime = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
+	private int spinSpeed = 50;
+	private int hoverTime = 2000;
 	
 	/**
 	 * General Motor Controller Constructor
@@ -41,7 +49,7 @@ public class GeneralMotorCon {
 	 * get the static and only instance of the GMC class
 	 * @return The only GMC object
 	 */
-	public GeneralMotorCon getInstance(){
+	public static GeneralMotorCon getInstance(){
 		return ourInstance;
 	}
 	
@@ -51,10 +59,10 @@ public class GeneralMotorCon {
 	 * @param time - time to fly forward
 	 * @throws InterruptedException
 	 */
-	public void forward(int time) throws InterruptedException{
+	public void forward(int time) {
 		cmd.forward(speed).doFor(time);
 		//Thread.sleep(time);
-		cmd.hover();
+		cmd.hover().doFor(hoverTime);
 	}
 	
 	/**
@@ -66,7 +74,7 @@ public class GeneralMotorCon {
 	public void backward(int time) throws InterruptedException {
 		cmd.backward(speed).doFor(time);
 		//Thread.sleep(time);
-		cmd.hover();
+		cmd.hover().doFor(hoverTime);
 	}
 	
 	/**
@@ -76,11 +84,24 @@ public class GeneralMotorCon {
 	 */
 	public void takeoff() throws InterruptedException {
 		//TODO: test the time and flattrim stuff to get a good takeoff
-		cmd.flatTrim();
-		Thread.sleep(500);
-		cmd.takeOff().doFor(2000);
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] takingoff");
+		//cmd.flatTrim();
+		cmd.waitFor(1000);
+		cmd.takeOff();
+		cmd.waitFor(5000);
 		//Thread.sleep(2000);
-		cmd.hover();
+		cmd.hover().doFor(hoverTime);
+	}
+	
+	public void landing() throws InterruptedException {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] landing");
+		cmd.landing().doFor(2000);
+	}
+	
+	
+	public void waitFor(int millis) throws InterruptedException{
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] wait for: " + millis);
+		cmd.waitFor(millis);
 	}
 	
 	/**
@@ -89,9 +110,11 @@ public class GeneralMotorCon {
 	 * @throws InterruptedException
 	 */
 	public void spin90Left() throws InterruptedException {
-		//TODO: test the speed and time90 for both spin to get a good spin 
-		cmd.spinLeft(speed).doFor(time90);
-		cmd.hover();
+		//TODO: test the speed and time90 for both spin to get a good spin
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] spinning 90 left");
+		cmd.setLedsAnimation(LEDAnimation.BLINK_ORANGE, 3, (spinTime/1000));
+		cmd.spinLeft(spinSpeed).doFor(spinTime);
+		cmd.hover().doFor(hoverTime);
 	}
 	
 	/**
@@ -100,7 +123,34 @@ public class GeneralMotorCon {
 	 * @throws InterruptedException
 	 */
 	public void spin90Right() throws InterruptedException {
-		cmd.spinRight(speed).doFor(time90);
-		cmd.hover();
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] spinning 90 right");
+		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
+		cmd.spinRight(spinSpeed).doFor(spinTime);
+		cmd.hover().doFor(hoverTime);
+	}
+	
+	public void lowerAltitude() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] lowering altitude");
+		cmd.down(speed).doFor(1000);
+		cmd.hover().doFor(hoverTime);
+	}
+	
+	public void raiseAltitude() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] raising altitude");
+		cmd.up(speed).doFor(1000);
+		cmd.hover().doFor(hoverTime);
+	}
+
+	@Override
+	public void onStop() {
+		cmd.move(0, 0, speed, speed);
+		cmd.hover().doFor(hoverTime);
+	}
+
+	public void right() {
+		cmd.goRight(speed).doFor(500);
+	}
+	public void left() {
+		cmd.goLeft(speed).doFor(500);
 	}
 }
