@@ -12,9 +12,11 @@ package algo;
 import gui.SpaceXGUI;
 import core.PicAnal;
 import algo.GeneralMotorCon;
-import java.util.ArrayList;;
 
-public class Assignment1 {
+import java.util.ArrayList;
+import java.util.Date;
+
+public class Assignment1 extends Thread{
 	// Instantiate picture analyze
 	PicAnal obj = new PicAnal();
 	// Check if the drone is ready to fly forward
@@ -32,19 +34,37 @@ public class Assignment1 {
 	double radius;
 	// To check if the drone have flown through the hula hoop
 	boolean finished = false;
+	boolean threadRun = false;
 	// The amount of hula hoops
-	int numHulaHoop = 1;
+	int numHulaHoop = 4;
 	// The QRcode on the hula hoop
 	String qrcode = "";
+	
+	 long iniTime;
 	
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
 	// Making a list with the objects from the picture analyze
 	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulahops()[1];
 	
-	public boolean run() {
+	public void run() {
+		resetTime();
+		while(threadRun) {
+			if(iniTime > new Date().getTime() + 10000){
+				finished = true;
+			}	
+		}
+	}
+	
+	public void resetTime(){
+		iniTime = new Date().getTime();
+	}
+	
+	public boolean fly() {
 		// Getting the object array from picture hula hoop
 		finished = false;
+		threadRun = true;
+		new Thread(this).run();
 		while (!finished) {
 			updateHulahoop();
 			
@@ -55,12 +75,9 @@ public class Assignment1 {
 				flyThrough();
 			}*/
 			
-			
-			//TODO: make FlightSearch call here to search for hulaHOOOOOOOPS
-			
 			//if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
 		}
-		
+		threadRun = false;
 		return true;
 	}
 	
@@ -71,11 +88,13 @@ public class Assignment1 {
 	
 	public void flyThrough() {
 		boolean middle = false;
-
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough");
 		while (!middle) {
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
 			if(updateHulahoop()) {
 				if(x < adjustmentTolerance && x > -adjustmentTolerance) {
 					if(y < adjustmentTolerance && y > -adjustmentTolerance){
+						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
 						middle = true;
 					} else if(y > 0){
 						GeneralMotorCon.getInstance().raiseAltitude();
@@ -107,6 +126,7 @@ public class Assignment1 {
 			radius = Double.parseDouble(hulaHoop.get(0)[2]);
 			
 			qrcode = hulaHoop.get(0)[3];
+			resetTime();
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updated HulaHoop data");
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
