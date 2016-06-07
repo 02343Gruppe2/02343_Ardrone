@@ -353,10 +353,10 @@ public class PicAnal {
 				for(int x = 0 ; x < posibleCube.cols();x+=5) {
 					for (int c = 0; c < posibleCube.rows();c+=5) {
 						double[] point = posibleCube.get(c, x);
-						// point[] 0 = red, 1 = green, 2 = blue RGB
-						if(point[0] > 100 && point[1] < 10 && point[2] <50)
+						// point[] 2 = red, 1 = green, 1 = blue BGR
+						if(point[2] > 100 && point[1] < 10 && point[0] <50)
 							redCount ++;
-						if(point[0] < 50 && point[1] > 50 && point[2] < 50) {
+						if(point[2] < 50 && point[1] > 50 && point[0] < 50) {
 							greenCount ++;
 						}
 						
@@ -426,6 +426,7 @@ public class PicAnal {
 		//create Mat from byte[]
 		Mat mat = new Mat(bufferedImg.getHeight(),bufferedImg.getWidth(),CvType.CV_8UC3);
 		mat.put(0, 0, pixels);
+		Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2BGR);
 		return mat;
 	}
 }
