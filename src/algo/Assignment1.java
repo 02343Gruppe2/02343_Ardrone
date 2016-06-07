@@ -28,11 +28,12 @@ public class Assignment1 {
 	Object[] picHulaHops = obj.findHulahops();
 	
 	// The cordiants and radius of the hula hoop in focus
-	int x, y, radius;
+	int x, y;
+	double radius;
 	// To check if the drone have flown through the hula hoop
 	boolean finished = false;
 	// The amount of hula hoops
-	int numHulaHoop = 4;
+	int numHulaHoop = 1;
 	// The QRcode on the hula hoop
 	String qrcode = "";
 	
@@ -46,9 +47,12 @@ public class Assignment1 {
 		while (!finished) {
 			updateHulahoop();
 			
-			if(qrcode == ("P.0" + doneHulaHoop.size())) {			
+			
+			flyThrough();
+			
+			/*if(qrcode == ("P.0" + doneHulaHoop.size())) {			
 				flyThrough();
-			}
+			}*/
 			
 			
 			//TODO: make FlightSearch call here to search for hulaHOOOOOOOPS
@@ -83,8 +87,8 @@ public class Assignment1 {
 			}
 		}
 		
-		GeneralMotorCon.getInstance().forward((2000/radius));
-		doneHulaHoop.add(qrcode);
+		//GeneralMotorCon.getInstance().forward((2000/radius));
+		//doneHulaHoop.add(qrcode);
 	}
 	
 	public boolean updateHulahoop() {
@@ -94,15 +98,15 @@ public class Assignment1 {
 			hulaHoop = (ArrayList<Object[]>)obj.findHulahops()[1];
 			x = Integer.parseInt(hulaHoop.get(0).toString());
 			y = Integer.parseInt(hulaHoop.get(1).toString());
-			radius = Integer.parseInt(hulaHoop.get(2).toString());
+			radius = Double.parseDouble(hulaHoop.get(2).toString());
 			
 			qrcode = hulaHoop.get(3).toString();
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole(e.toString());
+			SpaceXGUI.getInstance().appendToConsole(e.toString() + "Assignment 1 update hula hoop fucker");
 		} catch (NumberFormatException e) {
-			SpaceXGUI.getInstance().appendToConsole(e.toString());
+			SpaceXGUI.getInstance().appendToConsole("\n[" + e.toString());
 		}
 		
 		return false;

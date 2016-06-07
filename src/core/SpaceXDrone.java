@@ -16,11 +16,13 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import network.DroneConnection;
+import algo.Assignment1;
 import algo.GeneralMotorCon;
 
 
 public class SpaceXDrone {
 	FlightAlgo flightAlgo;
+	Assignment1 assig1;
 	Boolean isFront;
 	Boolean imageIsReady;
 	public void swapCamera(IARDrone drone) {
@@ -55,7 +57,7 @@ public class SpaceXDrone {
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
 			
-			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_VERT_SMALL_HORI);
+			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
 	            public void imageUpdated(BufferedImage newImage) {
@@ -68,15 +70,23 @@ public class SpaceXDrone {
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
+			assig1 = new Assignment1();
 
-		
-			GeneralMotorCon.getInstance().setDrone(drone);
+			/*GeneralMotorCon.getInstance().setDrone(drone);
+			GeneralMotorCon.getInstance().takeoff();
+			GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().raiseAltitude();*/
+			assig1.run();
+			
+			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
 			GeneralMotorCon.getInstance().spin90Left();
 			GeneralMotorCon.getInstance().raiseAltitude();
 			GeneralMotorCon.getInstance().spin90Right();
 			GeneralMotorCon.getInstance().waitFor(5000);
-			GeneralMotorCon.getInstance().landing();
+			GeneralMotorCon.getInstance().landing(); 
+			*/
 			
 			
 			int counter = 0;
@@ -104,7 +114,7 @@ public class SpaceXDrone {
 				drone.getCommandManager().landing().doFor(2000);
 			
 			// Exit local program
-			System.exit(0);
+			//System.exit(0);
 		}
 	}
 	
