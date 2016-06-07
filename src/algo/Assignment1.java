@@ -40,7 +40,7 @@ public class Assignment1 {
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
 	// Making a list with the objects from the picture analyze
-	ArrayList<Object[]> hulaHoop = (ArrayList<Object[]>)obj.findHulahops()[1];
+	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulahops()[1];
 	
 	public boolean run() {
 		// Getting the object array from picture hula hoop
@@ -101,12 +101,12 @@ public class Assignment1 {
 		
 		
 		try{
-			hulaHoop = (ArrayList<Object[]>)obj.findHulahops()[1];
-			x = Integer.parseInt(hulaHoop.get(0).toString());
-			y = Integer.parseInt(hulaHoop.get(1).toString());
-			radius = Double.parseDouble(hulaHoop.get(2).toString());
+			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
+			x = Integer.parseInt(hulaHoop.get(0)[0]);
+			y = Integer.parseInt(hulaHoop.get(0)[1]);
+			radius = Double.parseDouble(hulaHoop.get(0)[2]);
 			
-			qrcode = hulaHoop.get(3).toString();
+			qrcode = hulaHoop.get(0)[3];
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updated HulaHoop data");
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
