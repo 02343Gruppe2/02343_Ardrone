@@ -27,12 +27,18 @@ public class Assignment1 {
 	// Instantiate the pictures hula hoop
 	Object[] picHulaHops = obj.findHulahops();
 	
+	// The cordiants and radius of the hula hoop in focus
 	int x, y, radius;
+	// To check if the drone have flown through the hula hoop
 	boolean finished = false;
+	// The amount of hula hoops
 	int numHulaHoop = 4;
+	// The QRcode on the hula hoop
 	String qrcode = "";
 	
+	// List over the hula hoops the drown have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
+	// Making a list with the objects from the picture analyze
 	ArrayList<Object[]> hulaHoop = (ArrayList<Object[]>)obj.findHulahops()[1];
 	
 	public boolean run() {
