@@ -128,7 +128,7 @@ public class PicAnal {
 		case 2:
 			//air fields assignment
 			rects = findPosibleQrBoth(grayImg, drawingMat);
-			List<String> qrTexts =  checkRectsForQrText(rects, originalMat, drawingMat);
+			List<String> qrTexts =  (List<String>)checkRectsForQrText(rects, originalMat, drawingMat)[0];
 			if(qrTexts.size() > 0) {
 				res[0] = qrTexts;
 				break;
@@ -147,8 +147,9 @@ public class PicAnal {
 		return res;
 	}
 	
-	private List<String> checkRectsForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private Object[] checkRectsForQrText(List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		List<String> qrCodes = new ArrayList<String>();
+		List<Rect> outRects = new ArrayList<Rect>();
 		Boolean qrExist;
 		for(int i = 0;i<rects.size();i++) {
 			double tlx = (rects.get(i).tl().x-10 < 0) ? rects.get(i).tl().x : rects.get(i).tl().x-10;
@@ -174,15 +175,16 @@ public class PicAnal {
 				}
 				if (qrExist == false){
 					qrCodes.add(qrText);
+					outRects.add(rects.get(i));
 					System.out.println(qrText);
 					
 				}
 			}
 		}
-		return qrCodes;
+		return new Object[] {qrCodes, outRects};
 	}
 	
-	private  ArrayList<Object[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private  ArrayList<String[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
 		double[] lineVec = new double[4];
         int radius;
@@ -191,7 +193,7 @@ public class PicAnal {
 		int dp = 2, minDist = 75, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
-		ArrayList<Object[]> hulahops = new ArrayList<Object[]>();
+		ArrayList<String[]> hulahops = new ArrayList<String[]>();
 		//Mat lines = new Mat();
 		//int lineLength = 200, threshold = 100, maxLineGap = 50;
 		//Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
@@ -246,12 +248,12 @@ public class PicAnal {
                 			}
                 			List<Rect> hulahopRect = new ArrayList<Rect>();
                 			hulahopRect.add(rects.get(c));
-                			List<String> qrTextList = checkRectsForQrText(hulahopRect, originalMat, drawingMat);
+                			List<String> qrTextList = (List<String>)checkRectsForQrText(hulahopRect, originalMat, drawingMat)[0];
                 			String qrText = null;
                 			if(!qrTextList.isEmpty()) {
                 				qrText = qrTextList.get(0);
                 			}
-                			hulahops.add(new Object[] {circlePoints[0],circlePoints[1], circlePoints[2], qrText});
+                			hulahops.add(new String[] {""+circlePoints[0] ,""+circlePoints[1], ""+circlePoints[2], qrText});
         				//}
         			//}
 
