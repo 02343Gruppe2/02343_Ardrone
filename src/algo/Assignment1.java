@@ -36,7 +36,7 @@ public class Assignment1 {
 	// The QRcode on the hula hoop
 	String qrcode = "";
 	
-	// List over the hula hoops the drown have flown through
+	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
 	// Making a list with the objects from the picture analyze
 	ArrayList<Object[]> hulaHoop = (ArrayList<Object[]>)obj.findHulahops()[1];
