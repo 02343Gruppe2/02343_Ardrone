@@ -85,6 +85,7 @@ public class SpaceXVideoPanel extends JPanel {
 		} else {
 			bottomImageProcessed = image;
 		}
+		repaint();
 	}
 	
 	/**
@@ -107,9 +108,10 @@ public class SpaceXVideoPanel extends JPanel {
 		
         if (frontImageProcessed != null)
 			g.drawImage(frontImageProcessed, 0, 0, frontImageProcessed.getWidth(), frontImageProcessed.getHeight(), null);
-        
-        if (bottomImageProcessed != null)
-        	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
+        if(frontImage != null)
+        	g.drawImage(frontImage, 640, 0, frontImage.getWidth(), frontImage.getHeight(), null);
+        //if (bottomImageProcessed != null)
+        //	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
 }
 
