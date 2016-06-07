@@ -76,7 +76,8 @@ public class SpaceXDrone {
 			GeneralMotorCon.getInstance().takeoff();
 			GeneralMotorCon.getInstance().raiseAltitude();
 			GeneralMotorCon.getInstance().raiseAltitude();
-			assig1.run();
+			
+			assig1.fly();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
@@ -90,7 +91,7 @@ public class SpaceXDrone {
 			
 			int counter = 0;
 			Thread.sleep(5000);
-			while(running) {
+			/*while(running) {
 				
 				counter++;
 				swapCamera(drone);
@@ -101,7 +102,7 @@ public class SpaceXDrone {
 					running = false;
 				
 				//PicAnal.savePicture("picture_"+counter, isFront);
-			}
+			}*/
 			
 			//infinite loop should go here
 		} catch (Exception e) {

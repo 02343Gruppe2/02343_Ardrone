@@ -16,7 +16,7 @@ import algo.GeneralMotorCon;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Assignment1 extends Thread{
+public class Assignment1 implements Runnable{
 	// Instantiate picture analyze
 	PicAnal obj = new PicAnal();
 	// Check if the drone is ready to fly forward
@@ -49,6 +49,7 @@ public class Assignment1 extends Thread{
 	
 	public void run() {
 		resetTime();
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun");
 		while(threadRun) {
 			if(iniTime > new Date().getTime() + 10000){
 				finished = true;
@@ -64,7 +65,8 @@ public class Assignment1 extends Thread{
 		// Getting the object array from picture hula hoop
 		finished = false;
 		threadRun = true;
-		new Thread(this).run();
+		new Thread(this).start();
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly continue");
 		while (!finished) {
 			updateHulahoop();
 			
