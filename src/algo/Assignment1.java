@@ -44,6 +44,7 @@ public class Assignment1 {
 	
 	public boolean run() {
 		// Getting the object array from picture hula hoop
+		finished = false;
 		while (!finished) {
 			updateHulahoop();
 			
@@ -57,10 +58,15 @@ public class Assignment1 {
 			
 			//TODO: make FlightSearch call here to search for hulaHOOOOOOOPS
 			
-			if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
+			//if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
 		}
 		
 		return true;
+	}
+	
+	public boolean isFinished() {
+		if(doneHulaHoop.size() > numHulaHoop-1) return true;
+		return false;
 	}
 	
 	public void flyThrough() {
@@ -82,7 +88,7 @@ public class Assignment1 {
 					GeneralMotorCon.getInstance().left();
 				}	
 			} else {
-				SpaceXGUI.getInstance().appendToConsole("Lost the hulahoop");
+				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				return;
 			}
 		}
@@ -101,6 +107,11 @@ public class Assignment1 {
 			radius = Double.parseDouble(hulaHoop.get(2).toString());
 			
 			qrcode = hulaHoop.get(3).toString();
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updated HulaHoop data");
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
 			return true;
 			
 		} catch (NullPointerException e) {
