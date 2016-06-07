@@ -72,11 +72,10 @@ public class SpaceXDrone {
 			Thread.sleep(10000);
 			assig1 = new Assignment1();
 
-			/*GeneralMotorCon.getInstance().setDrone(drone);
+			GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
 			GeneralMotorCon.getInstance().raiseAltitude();
 			GeneralMotorCon.getInstance().raiseAltitude();
-			GeneralMotorCon.getInstance().raiseAltitude();*/
 			assig1.run();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);

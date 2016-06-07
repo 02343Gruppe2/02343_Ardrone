@@ -28,7 +28,7 @@ public class Assignment1 {
 	Object[] picHulaHops = obj.findHulahops();
 	
 	// The cordiants and radius of the hula hoop in focus
-	int x, y;
+	double x, y;
 	double radius;
 	// To check if the drone have flown through the hula hoop
 	boolean finished = false;
@@ -102,8 +102,8 @@ public class Assignment1 {
 		
 		try{
 			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
-			x = Integer.parseInt(hulaHoop.get(0)[0]);
-			y = Integer.parseInt(hulaHoop.get(0)[1]);
+			x = Double.parseDouble(hulaHoop.get(0)[0]);
+			y = Double.parseDouble(hulaHoop.get(0)[1]);
 			radius = Double.parseDouble(hulaHoop.get(0)[2]);
 			
 			qrcode = hulaHoop.get(0)[3];
