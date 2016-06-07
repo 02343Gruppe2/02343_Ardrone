@@ -25,7 +25,7 @@ public class FlightSearch {
 		this.drone = drone;
 		cmd = drone.getCommandManager();
 		PicAnal obj = new PicAnal();
-		Assignment1 assig = new Assignment1();
+		Assignment1 assign1 = new Assignment1();
 		Object[] res;
 		ArrayList<String> square = null;
 		ArrayList<String> qrcode = null;
@@ -65,11 +65,21 @@ public class FlightSearch {
 			for (int j = 0; j < qrcode.size(); j++) {
 				
 				if (qrcode.get(j).equals("W00.00")) {
-					cmd.spinRight(10);
+					cmd.spinRight(10).doFor(2000);
+					cmd.goRight(10).doFor(2000);
+					
+					res = obj.findQRCodes();
+					qrcode = (ArrayList<String>) res[0];
+					
+					if(qrcode.get(j).equals("W00.01")){
+						cmd.spinRight(10).doFor(5000);
+					}
 					
 				} else if (qrcode.get(j).equals("W00.01")) {
-
+					cmd.spinRight(10).doFor(2000);
+					
 				} else if (qrcode.get(j).equals("W00.02")) {
+					cmd.spinRight(10).doFor(2000);
 
 				} else if (qrcode.get(j).equals("W00.03")) {
 
@@ -94,6 +104,16 @@ public class FlightSearch {
 				} else if (qrcode.get(j).equals("W02.03")) {
 
 				} else if (qrcode.get(j).equals("W02.04")) {
+					cmd.spinLeft(10).doFor(2000);
+					cmd.goRight(10).doFor(2000);
+					
+					res = obj.findQRCodes();
+					qrcode = (ArrayList<String>) res[0];
+					
+					if(qrcode.get(j).equals("W02.03")){
+						cmd.spinLeft(10).doFor(2000);
+					}
+					
 
 				} else if (qrcode.get(j).equals("W03.00")) {
 
@@ -111,8 +131,9 @@ public class FlightSearch {
 			}
 			cmd.forward(5).doFor(2000);
 		}
-
-		assig.run();
+		
+		//TODO ændre run to fly
+		assign1.run();
 
 	}
 }
