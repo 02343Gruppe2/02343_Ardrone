@@ -75,7 +75,7 @@ public class PicAnal {
 		Object[] res = null;
 		
 		//picture from file
-		for(int index = 0;index<400;index++) {
+		/*for(int index = 0;index<400;index++) {
 			try {
 				
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\bottom\\picture_"+index+".png"));
@@ -84,12 +84,12 @@ public class PicAnal {
 				
 			} catch (Exception ex) {
 			}
-		}
+		}*/
 		
 		
 		//picture from drone
-		/*imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		res = picRunDown(assignment,isFront,imgIn);*/
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);
 		
 		return res;
 	}
@@ -143,7 +143,7 @@ public class PicAnal {
 		}
 		
 		imgOut = convertMatToBufferedImage(drawingMat);
-		//SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
+		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		return res;
 	}
 	
