@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -105,11 +106,16 @@ public class SpaceXVideoPanel extends JPanel {
 	@Override
 	public synchronized void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
         if (frontImageProcessed != null)
-			g.drawImage(frontImageProcessed, 0, 0, frontImageProcessed.getWidth(), frontImageProcessed.getHeight(), null);
+			g.drawImage(frontImageProcessed.getScaledInstance(frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, Image.SCALE_SMOOTH), 0, 0, frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, null);
         if(frontImage != null)
-        	g.drawImage(frontImage, 640, 0, frontImage.getWidth(), frontImage.getHeight(), null);
+        	g.drawImage(frontImage.getScaledInstance(frontImage.getWidth()/2, frontImage.getHeight()/2, Image.SCALE_SMOOTH), 320, 0, frontImage.getWidth()/2, frontImage.getHeight()/2, null);
+        if (bottomImageProcessed != null)
+			g.drawImage(bottomImageProcessed.getScaledInstance(bottomImageProcessed.getWidth()/2, bottomImageProcessed.getHeight()/2, Image.SCALE_SMOOTH), 0, 180, bottomImageProcessed.getWidth()/2, bottomImageProcessed.getHeight()/2, null);
+        if(bottomImage != null)
+        	g.drawImage(bottomImage.getScaledInstance(bottomImage.getWidth()/2, bottomImage.getHeight()/2, Image.SCALE_SMOOTH), 320, 180, bottomImage.getWidth()/2, bottomImage.getHeight()/2, null);
+        
+        
         //if (bottomImageProcessed != null)
         //	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
