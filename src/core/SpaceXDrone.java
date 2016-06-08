@@ -9,6 +9,7 @@ import gui.SpaceXGUI;
 import org.opencv.core.Core;
 
 import utils.FormattedTimeStamp;
+import de.yadrone.apps.paperchase.controller.PaperChaseKeyboardController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
@@ -17,11 +18,13 @@ import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.video.ImageListener;
 import network.DroneConnection;
 import algo.Assignment1;
+import algo.FlightSearch;
 import algo.GeneralMotorCon;
 
 
 public class SpaceXDrone {
 	FlightAlgo flightAlgo;
+	FlightSearch FS;
 	Assignment1 assig1;
 	Boolean isFront;
 	Boolean imageIsReady;
@@ -42,6 +45,7 @@ public class SpaceXDrone {
 		boolean running = false;
 		isFront = true;
 		imageIsReady = true;
+		
 		
 		try {
 			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
@@ -70,14 +74,22 @@ public class SpaceXDrone {
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
-			assig1 = new Assignment1();
+			//assig1 = new Assignment1();
+			
 
+			// keyboard controller is always enabled and cannot be disabled (for safety reasons)
+			PaperChaseKeyboardController keyboardController = new PaperChaseKeyboardController(drone);
+			keyboardController.start();
+			
 			GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
 			GeneralMotorCon.getInstance().raiseAltitude();
 			GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().raiseAltitude();
 			
-			assig1.fly();
+			FS = new FlightSearch();
+			
+			//assig1.fly();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();

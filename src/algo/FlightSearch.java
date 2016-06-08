@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import core.PicAnal;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
+import gui.SpaceXGUI;
 
 public class FlightSearch {
 	boolean squareFound = false;
@@ -49,38 +50,36 @@ public class FlightSearch {
 		PicAnal obj = new PicAnal();
 		Assignment1 assign1 = new Assignment1();
 		Object[] res;
-		ArrayList<String> square = null;
 		ArrayList<String> qrcode = null;
 
 		for (int i = 0; i < 10; i++) {
 			GeneralMotorCon.getInstance().spin90Left();
 			res = obj.findQRCodes();
-			square = (ArrayList<String>) res[1];
-			qrcode = (ArrayList<String>) res[0];
+			qrcode = (ArrayList<String>)((Object[]) res[0])[0];
 
 			if (!qrcode.isEmpty()) {
-				qrcodeFound = true;
-				squareFound = true;
-			} else if (!square.isEmpty()) {
-				squareFound = true;
+				qrcodeFound = true;	
+				
+				SpaceXGUI.getInstance().appendToConsole("HEJ");
+				break;
 			}
+			
 		}
-
-		while (!squareFound && !qrcodeFound) {
+				
+		while (!qrcodeFound) {
 
 			GeneralMotorCon.getInstance().forward(2000);
 			res = obj.findQRCodes();
-			square = (ArrayList<String>) res[1];
-			qrcode = (ArrayList<String>) res[0];
+			qrcode = (ArrayList<String>)((Object[]) res[0])[0];
 
 			if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
-				squareFound = true;
-			} else if (!square.isEmpty())
-				squareFound = true;
+			} 
 		}
-
-		while (!map) {
+		
+		GeneralMotorCon.getInstance().landing();
+		
+		/*while (!map) {
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) res[0];
 
@@ -195,10 +194,10 @@ public class FlightSearch {
 				}
 
 			}
-		}
+		}*/
 
 		// TODO ændre run to fly
-		assign1.run();
+		//assign1.run();
 
 	}
 }
