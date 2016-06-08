@@ -61,7 +61,7 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun finished");
 	}
 	
-	public void resetTime(){
+	public synchronized void resetTime(){
 		iniTime = new Date().getTime();
 	}
 	
@@ -150,17 +150,14 @@ public class Assignment1 implements Runnable{
 					radius = Double.parseDouble(s[2]);
 					qrcode = s[3];
 				}
-			}
-			
-			
+			}	
 		} catch (NullPointerException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - IndexOutOfBoundsException, Error: " + e.toString());
-		}
-		
+		}		
 		return false;
 	}
 }

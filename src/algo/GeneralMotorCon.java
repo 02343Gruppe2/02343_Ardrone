@@ -21,14 +21,16 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
 	private int speed = 10;		//The speed the drone will move with
-	private int spinTime = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
+	private int spinTime = 1000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spinSpeed = 50;
+	private int spin90Time = 3000;
+	private int spin90Speed = 50;
 	private int hoverTime = 2000;
 	
 	/**
 	 * General Motor Controller Constructor
 	 * is private so you can only get the same instance
-	 * through getInstace()
+	 * through getInstance()
 	 */
 	private GeneralMotorCon() {
 		drone = null;
@@ -71,7 +73,7 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 * @param time - time to fly backward
 	 * @throws InterruptedException
 	 */
-	public void backward(int time) throws InterruptedException {
+	public void backward(int time) {
 		cmd.backward(speed).doFor(time);
 		//Thread.sleep(time);
 		cmd.hover().doFor(hoverTime);
@@ -82,9 +84,9 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 * Start the drone with a takeoff, for a fixed amount of time
 	 * @throws InterruptedException
 	 */
-	public void takeoff() throws InterruptedException {
+	public void takeoff() {
 		//TODO: test the time and flattrim stuff to get a good takeoff
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] takingoff");
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - takingoff");
 		//cmd.flatTrim();
 		cmd.waitFor(1000);
 		cmd.takeOff();
@@ -93,14 +95,14 @@ public class GeneralMotorCon implements GeneralMotorListener{
 		cmd.hover().doFor(hoverTime);
 	}
 	
-	public void landing() throws InterruptedException {
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] landing");
+	public void landing() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - landing");
 		cmd.landing().doFor(2000);
 	}
 	
 	
-	public void waitFor(int millis) throws InterruptedException{
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] wait for: " + millis);
+	public void waitFor(int millis) {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - wait for: " + millis);
 		cmd.waitFor(millis);
 	}
 	
@@ -109,11 +111,11 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 * Spin the drone 90 degrees to the left
 	 * @throws InterruptedException
 	 */
-	public void spin90Left() throws InterruptedException {
+	public void spin90Left() {
 		//TODO: test the speed and time90 for both spin to get a good spin
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] spinning 90 left");
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning 90 left");
 		cmd.setLedsAnimation(LEDAnimation.BLINK_ORANGE, 3, (spinTime/1000));
-		cmd.spinLeft(spinSpeed).doFor(spinTime);
+		cmd.spinLeft(spin90Speed).doFor(spin90Time);
 		cmd.hover().doFor(hoverTime);
 	}
 	
@@ -122,21 +124,21 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 * Spin the drone 90 degrees to the right
 	 * @throws InterruptedException
 	 */
-	public void spin90Right() throws InterruptedException {
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] spinning 90 right");
+	public void spin90Right() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning 90 right");
 		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
-		cmd.spinRight(spinSpeed).doFor(spinTime);
+		cmd.spinRight(spin90Speed).doFor(spin90Time);
 		cmd.hover().doFor(hoverTime);
 	}
 	
 	public void lowerAltitude() {
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] lowering altitude");
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - lowering altitude");
 		cmd.down(speed).doFor(1000);
 		cmd.hover().doFor(hoverTime);
 	}
 	
 	public void raiseAltitude() {
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] raising altitude");
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - raising altitude");
 		cmd.up(speed).doFor(1000);
 		cmd.hover().doFor(hoverTime);
 	}
@@ -160,7 +162,26 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	}
 	public void left() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Left");
-		cmd.goLeft(5).doFor(200);
+		cmd.schedule(0, new Runnable() {
+			@Override
+			public void run() {
+				cmd.goLeft(5).doFor(200);
+				cmd.hover().doFor(hoverTime);
+			}	
+		});
+	}
+	
+	public void spinLeft() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning left");
+		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
+		cmd.spinRight(spinSpeed).doFor(spinTime);
+		cmd.hover().doFor(hoverTime);
+	}
+	
+	public void spinRight() {
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning right");
+		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
+		cmd.spinRight(spinSpeed).doFor(spinTime);
 		cmd.hover().doFor(hoverTime);
 	}
 }
