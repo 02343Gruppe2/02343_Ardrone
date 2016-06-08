@@ -34,6 +34,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 
 import gui.SpaceXGUI;
 
+
 public class PicAnal {
 	private  BufferedImage imgIn;
 	private BufferedImage imgOut;
@@ -176,7 +177,6 @@ public class PicAnal {
 				if (qrExist == false){
 					qrCodes.add(qrText);
 					outRects.add(rects.get(i));
-					System.out.println(qrText);
 					
 				}
 			}
@@ -190,7 +190,7 @@ public class PicAnal {
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 2, minDist = 75, minRadius = 70, maxRadius = 270, param1 = 100, param2 = 100;
+		int dp = 2, minDist = 75, minRadius = 40, maxRadius = 270, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
@@ -201,7 +201,6 @@ public class PicAnal {
         	circlePoints = circles.get(0,x);
         	if (circlePoints == null) {
         		//TODO return so that we know that there are no more balls
-        		System.err.println("no circles found");
 	            break;
 	        }
     		center.set(circlePoints);
@@ -324,7 +323,6 @@ public class PicAnal {
 					
 					//used for testing
 					if(circles.cols()> 1)
-						System.out.println(circles.cols());
 					
 					Imgproc.rectangle(drawingMat, rects.get(z).tl(), rects.get(z).br(), redScalar,2);
 					circlePoints = circles.get(0, 0);
@@ -405,7 +403,6 @@ public class PicAnal {
 			}
 			
 			res = scanResult.getText();
-			//System.out.println(res);
 			
 		} catch (NotFoundException e) {
 			// TODO Auto-generated catch block
