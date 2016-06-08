@@ -52,6 +52,7 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun start");
 		while(threadRun) {
 			if(iniTime > new Date().getTime() + 10000){
+				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Threadrun timer finish");
 				finished = true;
 				threadRun = false;
 			}	
@@ -95,7 +96,8 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough");
 		while (!middle) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
-			if(updateHulahoop()) {
+			boolean check = updateHulahoop();
+			if(check) {
 				if(x < adjustmentTolerance && x > -adjustmentTolerance) {
 					if(y < adjustmentTolerance && y > -adjustmentTolerance){
 						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
@@ -130,6 +132,7 @@ public class Assignment1 implements Runnable{
 			radius = Double.parseDouble(hulaHoop.get(0)[2]);
 			qrcode = hulaHoop.get(0)[3];
 			
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done");
 			
 			resetTime();
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
@@ -142,6 +145,8 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
+		} catch (IndexOutOfBoundsException e) {
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - IndexOutOfBoundsException, Error: " + e.toString());
 		}
 		
 		return false;
