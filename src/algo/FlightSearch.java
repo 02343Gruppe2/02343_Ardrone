@@ -111,7 +111,7 @@ public class FlightSearch {
 					qrcode = (ArrayList<String>) res[0];
 					
 					if(qrcode.get(j).equals("W02.03")){
-						cmd.spinLeft(10).doFor(2000);
+						cmd.spinLeft(10).doFor(5000);
 					}
 					
 
