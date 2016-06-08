@@ -128,7 +128,7 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
 			radius = 0;
-			
+			if(hulaHoop.size() == 0) return false;
 			for (String[] s : hulaHoop){
 				if(s[3] != null){
 					x = Double.parseDouble(s[0]);
