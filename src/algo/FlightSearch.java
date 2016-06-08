@@ -10,20 +10,42 @@ public class FlightSearch {
 	boolean squareFound = false;
 	boolean qrcodeFound = false;
 	boolean map = false;
+	boolean forwardcontrol = false;
+	//String[][] grid = new String[963][1078];
 
-	int speed = 10; // speed
-	int lgwTime = 1; // long glasswall time
-	int sgwTime = 1; // short glasswall time
-	int lwbTime = 1; // long whiteboard time
-	int swbTime = 1; // short whiteboard time
-	int deafault = 500;
+	/*public void FlyMapping() {
 
-	IARDrone drone = null;
-	CommandManager cmd;
+		// Wall 0
+		grid[188][23] = "W000.00";
+		grid[338][28] = "W00.01";
+		grid[515][23] = "W00.02";
+		grid[694][28] = "W00.03";
+		grid[840][23] = "W00.04";
 
-	public FlightSearch(IARDrone drone) {
-		this.drone = drone;
-		cmd = drone.getCommandManager();
+		// Wall 1
+		grid[926][115] = "W01.00";
+		grid[926][324] = "W01.01";
+		grid[926][566] = "W01.02";
+		grid[926][721] = "W01.03";
+		grid[926][904] = "W01.04";
+
+		// Wall 2
+		grid[847][1064] = "W02.00";
+		grid[656][995] = "W02.01";
+		grid[420][1070] = "W02.02";
+		grid[350][1070] = "W02.03";
+		grid[150][1070] = "W02.04";
+
+		// Wall 3
+		grid[10][997] = "W03.00";
+		grid[10][740] = "W03.01";
+		grid[10][561] = "W03.02";
+		grid[10][357] = "W03.03";
+		grid[10][108] = "W03.04";
+
+	}*/
+
+	public FlightSearch() throws InterruptedException {
 		PicAnal obj = new PicAnal();
 		Assignment1 assign1 = new Assignment1();
 		Object[] res;
@@ -31,7 +53,7 @@ public class FlightSearch {
 		ArrayList<String> qrcode = null;
 
 		for (int i = 0; i < 10; i++) {
-			cmd.spinLeft(10).doFor(2000);
+			GeneralMotorCon.getInstance().spin90Left();
 			res = obj.findQRCodes();
 			square = (ArrayList<String>) res[1];
 			qrcode = (ArrayList<String>) res[0];
@@ -46,7 +68,7 @@ public class FlightSearch {
 
 		while (!squareFound && !qrcodeFound) {
 
-			cmd.forward(5).doFor(2000);
+			GeneralMotorCon.getInstance().forward(2000);
 			res = obj.findQRCodes();
 			square = (ArrayList<String>) res[1];
 			qrcode = (ArrayList<String>) res[0];
@@ -61,78 +83,121 @@ public class FlightSearch {
 		while (!map) {
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) res[0];
-			
+
 			for (int j = 0; j < qrcode.size(); j++) {
-				
+
 				if (qrcode.get(j).equals("W00.00")) {
-					cmd.spinRight(10).doFor(2000);
-					cmd.goRight(10).doFor(2000);
-					
-					res = obj.findQRCodes();
-					qrcode = (ArrayList<String>) res[0];
-					
-					if(qrcode.get(j).equals("W00.01")){
-						cmd.spinRight(10).doFor(5000);
-					}
-					
+
+					// spin 180 grader
+					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
+
 				} else if (qrcode.get(j).equals("W00.01")) {
-					cmd.spinRight(10).doFor(2000);
-					
+					GeneralMotorCon.getInstance().right();
+
 				} else if (qrcode.get(j).equals("W00.02")) {
-					cmd.spinRight(10).doFor(2000);
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W00.03")) {
+					GeneralMotorCon.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.04")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W01.00")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.01")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.02")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.03")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.04")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W02.00")) {
-
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 				} else if (qrcode.get(j).equals("W02.01")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W02.02")) {
+					GeneralMotorCon.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W02.03")) {
+					// Spin 180 grader
+					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorCon.getInstance().spin90Left();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W02.04")) {
-					cmd.spinLeft(10).doFor(2000);
-					cmd.goRight(10).doFor(2000);
-					
-					res = obj.findQRCodes();
-					qrcode = (ArrayList<String>) res[0];
-					
-					if(qrcode.get(j).equals("W02.03")){
-						cmd.spinLeft(10).doFor(5000);
-					}
-					
+					GeneralMotorCon.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W03.00")) {
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W03.01")) {
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W03.02")) {
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W03.03")) {
+					GeneralMotorCon.getInstance().spin90Right();
+					forwardcontrol = true;
 
 				} else if (qrcode.get(j).equals("W03.04")) {
+					GeneralMotorCon.getInstance().spin90Right();
 
-				} else if (qrcode.get(j).contains("P")){
+				} else if (qrcode.get(j).contains("P")) {
 					map = true;
-				} 
+				}
 			}
-			cmd.forward(5).doFor(2000);
+			while (forwardcontrol) {
+				GeneralMotorCon.getInstance().forward(2000);
+				res = obj.findQRCodes();
+				qrcode = (ArrayList<String>) res[0];
+
+				for (int g = 0; g < qrcode.size(); g++) {
+					if (qrcode.get(g).contains("P")) {
+						map = true;
+						forwardcontrol = false;
+					} else if (qrcode.get(g).contains("W")) {
+						forwardcontrol = false;
+					}
+				}
+
+			}
 		}
-		
-		//TODO ændre run to fly
+
+		// TODO ændre run to fly
 		assign1.run();
 
 	}
