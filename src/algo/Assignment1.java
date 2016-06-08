@@ -127,19 +127,31 @@ public class Assignment1 implements Runnable{
 		try{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
-			x = Double.parseDouble(hulaHoop.get(0)[0]);
-			y = Double.parseDouble(hulaHoop.get(0)[1]);
-			radius = Double.parseDouble(hulaHoop.get(0)[2]);
-			qrcode = hulaHoop.get(0)[3];
+			radius = 0;
 			
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done");
+			for (String[] s : hulaHoop){
+				if(s[3] != null){
+					x = Double.parseDouble(s[0]);
+					y = Double.parseDouble(s[1]);
+					radius = Double.parseDouble(s[2]);
+					qrcode = s[3];
+					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done");
+					
+					resetTime();
+					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+					return true;
+				}
+				if(Double.parseDouble(s[2]) > radius){
+					x = Double.parseDouble(s[0]);
+					y = Double.parseDouble(s[1]);
+					radius = Double.parseDouble(s[2]);
+					qrcode = s[3];
+				}
+			}
 			
-			resetTime();
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
-			return true;
 			
 		} catch (NullPointerException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
@@ -151,5 +163,4 @@ public class Assignment1 implements Runnable{
 		
 		return false;
 	}
-	
 }
