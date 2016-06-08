@@ -149,12 +149,18 @@ public class GeneralMotorCon implements GeneralMotorListener{
 
 	public void right() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Right");
-		cmd.goRight(speed).doFor(500);
-		cmd.hover().doFor(hoverTime);
+		//TODO: Test schedule ting, og se om det er noget man kan bruge, og find ud af hvor meget right den skal.
+		cmd.schedule(0, new Runnable(){
+			@Override
+			public void run() {
+			cmd.goRight(5).doFor(200);
+			cmd.hover().doFor(hoverTime);
+			}
+		});
 	}
 	public void left() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Left");
-		cmd.goLeft(speed).doFor(500);
+		cmd.goLeft(5).doFor(200);
 		cmd.hover().doFor(hoverTime);
 	}
 }
