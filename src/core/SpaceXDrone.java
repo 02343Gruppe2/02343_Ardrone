@@ -79,7 +79,7 @@ public class SpaceXDrone {
 			
 			drone.getNavDataManager().addBatteryListener(new powerLevel());
 			running = true;
-			flightAlgo = new FlightAlgo(drone);
+			//flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
 			assig1 = new Assignment1();
 			
@@ -88,15 +88,15 @@ public class SpaceXDrone {
 			PaperChaseKeyboardController keyboardController = new PaperChaseKeyboardController(drone);
 			keyboardController.start();
 			
-			//GeneralMotorCon.getInstance().setDrone(drone);
-			//GeneralMotorCon.getInstance().takeoff();
-			//GeneralMotorCon.getInstance().raiseAltitude();
-			//GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().setDrone(drone);
+			GeneralMotorCon.getInstance().takeoff();
+			GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorCon.getInstance().raiseAltitude();
 			//GeneralMotorCon.getInstance().raiseAltitude();
 			
 			//FS = new FlightSearch();
 			
-			//assig1.fly();
+			assig1.fly();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
@@ -148,7 +148,7 @@ public class SpaceXDrone {
 		public void batteryLevelChanged(int arg0) {
 			batteryPercentage = arg0;
 			
-			SpaceXGUI.getInstance().appendToConsole("\n" + batteryPercentage + "Battery");
+			//SpaceXGUI.getInstance().appendToConsole("\n" + batteryPercentage + "Battery");
 			
 			
 		}
@@ -157,7 +157,7 @@ public class SpaceXDrone {
 		public void voltageChanged(int arg0) {
 			voltagePercentage = arg0;
 			
-			SpaceXGUI.getInstance().appendToConsole("\n" + voltagePercentage  + "Voltage");
+		//	SpaceXGUI.getInstance().appendToConsole("\n" + voltagePercentage  + "Voltage");
 			
 			
 		}

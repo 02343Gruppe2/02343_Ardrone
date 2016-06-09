@@ -63,7 +63,7 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 */
 	public void forward(int time) {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Forward for: " + time);
-		if(time > 8000) time = 8000;
+		if(time > 8000) { time = 8000; }
 		cmd.forward(speed).doFor(time);
 		//Thread.sleep(time);
 		cmd.hover().doFor(hoverTime);

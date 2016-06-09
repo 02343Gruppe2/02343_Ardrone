@@ -50,19 +50,20 @@ public class Assignment1 implements Runnable{
 	
 	public void run() {
 		resetTime();
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun start");
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun start: " + iniTime);
 		while(threadRun) {
-			if(iniTime < new Date().getTime() - 10000){
+			Long timeChecker = new Date().getTime() - 20000;
+			if(iniTime < timeChecker){
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Threadrun timer finish");
 				finished = true;
 				threadRun = false;
-			}	
+			}	   
 		}
 		finished = true;
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun finished");
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun finished: " + iniTime);
 	}
 	
-	public synchronized void resetTime(){
+	public void resetTime(){
 		iniTime = new Date().getTime();
 	}
 	
