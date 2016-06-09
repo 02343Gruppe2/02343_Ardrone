@@ -21,12 +21,15 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
 	private int speed = 10;		//The speed the drone will move with
-	private int spinTime = 1000;	
-	private int spinSpeed = 50;
+	private int spinTime = 500;	
+	private int spinSpeed = 15;
 	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spin90Speed = 50;
 	private int hoverTime = 2000;
+	
+	/* Different variables */
 	private int batLvl = 0;
+	private long threadTimer = 0;
 
 	/**
 	 * General Motor Controller Constructor
@@ -64,10 +67,13 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 */
 	public void forward(int time) {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Forward for: " + time);
-		if(time > 8000) { time = 8000; }
-		cmd.forward(speed).doFor(time);
-		//Thread.sleep(time);
+				
 		cmd.hover().doFor(hoverTime);
+		int thisTime = time;
+		if(time > 8000) { thisTime = 8000; }
+		cmd.forward(speed);
+		waitFor(thisTime);
+		cmd.hover().doFor(hoverTime);	
 	}
 	
 	/**
@@ -171,6 +177,7 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	public void right() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Right");
 		//TODO: Test schedule ting, og se om det er noget man kan bruge, og find ud af hvor meget right den skal.
+		/*
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -178,6 +185,10 @@ public class GeneralMotorCon implements GeneralMotorListener{
 			cmd.hover().doFor(hoverTime);
 			}
 		});
+		*/
+		
+		cmd.goRight(5).doFor(1000);
+		cmd.hover().doFor(hoverTime);
 	}
 	
 	/**
@@ -186,13 +197,8 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	 */
 	public void left() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Left");
-		cmd.schedule(0, new Runnable() {
-			@Override
-			public void run() {
-				cmd.goLeft(5).doFor(200);
-				cmd.hover().doFor(hoverTime);
-			}	
-		});
+		cmd.goLeft(5).doFor(1000);
+		cmd.hover().doFor(hoverTime);
 	}
 	
 	/**
@@ -202,7 +208,7 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	public void spinLeft() {
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning left");
 		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
-		cmd.spinRight(spinSpeed).doFor(spinTime);
+		cmd.spinLeft(spinSpeed).doFor(spinTime);
 		cmd.hover().doFor(hoverTime);
 	}
 	
@@ -223,5 +229,13 @@ public class GeneralMotorCon implements GeneralMotorListener{
 
 	public void setBatLvl(int batLvl) {
 		this.batLvl = batLvl;
+	}
+	
+	public long getThreadTimer() {
+		return this.threadTimer;
+	}
+	
+	public void setThreadTimer(long threadTimer) {
+		this.threadTimer = threadTimer;
 	}
 }

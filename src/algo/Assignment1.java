@@ -16,6 +16,8 @@ import algo.GeneralMotorCon;
 import java.util.ArrayList;
 import java.util.Date;
 
+import utils.FormattedTimeStamp;
+
 public class Assignment1 implements Runnable{
 	// Instantiate picture analyze
 	ImgProc obj = new ImgProc();
@@ -24,7 +26,7 @@ public class Assignment1 implements Runnable{
 	// For how long the drone should do a task
 	int doTime = 1000;
 	// A failure margin
-	int adjustmentTolerance = 100;
+	int adjustmentTolerance = 75;
 	
 	// Instantiate the pictures hula hoop
 	Object[] picHulaHops = obj.findHulahops();
@@ -33,15 +35,16 @@ public class Assignment1 implements Runnable{
 	double x, y;
 	double radius;
 	private int magicForwardNum = 430000;
+	private int shittyDroneConstant = 40;
 	// To check if the drone have flown through the hula hoop
 	private boolean finished = false;
 	private boolean threadRun = false;
+	private boolean randomnessRight = true;
+	private boolean randomnessLeft = true;
 	// The amount of hula hoops
 	private int numHulaHoop = 4;
 	// The QRcode on the hula hoop
 	String qrcode = "";
-	
-	long iniTime;
 	
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
@@ -50,27 +53,34 @@ public class Assignment1 implements Runnable{
 	
 	public void run() {
 		resetTime();
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun start: " + iniTime);
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start: " + GeneralMotorCon.getInstance().getThreadTimer());
 		while(threadRun) {
-			Long timeChecker = new Date().getTime() - 20000;
-			if(iniTime < timeChecker){
-				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Threadrun timer finish");
-				finished = true;
-				threadRun = false;
-			}	   
+			try{
+				Thread.sleep(20000);
+				Long timeChecker = (new Date().getTime() - 20000);
+				Long iniTime = GeneralMotorCon.getInstance().getThreadTimer();
+				if(iniTime < timeChecker){
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun timer finish, timeChecker: " + timeChecker + ". ThreadTimer: " + GeneralMotorCon.getInstance().getThreadTimer());
+					finished = true;
+					threadRun = false;
+				}
+			} catch (InterruptedException e ){
+				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun InteruptedException ");		
+			}
 		}
 		finished = true;
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun finished: " + iniTime);
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished: " + GeneralMotorCon.getInstance().getThreadTimer());
 	}
 	
 	public void resetTime(){
-		iniTime = new Date().getTime();
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - reset thread timer");
+		GeneralMotorCon.getInstance().setThreadTimer(new Date().getTime());
 	}
 	
 	public boolean fly() {
 		finished = false;
 		threadRun = true;
-		new Thread(this).start();
+		//new Thread(this).start();
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly continue");
 		while (!finished) {
 			updateHulahoop();
@@ -99,8 +109,8 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
 			boolean check = updateHulahoop();
 			if(check) {
-				if(x < adjustmentTolerance && x > -adjustmentTolerance) {
-					if(y < adjustmentTolerance && y > -adjustmentTolerance){
+				if(x < (adjustmentTolerance-shittyDroneConstant) && x > -(adjustmentTolerance+shittyDroneConstant)) {
+					if(y < (adjustmentTolerance+30) && y > -(adjustmentTolerance+30)){
 						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
 						middle = true;
 						GeneralMotorCon.getInstance().forward((int)(magicForwardNum/radius));
@@ -110,29 +120,48 @@ public class Assignment1 implements Runnable{
 						GeneralMotorCon.getInstance().lowerAltitude();
 					}
 				} else if(x > 0){
-					GeneralMotorCon.getInstance().right();
+					if(randomnessRight){
+						GeneralMotorCon.getInstance().right();
+						randomnessRight = false;
+					} else {
+						GeneralMotorCon.getInstance().spinRight();
+						randomnessRight = true;
+					}
+					
 				} else {
-					GeneralMotorCon.getInstance().left();
+					if(randomnessLeft){
+						GeneralMotorCon.getInstance().left();	
+						randomnessLeft = false;
+					} else {
+						GeneralMotorCon.getInstance().spinLeft();
+						randomnessLeft = true;
+					}
+					
 				}	
 			} else {
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				if(!threadRun) return;
 			}
 		}
-		
+		finished = true;
+		threadRun = false;
 		//GeneralMotorCon.getInstance().forward((2000/radius));
 		//doneHulaHoop.add(qrcode);
 	}
-	
+	 
 	public boolean updateHulahoop() {
+		int i = 0;
 		try{
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - " + iniTime);
 			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
 			radius = 0;
+			i++;
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
+			i++;
 			for (String[] s : hulaHoop){
+				i++;
 				if(s[3].contains("P")){
 					x = Double.parseDouble(s[0]);
 					y = Double.parseDouble(s[1]);
@@ -153,17 +182,25 @@ public class Assignment1 implements Runnable{
 					radius = Double.parseDouble(s[2]);
 					//qrcode = s[3];
 				}
+				i++;
 			}
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done, with no QRcode");
+			i++;
 			resetTime();
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+			i++;
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + i+ " - " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
