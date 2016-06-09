@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import de.yadrone.base.navdata.BatteryListener;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -24,10 +25,14 @@ public class SpaceXDataPanel extends JPanel {
 	
 	private JLabel imageNumberLabel;
 	private JLabel imageDimension;
+	private JLabel batteryWatch;
 	private long imageNumber = 0;
 	private int imageHeight;
 	private int imageWidth;
-
+	private int batteryPercentage;
+	
+	
+	
 	/**
 	 * Constructor for data panel.
 	 */
@@ -47,13 +52,21 @@ public class SpaceXDataPanel extends JPanel {
 		imageDimension.setFont(new Font("Arial", 0, 11));
 		imageDimension.setForeground(Color.WHITE);
 		
+		batteryWatch = new JLabel("Battery Percetage: " + batteryPercentage + "%");
+		batteryWatch.setFont(new Font("Arial", 0, 11));
+		batteryWatch.setForeground(Color.WHITE);
+		
 		JLabel imageData = new JLabel("Image data");
 		imageData.setFont(new Font("Arial", 1, 12));
 		imageData.setForeground(Color.WHITE);
 		
+		
 		add(imageData, "wrap");
 		add(imageNumberLabel, "wrap");
 		add(imageDimension, "wrap");
+		
+		
+		add(batteryWatch, "wrap");
 		
 		// TODO
 	}
@@ -117,3 +130,4 @@ public class SpaceXDataPanel extends JPanel {
 		imageDimension.setText("Image dimension: " + this.imageWidth + "x" + this.imageHeight);
 	}
 }
+

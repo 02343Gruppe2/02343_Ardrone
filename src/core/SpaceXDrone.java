@@ -9,12 +9,14 @@ import gui.SpaceXGUI;
 import org.opencv.core.Core;
 
 import utils.FormattedTimeStamp;
+import de.yadrone.apps.controlcenter.plugins.battery.BatteryPanel;
 import de.yadrone.apps.paperchase.controller.PaperChaseKeyboardController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
+import de.yadrone.base.navdata.BatteryListener;
 import de.yadrone.base.video.ImageListener;
 import network.DroneConnection;
 import algo.Assignment1;
@@ -28,6 +30,9 @@ public class SpaceXDrone {
 	Assignment1 assig1;
 	Boolean isFront;
 	Boolean imageIsReady;
+	int batteryPercentage;
+	int voltagePercentage;
+	
 	public void swapCamera(IARDrone drone) {
 		imageIsReady = false;
 		if(isFront) {
@@ -71,6 +76,8 @@ public class SpaceXDrone {
 					}
 	            }
 	        });
+			
+			drone.getNavDataManager().addBatteryListener(new powerLevel());
 			running = true;
 			flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
@@ -81,15 +88,15 @@ public class SpaceXDrone {
 			PaperChaseKeyboardController keyboardController = new PaperChaseKeyboardController(drone);
 			keyboardController.start();
 			
-			GeneralMotorCon.getInstance().setDrone(drone);
-			GeneralMotorCon.getInstance().takeoff();
-			GeneralMotorCon.getInstance().raiseAltitude();
-			GeneralMotorCon.getInstance().raiseAltitude();
+			//GeneralMotorCon.getInstance().setDrone(drone);
+			//GeneralMotorCon.getInstance().takeoff();
+			//GeneralMotorCon.getInstance().raiseAltitude();
+			//GeneralMotorCon.getInstance().raiseAltitude();
 			//GeneralMotorCon.getInstance().raiseAltitude();
 			
 			//FS = new FlightSearch();
 			
-			assig1.fly();
+			//assig1.fly();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
@@ -133,6 +140,29 @@ public class SpaceXDrone {
 	// Run this shiiiieeeeet
 	public static void main(String[] args) {
 		new SpaceXDrone();
+	}
+	
+	private class powerLevel implements BatteryListener{
+
+		@Override
+		public void batteryLevelChanged(int arg0) {
+			batteryPercentage = arg0;
+			
+			SpaceXGUI.getInstance().appendToConsole("\n" + batteryPercentage + "Battery");
+			
+			
+		}
+
+		@Override
+		public void voltageChanged(int arg0) {
+			voltagePercentage = arg0;
+			
+			SpaceXGUI.getInstance().appendToConsole("\n" + voltagePercentage  + "Voltage");
+			
+			
+		}
+		
+		
 	}
 }
 
