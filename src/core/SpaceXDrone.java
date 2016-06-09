@@ -148,6 +148,8 @@ public class SpaceXDrone {
 		public void batteryLevelChanged(int arg0) {
 			batteryPercentage = arg0;
 			
+			GeneralMotorCon.getInstance().setBatLvl(arg0);
+			
 			//SpaceXGUI.getInstance().appendToConsole("\n" + batteryPercentage + "Battery");
 			
 			

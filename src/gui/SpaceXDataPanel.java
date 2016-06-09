@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import algo.GeneralMotorCon;
 import de.yadrone.base.navdata.BatteryListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -52,7 +53,7 @@ public class SpaceXDataPanel extends JPanel {
 		imageDimension.setFont(new Font("Arial", 0, 11));
 		imageDimension.setForeground(Color.WHITE);
 		
-		batteryWatch = new JLabel("Battery Percetage: " + batteryPercentage + "%");
+		batteryWatch = new JLabel("Battery Percetage: " + GeneralMotorCon.getInstance().getBatLvl() + "%");
 		batteryWatch.setFont(new Font("Arial", 0, 11));
 		batteryWatch.setForeground(Color.WHITE);
 		

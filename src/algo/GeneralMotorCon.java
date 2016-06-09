@@ -26,7 +26,8 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spin90Speed = 50;
 	private int hoverTime = 2000;
-	
+	private int batLvl = 0;
+
 	/**
 	 * General Motor Controller Constructor
 	 * is private so you can only get the same instance
@@ -214,5 +215,13 @@ public class GeneralMotorCon implements GeneralMotorListener{
 		cmd.setLedsAnimation(LEDAnimation.BLINK_RED, 3, (spinTime/1000));
 		cmd.spinRight(spinSpeed).doFor(spinTime);
 		cmd.hover().doFor(hoverTime);
+	}
+	
+	public int getBatLvl() {
+		return batLvl;
+	}
+
+	public void setBatLvl(int batLvl) {
+		this.batLvl = batLvl;
 	}
 }
