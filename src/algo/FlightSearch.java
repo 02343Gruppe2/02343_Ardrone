@@ -8,7 +8,7 @@ package algo;
 
 import java.util.ArrayList;
 
-import core.PicAnal;
+import core.ImgProc;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import gui.SpaceXGUI;
@@ -42,7 +42,7 @@ public class FlightSearch {
 	 */
 
 	public FlightSearch(){
-		PicAnal obj = new PicAnal();
+		ImgProc obj = new ImgProc();
 		Assignment1 assign1 = new Assignment1();
 		Object[] res;
 		ArrayList<String> qrcode = null;

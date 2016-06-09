@@ -35,18 +35,18 @@ import com.google.zxing.qrcode.QRCodeReader;
 import gui.SpaceXGUI;
 
 
-public class PicAnal {
+public class ImgProc {
 	private  BufferedImage imgIn;
 	private BufferedImage imgOut;
 	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
 	private Scalar redScalar = new Scalar(200,0,0); // found a square
 	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
 	public static void main(String[] args) {
-		PicAnal obj = new PicAnal();
+		ImgProc obj = new ImgProc();
 		obj.findCube();
 	}
 	
-	public PicAnal() {
+	public ImgProc() {
 		System.loadLibrary( Core.NATIVE_LIBRARY_NAME );
 	}
 	

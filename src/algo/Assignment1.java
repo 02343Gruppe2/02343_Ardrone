@@ -10,7 +10,7 @@ package algo;
  */
 
 import gui.SpaceXGUI;
-import core.PicAnal;
+import core.ImgProc;
 import algo.GeneralMotorCon;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class Assignment1 implements Runnable{
 	// Instantiate picture analyze
-	PicAnal obj = new PicAnal();
+	ImgProc obj = new ImgProc();
 	// Check if the drone is ready to fly forward
 	int forwardControl = 0;
 	// For how long the drone should do a task
