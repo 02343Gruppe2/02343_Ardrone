@@ -24,7 +24,7 @@ public class Assignment1 implements Runnable{
 	// For how long the drone should do a task
 	int doTime = 1000;
 	// A failure margin
-	int adjustmentTolerance = 40;
+	int adjustmentTolerance = 100;
 	
 	// Instantiate the pictures hula hoop
 	Object[] picHulaHops = obj.findHulahops();
@@ -32,15 +32,16 @@ public class Assignment1 implements Runnable{
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
 	double radius;
+	private int magicForwardNum = 430000;
 	// To check if the drone have flown through the hula hoop
-	boolean finished = false;
-	boolean threadRun = false;
+	private boolean finished = false;
+	private boolean threadRun = false;
 	// The amount of hula hoops
-	int numHulaHoop = 4;
+	private int numHulaHoop = 4;
 	// The QRcode on the hula hoop
 	String qrcode = "";
 	
-	 long iniTime;
+	long iniTime;
 	
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
@@ -51,7 +52,7 @@ public class Assignment1 implements Runnable{
 		resetTime();
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - threadrun start");
 		while(threadRun) {
-			if(iniTime > new Date().getTime() + 10000){
+			if(iniTime < new Date().getTime() - 10000){
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Threadrun timer finish");
 				finished = true;
 				threadRun = false;
@@ -66,7 +67,6 @@ public class Assignment1 implements Runnable{
 	}
 	
 	public boolean fly() {
-		// Getting the object array from picture hula hoop
 		finished = false;
 		threadRun = true;
 		new Thread(this).start();
@@ -102,7 +102,7 @@ public class Assignment1 implements Runnable{
 					if(y < adjustmentTolerance && y > -adjustmentTolerance){
 						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
 						middle = true;
-						GeneralMotorCon.getInstance().forward(500);
+						GeneralMotorCon.getInstance().forward((int)(magicForwardNum/radius));
 					} else if(y > 0){
 						GeneralMotorCon.getInstance().raiseAltitude();
 					} else {
@@ -126,11 +126,13 @@ public class Assignment1 implements Runnable{
 	public boolean updateHulahoop() {
 		try{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - " + iniTime);
 			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
 			radius = 0;
 			if(hulaHoop.size() == 0) return false;
+			if(hulaHoop.isEmpty()) return false;
 			for (String[] s : hulaHoop){
-				if(s[3] != null){
+				if(s[3].contains("P")){
 					x = Double.parseDouble(s[0]);
 					y = Double.parseDouble(s[1]);
 					radius = Double.parseDouble(s[2]);
@@ -148,9 +150,17 @@ public class Assignment1 implements Runnable{
 					x = Double.parseDouble(s[0]);
 					y = Double.parseDouble(s[1]);
 					radius = Double.parseDouble(s[2]);
-					qrcode = s[3];
+					//qrcode = s[3];
 				}
-			}	
+			}
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done, with no QRcode");
+			resetTime();
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+			return true;
+			
 		} catch (NullPointerException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
