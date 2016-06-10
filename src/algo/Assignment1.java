@@ -35,7 +35,7 @@ public class Assignment1 implements Runnable{
 	double x, y;
 	double radius;
 	private int magicForwardNum = 430000;
-	private int shittyDroneConstant = 40;
+	private int shittyDroneConstant = 0;
 	// To check if the drone have flown through the hula hoop
 	private boolean finished = false;
 	private boolean threadRun = false;
