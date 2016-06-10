@@ -41,24 +41,28 @@ public class FlightSearch {
 	 * }
 	 */
 
-	public FlightSearch(){
+	public FlightSearch() {
 		ImgProc obj = new ImgProc();
 		Assignment1 assign1 = new Assignment1();
 		Object[] res;
 		ArrayList<String> qrcode = null;
 
 		for (int i = 0; i < 10; i++) {
-			GeneralMotorCon.getInstance().spin90Left();
+
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 
-			if (!qrcode.isEmpty()) {
+			if (assign1.updateHulaHoop()) {
+				qrcodeFound = true;
+				map = true;
+				break;
+			} else if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
 
-				SpaceXGUI.getInstance().appendToConsole("\n HEJ");
+				SpaceXGUI.getInstance().appendToConsole("HEJ");
 				break;
 			}
-
+			GeneralMotorCon.getInstance().spin90Left();
 		}
 
 		while (!qrcodeFound) {
@@ -73,9 +77,9 @@ public class FlightSearch {
 			}
 		}
 
-		GeneralMotorCon.getInstance().landing();
+		// GeneralMotorCon.getInstance().landing();
 
-		/*while (!map) {
+		while (!map) {
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 
@@ -83,6 +87,7 @@ public class FlightSearch {
 
 				if (assign1.updateHulaHoop()) {
 					map = true;
+					break;
 				} else if (qrcode.get(j).equals("W00.00")) {
 
 					// spin 180 grader
@@ -184,17 +189,20 @@ public class FlightSearch {
 					if (assign1.updateHulaHoop()) {
 						forwardControl = false;
 						map = true;
+						break;
 
 					} else if (qrcode.get(g).contains("W")) {
 						forwardControl = false;
+						break;
 					}
 				}
 
 			}
-		}*/
+		}
 
 		// TODO ændre run to fly
-		// assign1.fly();
+		GeneralMotorCon.getInstance().lowerAltitude();
+		assign1.flyHulaHoop();
 
 	}
 }
