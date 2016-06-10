@@ -120,23 +120,24 @@ public class Assignment1 implements Runnable{
 						GeneralMotorCon.getInstance().lowerAltitude();
 					}
 				} else if(x > 0){
-					if(randomnessRight){
+					/*if(randomnessRight){
 						GeneralMotorCon.getInstance().right();
 						randomnessRight = false;
 					} else {
 						GeneralMotorCon.getInstance().spinRight();
 						randomnessRight = true;
-					}
+					} */
+					GeneralMotorCon.getInstance().right();
 					
 				} else {
-					if(randomnessLeft){
+					/*if(randomnessLeft){
 						GeneralMotorCon.getInstance().left();	
 						randomnessLeft = false;
 					} else {
 						GeneralMotorCon.getInstance().spinLeft();
 						randomnessLeft = true;
-					}
-					
+					}*/
+					GeneralMotorCon.getInstance().left();
 				}	
 			} else {
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
