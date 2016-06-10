@@ -42,7 +42,7 @@ public class SpaceXConsolePanel extends JPanel {
 	public SpaceXConsolePanel(String...strings) {
 		// Basic layout for SpaceXConsolePanel object
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(1094, 240));
+		setPreferredSize(new Dimension(854, 240));
 		setBackground(Color.decode("#333333"));
 		
 		Border b = BorderFactory.createLineBorder(Color.GRAY);
@@ -62,7 +62,7 @@ public class SpaceXConsolePanel extends JPanel {
 		
 		// Add textarea to a JScrollPane with a vertical scrollbar
 		JScrollPane sp = new JScrollPane(txtArea);
-		sp.setPreferredSize(new Dimension(854, 180));
+		sp.setPreferredSize(new Dimension(1094, 180));
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		

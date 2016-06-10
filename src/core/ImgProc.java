@@ -78,7 +78,7 @@ public class ImgProc {
 		Object[] res = null;
 		
 		//picture from file
-		for(int index = 0;index<57;index++) {
+		/*for(int index = 0;index<57;index++) {
 			try {
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\picture_"+index+".png"));
 				res = picRunDown(assignment,isFront,imgIn);
@@ -86,12 +86,12 @@ public class ImgProc {
 				
 			} catch (Exception ex) {
 			}
-		}
+		}*/
 		
 		
 		//picture from drone
-	/*	imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		res = picRunDown(assignment,isFront,imgIn);*/
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);
 		
 		return res;
 	}

@@ -39,7 +39,7 @@ public class SpaceXDataPanel extends JPanel {
 	 */
 	public SpaceXDataPanel() {
 		setLayout(new MigLayout());
-		setPreferredSize(new Dimension(240, 460));
+		setPreferredSize(new Dimension(240, 480));
 		setBackground(Color.decode("#333333"));
 		
 		Border b = BorderFactory.createLineBorder(Color.GRAY);

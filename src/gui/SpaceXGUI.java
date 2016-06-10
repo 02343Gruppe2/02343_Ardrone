@@ -83,7 +83,7 @@ public class SpaceXGUI extends JPanel {
 					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					f.setBackground(Color.decode("#333333"));
 					f.setResizable(false);
-					f.setPreferredSize(new Dimension((1094), (720)));
+					f.setPreferredSize(new Dimension(1094, 720));
 		
 			        // Create the content pane
 			        JComponent c = SpaceXGUI.getInstance();
