@@ -207,7 +207,7 @@ public class ImgProc {
 	        radius = (int)Math.round(circlePoints[2]);
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
-	        int distanceBetweenRectAndCircle = 35;
+	        int distanceBetweenRectAndCircle = 25;
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		

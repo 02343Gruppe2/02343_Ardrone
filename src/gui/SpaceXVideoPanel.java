@@ -30,7 +30,7 @@ public class SpaceXVideoPanel extends JPanel {
 	private BufferedImage bottomImage = null;
 	private BufferedImage frontImageProcessed = null;
 	private BufferedImage bottomImageProcessed = null;
-	private Dimension dim = new Dimension(1280,480);
+	private Dimension dim = new Dimension(854,480);
 	
 	/**
 	 * Constructor for GUI's video panel (Spycam). Use {@link #imageUpdated(BufferedImage)} to update image.
@@ -116,10 +116,6 @@ public class SpaceXVideoPanel extends JPanel {
 			g.drawImage(bottomImageProcessed.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, height, width, height, null);
         if(bottomImage != null)
         	g.drawImage(bottomImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), width, height, width, height, null);
-        
-        
-        //if (bottomImageProcessed != null)
-        //	g.drawImage(bottomImageProcessed, 640, 0, bottomImageProcessed.getWidth(), bottomImageProcessed.getHeight(), null);
     }
 }
 

@@ -33,8 +33,7 @@ public class SpaceXGUI extends JPanel {
 	private static SpaceXVideoPanel horiVPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
-	private static SpaceXLinesPanel lPanel;
-	private Dimension dim = new Dimension(1520, 720);
+	private Dimension dim = new Dimension(1094, 720);
 	/**
 	 * Private constructor of SpaceXGUI. Only one instance of this must ever exist!<br>
 	 * Use {@link #getInstance(String...)} to create or instantiate GUI.
@@ -49,23 +48,23 @@ public class SpaceXGUI extends JPanel {
 		setPreferredSize(dim);
 		setBackground(Color.decode("#333333"));
 		
-		bPanel = new SpaceXButtonPanel();
+		//bPanel = new SpaceXButtonPanel();
 		horiVPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
-		lPanel = new SpaceXLinesPanel();
+		//lPanel = new SpaceXLinesPanel();
 		
-		JPanel layerPanel = new JPanel();
+		/*JPanel layerPanel = new JPanel();
 		layerPanel.setLayout(new MigLayout());
-		layerPanel.setPreferredSize(new Dimension(1280,480));
+		layerPanel.setPreferredSize(new Dimension(1094,480));
 		
-		JLayeredPane lpPanel = new JLayeredPane();
-		lpPanel.setPreferredSize(new Dimension(640,480));
+		//JLayeredPane lpPanel = new JLayeredPane();
+		//lpPanel.setPreferredSize(new Dimension(640,480));
 		
-		lpPanel.add(horiVPanel, new Integer(0), 0);
-		lpPanel.add(lPanel, new Integer(1), 0);
+		//lpPanel.add(horiVPanel, new Integer(0), 0);
+		//lpPanel.add(lPanel, new Integer(1), 0);
 		
-		layerPanel.add(lpPanel);
+		//layerPanel.add(lpPanel);
 		
 		/*
 		lPanel.setSize(lPanel.getSize());
@@ -79,7 +78,7 @@ public class SpaceXGUI extends JPanel {
 		add(horiVPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
 		add(dPanel, "wrap");
 		add(cPanel);
-		add(bPanel);
+		//add(bPanel);
 	}
 	
 	/**
@@ -112,7 +111,7 @@ public class SpaceXGUI extends JPanel {
 					f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					f.setBackground(Color.decode("#333333"));
 					f.setResizable(false);
-					f.setPreferredSize(new Dimension((640+640+240), (480+180)));
+					f.setPreferredSize(new Dimension((1094), (720)));
 		
 			        // Create the content pane
 			        JComponent c = SpaceXGUI.getInstance();
