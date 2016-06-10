@@ -55,7 +55,7 @@ public class FlightSearch {
 			if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
 
-				SpaceXGUI.getInstance().appendToConsole("HEJ");
+				SpaceXGUI.getInstance().appendToConsole("\n HEJ");
 				break;
 			}
 
@@ -75,7 +75,7 @@ public class FlightSearch {
 
 		GeneralMotorCon.getInstance().landing();
 
-		while (!map) {
+		/*while (!map) {
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 
@@ -191,7 +191,7 @@ public class FlightSearch {
 				}
 
 			}
-		}
+		}*/
 
 		// TODO ændre run to fly
 		// assign1.fly();
