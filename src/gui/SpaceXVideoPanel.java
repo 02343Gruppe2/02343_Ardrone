@@ -105,18 +105,17 @@ public class SpaceXVideoPanel extends JPanel {
 	
 	@Override
 	public synchronized void paintComponent(Graphics g) {
-		int reduceFactor = 3;
-		int width = 240;
-		int height = 427;
+		int width = 427; //picture width/3
+		int height = 240; //picture height/3
 		super.paintComponent(g);
         if (frontImageProcessed != null)
-			g.drawImage(frontImageProcessed.getScaledInstance(frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, Image.SCALE_SMOOTH), 0, 0, frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, null);
+			g.drawImage(frontImageProcessed.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, width, height, null);
         if(frontImage != null)
-        	g.drawImage(frontImage.getScaledInstance(frontImage.getWidth()/2, frontImage.getHeight()/2, Image.SCALE_SMOOTH), 320, 0, frontImage.getWidth()/2, frontImage.getHeight()/2, null);
+        	g.drawImage(frontImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), width, 0, width, height, null);
         if (bottomImageProcessed != null)
-			g.drawImage(bottomImageProcessed.getScaledInstance(bottomImageProcessed.getWidth()/2, bottomImageProcessed.getHeight()/2, Image.SCALE_SMOOTH), 0, 180, bottomImageProcessed.getWidth()/2, bottomImageProcessed.getHeight()/2, null);
+			g.drawImage(bottomImageProcessed.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, height, width, height, null);
         if(bottomImage != null)
-        	g.drawImage(bottomImage.getScaledInstance(bottomImage.getWidth()/2, bottomImage.getHeight()/2, Image.SCALE_SMOOTH), 320, 180, bottomImage.getWidth()/2, bottomImage.getHeight()/2, null);
+        	g.drawImage(bottomImage.getScaledInstance(width, height, Image.SCALE_SMOOTH), width, height, width, height, null);
         
         
         //if (bottomImageProcessed != null)
