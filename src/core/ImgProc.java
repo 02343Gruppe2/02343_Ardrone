@@ -190,7 +190,7 @@ public class ImgProc {
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 2, minDist = 75, minRadius = 40, maxRadius = 270, param1 = 100, param2 = 100;
+		int dp = 2, minDist = 75, minRadius = 75, maxRadius = 270, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
@@ -227,23 +227,24 @@ public class ImgProc {
         			
                 			// draw the found circle
                 			Imgproc.circle(drawingMat, center, radius, greenScalar,2);
-                			
-                			 if (circlePoints[0] > 320 && circlePoints[1] < 240){
+                			int picWidth = 640;
+                			int picHeight = 360;
+                			 if (circlePoints[0] > picWidth && circlePoints[1] < picHeight){
                 				//1. qaudrant
-                				circlePoints[0] = circlePoints[0] - 320;
-                				circlePoints[1] = -circlePoints[1] + 240;
-                			}else if(circlePoints[0] > 320 && circlePoints[1] > 240) {
+                				circlePoints[0] = circlePoints[0] - picWidth;
+                				circlePoints[1] = -circlePoints[1] + picHeight;
+                			}else if(circlePoints[0] > picWidth && circlePoints[1] > picHeight) {
                 				//2. qaudrant
-                				circlePoints[0] = circlePoints[0] - 320;
-                				circlePoints[1] = -circlePoints[1] + 240;
-                			} else if (circlePoints[0] < 320 && circlePoints[1] > 240) {
+                				circlePoints[0] = circlePoints[0] - picWidth;
+                				circlePoints[1] = -circlePoints[1] + picHeight;
+                			} else if (circlePoints[0] < picWidth && circlePoints[1] > picHeight) {
                 				//3. qaudrant
-                				circlePoints[0] = circlePoints[0] - 320;
-                				circlePoints[1] = -circlePoints[1] + 240;
-                			} else if(circlePoints[0] < 320 && circlePoints[1] < 240) {
+                				circlePoints[0] = circlePoints[0] - picWidth;
+                				circlePoints[1] = -circlePoints[1] + picHeight;
+                			} else if(circlePoints[0] < picWidth && circlePoints[1] < picHeight) {
                 				//4. qaudrant
-                				circlePoints[0] = circlePoints[0] - 320;
-                				circlePoints[1] = -circlePoints[1] + 240;
+                				circlePoints[0] = circlePoints[0] - picWidth;
+                				circlePoints[1] = -circlePoints[1] + picHeight;
                 			}
                 			List<Rect> hulahopRect = new ArrayList<Rect>();
                 			hulahopRect.add(rects.get(c));
