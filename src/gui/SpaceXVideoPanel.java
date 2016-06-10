@@ -105,6 +105,9 @@ public class SpaceXVideoPanel extends JPanel {
 	
 	@Override
 	public synchronized void paintComponent(Graphics g) {
+		int reduceFactor = 3;
+		int width = 240;
+		int height = 427;
 		super.paintComponent(g);
         if (frontImageProcessed != null)
 			g.drawImage(frontImageProcessed.getScaledInstance(frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, Image.SCALE_SMOOTH), 0, 0, frontImageProcessed.getWidth()/2, frontImageProcessed.getHeight()/2, null);

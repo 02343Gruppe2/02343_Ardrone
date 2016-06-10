@@ -14,6 +14,7 @@ import de.yadrone.apps.paperchase.controller.PaperChaseKeyboardController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.VideoChannel;
+import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.navdata.BatteryListener;
@@ -65,7 +66,7 @@ public class SpaceXDrone {
 			});
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
-			
+			drone.getCommandManager().setVideoCodec(VideoCodec.H264_720P);
 			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 			drone.getVideoManager().addImageListener(new ImageListener() {
 				@Override
