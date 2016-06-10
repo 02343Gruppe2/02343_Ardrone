@@ -105,7 +105,7 @@ public class ImgProc {
 		originalMat = convertBufferedImageToMa(test);
 		drawingMat = originalMat.clone();
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
-		Imgproc.GaussianBlur(grayImg, grayImg, new Size(3,3),0,0);
+		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),0,0);
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
 		//Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
 		//Imgproc.erode(grayImg, grayImg, new Mat());
