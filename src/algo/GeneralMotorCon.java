@@ -71,8 +71,8 @@ public class GeneralMotorCon implements GeneralMotorListener{
 		cmd.hover().doFor(hoverTime);
 		int thisTime = time;
 		if(time > 8000) { thisTime = 8000; }
-		cmd.forward(speed);
-		waitFor(thisTime);
+		cmd.forward(speed).doFor(thisTime);
+		//waitFor(thisTime);
 		cmd.hover().doFor(hoverTime);	
 	}
 	
