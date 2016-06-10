@@ -81,7 +81,7 @@ public class FlightSearch {
 
 			for (int j = 0; j < qrcode.size(); j++) {
 
-				if (assign1.updateHulahoop()) {
+				if (assign1.updateHulaHoop()) {
 					map = true;
 				} else if (qrcode.get(j).equals("W00.00")) {
 
@@ -181,7 +181,7 @@ public class FlightSearch {
 				qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 
 				for (int g = 0; g < qrcode.size(); g++) {
-					if (assign1.updateHulahoop()) {
+					if (assign1.updateHulaHoop()) {
 						forwardControl = false;
 						map = true;
 

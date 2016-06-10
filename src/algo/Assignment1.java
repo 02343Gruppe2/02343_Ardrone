@@ -29,7 +29,7 @@ public class Assignment1 implements Runnable{
 	int adjustmentTolerance = 75;
 	
 	// Instantiate the pictures hula hoop
-	Object[] picHulaHops = obj.findHulahops();
+	Object[] picHulaHoops = obj.findHulahops();
 	
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
@@ -77,13 +77,13 @@ public class Assignment1 implements Runnable{
 		GeneralMotorCon.getInstance().setThreadTimer(new Date().getTime());
 	}
 	
-	public boolean fly() {
+	public boolean flyHulaHoop() {
 		finished = false;
 		threadRun = true;
 		//new Thread(this).start();
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly continue");
 		while (!finished) {
-			updateHulahoop();
+			updateHulaHoop();
 					
 			flyThrough();
 	
@@ -107,7 +107,7 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough");
 		while (!middle) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
-			boolean check = updateHulahoop();
+			boolean check = updateHulaHoop();
 			if(check) {
 				if(x < (adjustmentTolerance-shittyDroneConstant) && x > -(adjustmentTolerance+shittyDroneConstant)) {
 					if(y < (adjustmentTolerance+30) && y > -(adjustmentTolerance+30)){
@@ -150,7 +150,7 @@ public class Assignment1 implements Runnable{
 		//doneHulaHoop.add(qrcode);
 	}
 	 
-	public boolean updateHulahoop() {
+	public boolean updateHulaHoop() {
 		int i = 0;
 		try{
 			i++;
