@@ -29,7 +29,7 @@ public class Assignment1 implements Runnable{
 	int adjustmentTolerance = 75;
 	
 	// Instantiate the pictures hula hoop
-	Object[] picHulaHoops = obj.findHulahops();
+	Object[] picHulaHoops = obj.findHulaHoops();
 	
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
@@ -49,7 +49,7 @@ public class Assignment1 implements Runnable{
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
 	// Making a list with the objects from the picture analyze
-	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulahops()[1];
+	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulaHoops()[1];
 	
 	public void run() {
 		resetTime();
@@ -155,7 +155,7 @@ public class Assignment1 implements Runnable{
 		try{
 			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
-			hulaHoop = (ArrayList<String[]>)obj.findHulahops()[1];
+			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
 			i++;
 			if(hulaHoop.size() == 0) return false;

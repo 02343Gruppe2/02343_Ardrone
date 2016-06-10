@@ -110,18 +110,16 @@ public class SpaceXDrone {
 			
 			
 			int counter = 0;
+			ImgProc imgobj = new ImgProc();
 			Thread.sleep(5000);
 			/*while(running) {
 				
 				counter++;
-				swapCamera(drone);
-				Thread.sleep(200);
-				imageIsReady = true;
 				Thread.sleep(200);
 				if(counter > 1000000)
 					running = false;
 				
-				//PicAnal.savePicture("picture_"+counter, isFront);
+				
 			}*/
 			
 			//infinite loop should go here

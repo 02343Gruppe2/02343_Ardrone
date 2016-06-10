@@ -52,28 +52,6 @@ public class SpaceXGUI extends JPanel {
 		horiVPanel = new SpaceXVideoPanel();
 		cPanel = new SpaceXConsolePanel(strings);
 		dPanel = new SpaceXDataPanel();
-		//lPanel = new SpaceXLinesPanel();
-		
-		/*JPanel layerPanel = new JPanel();
-		layerPanel.setLayout(new MigLayout());
-		layerPanel.setPreferredSize(new Dimension(1094,480));
-		
-		//JLayeredPane lpPanel = new JLayeredPane();
-		//lpPanel.setPreferredSize(new Dimension(640,480));
-		
-		//lpPanel.add(horiVPanel, new Integer(0), 0);
-		//lpPanel.add(lPanel, new Integer(1), 0);
-		
-		//layerPanel.add(lpPanel);
-		
-		/*
-		lPanel.setSize(lPanel.getSize());
-		lPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
-		lPanel.setLocation(0,0);
-		vPanel.setSize(lPanel.getSize());
-		vPanel.setBounds(0,0,lPanel.getWidth(),lPanel.getHeight());
-		vPanel.setLocation(0,0);
-		*/
 		
 		add(horiVPanel); // NOTICE Switch layerPanel with vPanel to get video (but no lines)
 		add(dPanel, "wrap");

@@ -41,9 +41,11 @@ public class ImgProc {
 	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
 	private Scalar redScalar = new Scalar(200,0,0); // found a square
 	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
+	private int minDiagonalLength = 100;
+	
 	public static void main(String[] args) {
 		ImgProc obj = new ImgProc();
-		obj.findCube();
+		obj.findHulaHoops();
 	}
 	
 	public ImgProc() {
@@ -60,7 +62,7 @@ public class ImgProc {
 		return analysePicture(-1,true);
 	}
 	
-	public Object[] findHulahops() {
+	public Object[] findHulaHoops() {
 		return analysePicture(0, true);
 	}
 	
@@ -76,21 +78,20 @@ public class ImgProc {
 		Object[] res = null;
 		
 		//picture from file
-		/*for(int index = 0;index<400;index++) {
+		for(int index = 0;index<57;index++) {
 			try {
-				
-				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\bottom\\picture_"+index+".png"));
+				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\picture_"+index+".png"));
 				res = picRunDown(assignment,isFront,imgIn);
-				Imgcodecs.imwrite("materials\\bottom\\tested\\"+index+".png",convertBufferedImageToMa(imgOut));
+				Imgcodecs.imwrite("materials\\front\\"+index+".png",convertBufferedImageToMa(imgOut));
 				
 			} catch (Exception ex) {
 			}
-		}*/
+		}
 		
 		
 		//picture from drone
-		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		res = picRunDown(assignment,isFront,imgIn);
+	/*	imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);*/
 		
 		return res;
 	}
@@ -115,7 +116,7 @@ public class ImgProc {
 			if(isFront) {
 				rects = findPosibleQrPortrait(grayImg, drawingMat);
 				res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
-				res[1] = checkImageForHulahops(grayImg, rects, originalMat, drawingMat);
+				res[1] = checkImageForHulaHoops(grayImg, rects, originalMat, drawingMat);
 				res[2] = rects;
 			} else {
 				
@@ -153,14 +154,15 @@ public class ImgProc {
 		List<Rect> outRects = new ArrayList<Rect>();
 		Boolean qrExist;
 		for(int i = 0;i<rects.size();i++) {
-			double tlx = (rects.get(i).tl().x-10 < 0) ? rects.get(i).tl().x : rects.get(i).tl().x-10;
+			/*double tlx = (rects.get(i).tl().x-10 < 0) ? rects.get(i).tl().x : rects.get(i).tl().x-10;
 			double tly = (rects.get(i).tl().y-10 < 0) ? rects.get(i).tl().y : rects.get(i).tl().y-10;
 			double brx = (rects.get(i).br().x+10 > 640) ? rects.get(i).br().x : rects.get(i).br().x+10;
 			double bry = (rects.get(i).br().y+10 > 360) ? rects.get(i).br().y : rects.get(i).br().y+10;
 			Rect rect = new Rect(new Point(tlx,tly), new Point(brx,bry));
 			//Rect with 10 more px surrounding
-			Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), blueScalar);
-			Mat possibleQrMat = originalMat.submat(rect);
+			Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), blueScalar);*/
+			
+			Mat possibleQrMat = originalMat.submat(rects.get(i));
 			BufferedImage possibleQrBufImg = convertMatToBufferedImage(possibleQrMat);
 			
 			//Boolean tells if we use try harder hint
@@ -168,7 +170,7 @@ public class ImgProc {
 			
 			if(qrText != null){
 				qrExist =false;
-				Imgproc.putText(drawingMat, qrText, rects.get(i).tl(), Core.FONT_HERSHEY_PLAIN, 1, greenScalar,2);
+				Imgproc.putText(drawingMat, qrText, rects.get(i).tl(), Core.FONT_HERSHEY_PLAIN, 1, greenScalar,3);
 				for(int z =0; z < qrCodes.size();z++){
 					if(qrText.equals(qrCodes.get(z))){
 						qrExist = true;	
@@ -184,13 +186,13 @@ public class ImgProc {
 		return new Object[] {qrCodes, outRects};
 	}
 	
-	private  ArrayList<String[]> checkImageForHulahops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
 		double[] lineVec = new double[4];
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 2, minDist = 75, minRadius = 75, maxRadius = 270, param1 = 100, param2 = 100;
+		int dp = 2, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
@@ -207,7 +209,7 @@ public class ImgProc {
 	        radius = (int)Math.round(circlePoints[2]);
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
-	        int distanceBetweenRectAndCircle = 25;
+	        int distanceBetweenRectAndCircle = 45;
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		
@@ -226,7 +228,7 @@ public class ImgProc {
                 			//Imgproc.line(drawingMat, new Point(lineVec[0],lineVec[1]), new Point(lineVec[2],lineVec[3]), greenScalar,2);
         			
                 			// draw the found circle
-                			Imgproc.circle(drawingMat, center, radius, greenScalar,2);
+                			Imgproc.circle(drawingMat, center, radius, greenScalar,4);
                 			int picWidth = 640;
                 			int picHeight = 360;
                 			 if (circlePoints[0] > picWidth && circlePoints[1] < picHeight){
@@ -267,13 +269,14 @@ public class ImgProc {
 	private List<Rect> findPosibleQrPortrait(Mat grayImg, Mat drawingMat) {
 		List<MatOfPoint> contours = findContours(grayImg);
 		List<Rect> rects = new ArrayList<Rect>();
+		
 		for(int i = 0;i <contours.size();i++) {
 			Rect rect =  findRectangle(contours.get(i));
 			//checks distance between topleft and bottomright
 			//QR codes are on A3, which height is sqrt(2) times bigger than width - 1.4, which is why we check for 1.25 and 1.55
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50 && rect.height < (rect.width*1.55) && rect.height > (rect.width*1.25)) {
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength && rect.height < (rect.width*1.52) && rect.height > (rect.width*1.28)) {
 				rects.add(rect);
-				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,2);
+				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
 			} 
 		}
 		
@@ -286,9 +289,9 @@ public class ImgProc {
 		for(int i = 0;i <contours.size();i++) {
 			Rect rect =  findRectangle(contours.get(i));
 			//checks distance between topleft and bottomright
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > 50) {
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength) {
 				rects.add(rect);
-				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,2);
+				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
 			} 
 		}
 		return rects;
