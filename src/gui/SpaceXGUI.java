@@ -142,6 +142,7 @@ public class SpaceXGUI extends JPanel {
 		dPanel.setImageWidth(newImage.getWidth());
 		dPanel.setImageHeight(newImage.getHeight());
 		dPanel.incrementImageNumber();
+		dPanel.updateBattery();
 		dPanel.updateData();
 	}
 	
