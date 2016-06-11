@@ -23,6 +23,7 @@ import network.DroneConnection;
 import algo.Assignment1;
 import algo.FlightSearch;
 import algo.GeneralMotorCon;
+import algo.GeneralMotorConSchedule;
 
 
 public class SpaceXDrone {
@@ -88,6 +89,15 @@ public class SpaceXDrone {
 			// keyboard controller is always enabled and cannot be disabled (for safety reasons)
 			PaperChaseKeyboardController keyboardController = new PaperChaseKeyboardController(drone);
 			keyboardController.start();
+			
+			/*
+			GeneralMotorConSchedule.getInstance().setDrone(drone);
+			GeneralMotorConSchedule.getInstance().takeoff();
+			GeneralMotorConSchedule.getInstance().forward(2000).doFor(2000);
+			GeneralMotorConSchedule.getInstance().right();
+			GeneralMotorConSchedule.getInstance().left();
+			GeneralMotorConSchedule.getInstance().landing();
+			*/
 			
 			GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();

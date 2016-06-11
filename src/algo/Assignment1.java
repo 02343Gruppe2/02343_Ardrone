@@ -35,7 +35,8 @@ public class Assignment1 implements Runnable{
 	double x, y;
 	double radius;
 	private int magicForwardNum = 430000*4;
-	private int shittyDroneConstant = 0;
+	private int shittyDroneConstant = 65;		// positiv for shitty right movement and negative for shitty left movement
+	private int forwardOracle = 0;
 	// To check if the drone have flown through the hula hoop
 	private boolean finished = false;
 	private boolean threadRun = false;
@@ -81,7 +82,7 @@ public class Assignment1 implements Runnable{
 		finished = false;
 		threadRun = true;
 		//new Thread(this).start();
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly continue");
+		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly Ini");
 		while (!finished) {
 			updateHulaHoop();
 					
