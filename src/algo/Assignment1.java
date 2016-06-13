@@ -57,7 +57,6 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start");
 		while(threadRun) {
 			try{
-				Thread.sleep(5000);
 				/*Long timeChecker = (new Date().getTime() - 20000);
 				Long iniTime = GeneralMotorCon.getInstance().getThreadTimer();
 				if(iniTime < timeChecker){
@@ -134,10 +133,12 @@ public class Assignment1 implements Runnable{
 						GeneralMotorConSchedule.getInstance().raiseAltitude();
 						break;
 					}
-				}				
+				}
+				Thread.sleep(5000);
 			} catch (InterruptedException e ){
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun InteruptedException ");		
 			}
+			
 		}
 		finished = true;
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished");
@@ -249,35 +250,54 @@ public class Assignment1 implements Runnable{
 	 
 	public boolean updateHulaHoop() {
 		try{
+			int updateInteger = 0;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
+			updateInteger = 1;
 			if(hulaHoop.size() == 0) return false;
+			updateInteger = 2;
 			if(hulaHoop.isEmpty()) return false;
+			updateInteger = 3;
 			for (String[] s : hulaHoop){
-				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop checking indexof: " + hulaHoop.indexOf(s));
+				updateInteger = 4;
 				if(s[3].contains("P")){
+					updateInteger = 5;
 					x = Double.parseDouble(s[0]);
+					updateInteger = 6;
 					y = Double.parseDouble(s[1]);
+					updateInteger = 7;
 					radius = Double.parseDouble(s[2]);
+					updateInteger = 8;
 					qrcode = s[3];
+					updateInteger = 9;
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done");
-					
+					updateInteger = 10;
 					resetTime();
+					updateInteger = 11;
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+					updateInteger = 12;
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+					updateInteger = 13;
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+					updateInteger = 14;
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+					updateInteger = 15;
 					lastCircleTime = new Date().getTime();
 					return true;
 				}
 				if(Double.parseDouble(s[2]) > radius){
+					updateInteger = 16;
 					x = Double.parseDouble(s[0]);
+					updateInteger = 17;
 					y = Double.parseDouble(s[1]);
+					updateInteger = 18;
 					radius = Double.parseDouble(s[2]);
+					updateInteger = 19;
 					//qrcode = s[3];
 				}
 			}
+			updateInteger = 20;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done, with no QRcode");
 			resetTime();
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
@@ -285,6 +305,7 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
 			lastCircleTime = new Date().getTime();
+			updateInteger = 21;
 			return true;
 			
 		} catch (NullPointerException e) {
