@@ -27,7 +27,6 @@ import algo.GeneralMotorConSchedule;
 
 
 public class SpaceXDrone {
-	FlightAlgo flightAlgo;
 	FlightSearch FS;
 	Assignment1 assig1;
 	Boolean isFront;
@@ -98,12 +97,10 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().left();
 			GeneralMotorConSchedule.getInstance().landing();
 			*/
-			
-			GeneralMotorCon.getInstance().setDrone(drone);
-			GeneralMotorCon.getInstance().takeoff();
-			GeneralMotorCon.getInstance().raiseAltitude();
-			GeneralMotorCon.getInstance().raiseAltitude();
-			//GeneralMotorCon.getInstance().raiseAltitude();
+			GeneralMotorConSchedule.getInstance().setDrone(drone);
+			GeneralMotorConSchedule.getInstance().takeoff();
+			GeneralMotorConSchedule.getInstance().raiseAltitude();
+			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			
 			//FS = new FlightSearch();
 			

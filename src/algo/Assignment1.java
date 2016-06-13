@@ -11,10 +11,10 @@ package algo;
 
 import gui.SpaceXGUI;
 import core.ImgProc;
-import algo.GeneralMotorCon;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
 import utils.FormattedTimeStamp;
 
@@ -26,22 +26,22 @@ public class Assignment1 implements Runnable{
 	// For how long the drone should do a task
 	int doTime = 1000;
 	// A failure margin
-	int adjustmentTolerance = 75;
-	
+	int adjustmentTolerance = 85;	//about 75 (or 3.50)
+	int variableTolerance = 0; // (-2/3)*radius + 200 = tolerance
 	// Instantiate the pictures hula hoop
-	Object[] picHulaHoops = obj.findHulaHoops();
+	//Object[] picHulaHoops = obj.findHulaHoops();
 	
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
 	double radius;
-	private int magicForwardNum = 430000*4;
-	private int shittyDroneConstant = 65;		// positiv for shitty right movement and negative for shitty left movement
-	private int forwardOracle = 0;
+	private int magicForwardNum = 645000;		//calculated 430000
+	private int shittyDroneConstant = 0;		//65 positiv for shitty right movement and negative for shitty left movement
+	private int lastMovement = 0;	// 1 = forward, 2 = backwards, 3 = right, 4 = left
 	// To check if the drone have flown through the hula hoop
-	private boolean finished = false;
-	private boolean threadRun = false;
-	private boolean randomnessRight = true;
-	private boolean randomnessLeft = true;
+	private static boolean finished = false;
+	private static boolean threadRun = false;
+	private static long lastCircleTime = new Date().getTime();
+	private boolean randomNoCycleLoop = false;
 	// The amount of hula hoops
 	private int numHulaHoop = 4;
 	// The QRcode on the hula hoop
@@ -54,34 +54,108 @@ public class Assignment1 implements Runnable{
 	
 	public void run() {
 		resetTime();
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start: " + GeneralMotorCon.getInstance().getThreadTimer());
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start");
 		while(threadRun) {
 			try{
-				Thread.sleep(20000);
-				Long timeChecker = (new Date().getTime() - 20000);
+				Thread.sleep(5000);
+				/*Long timeChecker = (new Date().getTime() - 20000);
 				Long iniTime = GeneralMotorCon.getInstance().getThreadTimer();
 				if(iniTime < timeChecker){
 					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun timer finish, timeChecker: " + timeChecker + ". ThreadTimer: " + GeneralMotorCon.getInstance().getThreadTimer());
 					finished = true;
 					threadRun = false;
 				}
+				*/
+				if(lastCircleTime < (new Date().getTime()-20000)) {
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found for too long timer, stopping search");
+					threadRun = false;
+					finished = true;
+				}
+				else if(lastCircleTime < (new Date().getTime()-5000)){
+					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found timer, start backin up");
+					/*switch(doRandom()) {
+					case 0:
+						GeneralMotorConSchedule.getInstance().forward(500);
+						break;
+					case 1:
+						GeneralMotorConSchedule.getInstance().backward(500);
+						break;
+					case 2:
+						switch(doRandom()){
+						case 0:
+							GeneralMotorConSchedule.getInstance().spinLeft();
+							break;
+						case 1:
+							GeneralMotorConSchedule.getInstance().spinRight();
+							break;
+						default:
+							GeneralMotorConSchedule.getInstance().backward(500);
+							break;
+						}
+						break;
+					} */
+					switch(lastMovement) {
+					case 1:
+						GeneralMotorConSchedule.getInstance().backward(500);
+						break;
+					case 2:
+						GeneralMotorConSchedule.getInstance().forward(500);
+						break;
+					case 3:
+						switch(doRandom()) {
+						case 0:
+							GeneralMotorConSchedule.getInstance().left();
+							break;
+						case 1:
+							GeneralMotorConSchedule.getInstance().spinLeft();
+							break;
+						case 2:
+							GeneralMotorConSchedule.getInstance().cycleRight();
+							break;
+						}
+						break;
+					case 4:
+						switch(doRandom()) {
+						case 0:
+							GeneralMotorConSchedule.getInstance().right();
+							break;
+						case 1:
+							GeneralMotorConSchedule.getInstance().spinRight();
+							break;
+						case 2:
+							GeneralMotorConSchedule.getInstance().cycleLeft();
+							break;
+						}
+						break;
+					case 5:
+						GeneralMotorConSchedule.getInstance().lowerAltitude();
+						break;
+					case 6:
+						GeneralMotorConSchedule.getInstance().raiseAltitude();
+						break;
+					}
+				}				
 			} catch (InterruptedException e ){
 				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun InteruptedException ");		
 			}
 		}
 		finished = true;
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished: " + GeneralMotorCon.getInstance().getThreadTimer());
+		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished");
 	}
 	
 	public void resetTime(){
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - reset thread timer");
-		GeneralMotorCon.getInstance().setThreadTimer(new Date().getTime());
+		lastCircleTime = new Date().getTime();
+	}
+	
+	private void setVariableTolerance() {
+		variableTolerance = (int)(-((0.666) * radius) + 200);
 	}
 	
 	public boolean flyHulaHoop() {
 		finished = false;
 		threadRun = true;
-		//new Thread(this).start();
+		new Thread(this).start();
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly Ini");
 		while (!finished) {
 			updateHulaHoop();
@@ -110,40 +184,62 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
 			boolean check = updateHulaHoop();
 			if(check) {
-				if(x < (adjustmentTolerance-shittyDroneConstant) && x > -(adjustmentTolerance+shittyDroneConstant)) {
-					if(y < (adjustmentTolerance+30) && y > -(adjustmentTolerance+30)){
+				setVariableTolerance();
+				if(x < (variableTolerance-shittyDroneConstant) && x > -(variableTolerance+shittyDroneConstant)) {
+					if(y < (adjustmentTolerance) && y > -(adjustmentTolerance)){
 						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
-						middle = true;
-						GeneralMotorCon.getInstance().forward((int)(magicForwardNum/radius));
+						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Radius: " + radius);
+						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - variableTolerance: " + variableTolerance);
+						if(radius> 160){
+							middle = true;
+							SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Final fly through");
+							doneHulaHoop.add(qrcode);
+							GeneralMotorConSchedule.getInstance().forward((int)(magicForwardNum/radius)).pauseFor((int)(magicForwardNum/radius));	
+						} else {
+							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
+						}
+						lastMovement = 1;
 					} else if(y > 0){
-						GeneralMotorCon.getInstance().raiseAltitude();
+						GeneralMotorConSchedule.getInstance().raiseAltitude();
+						lastMovement = 5;
 					} else {
-						GeneralMotorCon.getInstance().lowerAltitude();
+						GeneralMotorConSchedule.getInstance().lowerAltitude();
+						lastMovement = 6;
 					}
 				} else if(x > 0){
-					/*if(randomnessRight){
-						GeneralMotorCon.getInstance().right();
-						randomnessRight = false;
-					} else {
-						GeneralMotorCon.getInstance().spinRight();
-						randomnessRight = true;
-					} */
-					GeneralMotorCon.getInstance().right();
-					
+					switch(doRandom()) {
+					case 0:
+						GeneralMotorConSchedule.getInstance().right();
+						break;
+					case 1:
+						GeneralMotorConSchedule.getInstance().spinRight();
+						break;
+					case 2:
+						GeneralMotorConSchedule.getInstance().cycleLeft();
+						break;
+					}
+					GeneralMotorConSchedule.getInstance().pauseFor(100);
+					lastMovement = 3;
 				} else {
-					/*if(randomnessLeft){
-						GeneralMotorCon.getInstance().left();	
-						randomnessLeft = false;
-					} else {
-						GeneralMotorCon.getInstance().spinLeft();
-						randomnessLeft = true;
-					}*/
-					GeneralMotorCon.getInstance().left();
+					switch(doRandom()) {
+					case 0:
+						GeneralMotorConSchedule.getInstance().left();
+						break;
+					case 1:
+						GeneralMotorConSchedule.getInstance().spinLeft();
+						break;
+					case 2:
+						GeneralMotorConSchedule.getInstance().cycleRight();
+						break;
+					}
+					GeneralMotorConSchedule.getInstance().pauseFor(100);
+					lastMovement = 4;
 				}	
 			} else {
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				if(!threadRun) return;
 			}
+			GeneralMotorConSchedule.getInstance().pauseFor(50);
 		}
 		finished = true;
 		threadRun = false;
@@ -152,18 +248,14 @@ public class Assignment1 implements Runnable{
 	}
 	 
 	public boolean updateHulaHoop() {
-		int i = 0;
 		try{
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
-			i++;
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
-			i++;
 			for (String[] s : hulaHoop){
-				i++;
+				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop checking indexof: " + hulaHoop.indexOf(s));
 				if(s[3].contains("P")){
 					x = Double.parseDouble(s[0]);
 					y = Double.parseDouble(s[1]);
@@ -176,6 +268,7 @@ public class Assignment1 implements Runnable{
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
 					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+					lastCircleTime = new Date().getTime();
 					return true;
 				}
 				if(Double.parseDouble(s[2]) > radius){
@@ -184,30 +277,49 @@ public class Assignment1 implements Runnable{
 					radius = Double.parseDouble(s[2]);
 					//qrcode = s[3];
 				}
-				i++;
 			}
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done, with no QRcode");
-			i++;
 			resetTime();
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
-			i++;
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
-			i++;
+			lastCircleTime = new Date().getTime();
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + i+ " - " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - IndexOutOfBoundsException, Error: " + e.toString());
 		}		
 		return false;
+	}
+	
+	/**
+	 * Do Random
+	 * gives a random number between 1-3 for making a movement decision
+	 * 1 - straight to the side
+	 * 2 - spin to the side
+	 * 3 - cycle to the side (cannot happen twice in a row)  
+	 * @return - random number
+	 */
+	private int doRandom(){
+		boolean runner = true;
+		while(runner){
+			int randomNum = ThreadLocalRandom.current().nextInt(0, 101);
+			if(randomNum >= 66 ){
+				randomNoCycleLoop = false;
+				return 0;
+			} else if(randomNum >= 33) {
+				randomNoCycleLoop = false;
+				return 1;
+			} else if(!randomNoCycleLoop) {
+				runner = false;
+			}	
+		}
+		randomNoCycleLoop = true;
+		return 2;
 	}
 }

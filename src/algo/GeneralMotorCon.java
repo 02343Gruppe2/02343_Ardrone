@@ -230,12 +230,4 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	public void setBatLvl(int batLvl) {
 		this.batLvl = batLvl;
 	}
-	
-	public long getThreadTimer() {
-		return this.threadTimer;
-	}
-	
-	public void setThreadTimer(long threadTimer) {
-		this.threadTimer = threadTimer;
-	}
 }
