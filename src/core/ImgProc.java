@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -98,6 +99,7 @@ public class ImgProc {
 	}
 	
 	private Object[] picRunDown(int assignment, boolean isFront, BufferedImage test) {
+		long time = new Date().getTime();
 		Object[] res = new Object[3];
 		Mat originalMat;
 		Mat drawingMat;
@@ -106,9 +108,9 @@ public class ImgProc {
 		originalMat = convertBufferedImageToMa(test);
 		drawingMat = originalMat.clone();
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
-		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),0,0);
-		Imgproc.Canny(grayImg, grayImg, 10, 50);
-		Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
+		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),2,2);
+		Imgproc.Canny(grayImg, grayImg, 25, 50);
+		//Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
 		//Imgproc.erode(grayImg, grayImg, new Mat());
 		List<Rect> rects;
 		switch (assignment) {
@@ -116,7 +118,8 @@ public class ImgProc {
 			//hulahops assignment
 			if(isFront) {
 				rects = findPosibleQrPortrait(grayImg, drawingMat);
-				res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
+				Object[] temp  = checkRectsForQrText(rects, originalMat, drawingMat);
+				res[0] = temp;
 				res[1] = checkImageForHulaHoops(grayImg, rects, originalMat, drawingMat);
 				res[2] = rects;
 			} else {
@@ -147,6 +150,8 @@ public class ImgProc {
 		
 		imgOut = convertMatToBufferedImage(drawingMat);
 		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
+		//SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage1(grayImg), false);
+		SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
 		return res;
 	}
 	
@@ -193,7 +198,7 @@ public class ImgProc {
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 1, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 130;
+		int dp = 1, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
@@ -214,7 +219,7 @@ public class ImgProc {
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
 	        int distanceBetweenRectAndCircle = 45;
-	        Imgproc.circle(drawingMat, center, radius, blueScalar,3);
+	       // Imgproc.circle(drawingMat, center, radius, blueScalar,3);
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		

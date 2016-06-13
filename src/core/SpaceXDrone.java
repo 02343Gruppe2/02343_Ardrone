@@ -97,14 +97,14 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().left();
 			GeneralMotorConSchedule.getInstance().landing();
 			*/
-			GeneralMotorConSchedule.getInstance().setDrone(drone);
+			/*GeneralMotorConSchedule.getInstance().setDrone(drone);
 			GeneralMotorConSchedule.getInstance().takeoff();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			
 			//FS = new FlightSearch();
 			
-			assig1.flyHulaHoop();
+			assig1.flyHulaHoop();*/
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
@@ -119,15 +119,15 @@ public class SpaceXDrone {
 			int counter = 0;
 			ImgProc imgobj = new ImgProc();
 			Thread.sleep(5000);
-			/*while(running) {
-				
+			while(running) {
+				imgobj.findHulaHoops();
 				counter++;
-				Thread.sleep(200);
+				//Thread.sleep(200);
 				if(counter > 1000000)
 					running = false;
 				
 				
-			}*/
+			}
 			
 			//infinite loop should go here
 		} catch (Exception e) {
@@ -138,6 +138,7 @@ public class SpaceXDrone {
 			if (drone != null)
 				drone.getCommandManager().landing().doFor(2000);
 			
+			drone.stop();
 			// Exit local program
 			//System.exit(0);
 		}
