@@ -12,6 +12,7 @@ import core.ImgProc;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import gui.SpaceXGUI;
+import utils.FormattedTimeStamp;
 
 public class FlightSearch {
 	boolean qrcodeFound = false;
@@ -53,7 +54,7 @@ public class FlightSearch {
 
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
-		for (int i = 0; i < 10; i++) {
+		/*for (int i = 0; i < 10; i++) {
 
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
@@ -85,7 +86,7 @@ public class FlightSearch {
 			}
 			// Forward with 2000 mills
 			GeneralMotorCon.getInstance().forward(2000);
-		}
+		}*/
 
 		while (!map) {
 			
@@ -116,7 +117,7 @@ public class FlightSearch {
 					GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
 
-				} else if (qrcode.get(j).equals("W00.03")) {
+				}else if (qrcode.get(j).equals("W00.03")) {
 					GeneralMotorCon.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.04")) {

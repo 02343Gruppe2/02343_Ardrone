@@ -83,6 +83,7 @@ public class SpaceXDrone {
 			//flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
 			assig1 = new Assignment1();
+			fs = new FlightSearch();
 			
 
 			// keyboard controller is always enabled and cannot be disabled (for safety reasons)
@@ -97,14 +98,14 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().left();
 			GeneralMotorConSchedule.getInstance().landing();
 			*/
-			/*GeneralMotorConSchedule.getInstance().setDrone(drone);
+			GeneralMotorConSchedule.getInstance().setDrone(drone);
 			GeneralMotorConSchedule.getInstance().takeoff();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
-			
-			//fs.search();
-			
-			assig1.flyHulaHoop();*/
+			GeneralMotorConSchedule.getInstance().raiseAltitude();
+					
+			fs.search();
+			//assig1.flyHulaHoop();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();
