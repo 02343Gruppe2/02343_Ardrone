@@ -48,6 +48,7 @@ public class ImgProc {
 	public static void main(String[] args) {
 		ImgProc obj = new ImgProc();
 		obj.findHulaHoops();
+		
 	}
 	
 	public ImgProc() {
@@ -195,10 +196,12 @@ public class ImgProc {
 	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
 		double[] lineVec = new double[4];
+		///List<Rect> rects = (List<Rect>)rectArr[1];
+	//	List<String> qrCodes = (List<String>)rectArr[0];
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 1, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 100;
+		int dp = 1, minDist = 200, minRadius = 150, maxRadius = 540, param1 = 100, param2 = 100;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
@@ -216,10 +219,9 @@ public class ImgProc {
 	        }
     		center.set(circlePoints);
 	        radius = (int)Math.round(circlePoints[2]);
-	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
 	        int distanceBetweenRectAndCircle = 45;
-	       // Imgproc.circle(drawingMat, center, radius, blueScalar,3);
+	        Imgproc.circle(drawingMat, center, radius, blueScalar,3);
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		
