@@ -27,7 +27,7 @@ import algo.GeneralMotorConSchedule;
 
 
 public class SpaceXDrone {
-	FlightSearch FS;
+	FlightSearch fs;
 	Assignment1 assig1;
 	Boolean isFront;
 	Boolean imageIsReady;
@@ -102,7 +102,7 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			
-			//FS = new FlightSearch();
+			//fs.search();
 			
 			assig1.flyHulaHoop();*/
 			

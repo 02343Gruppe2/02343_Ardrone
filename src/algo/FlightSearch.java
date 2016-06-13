@@ -17,6 +17,16 @@ public class FlightSearch {
 	boolean qrcodeFound = false;
 	boolean map = false;
 	boolean forwardControl = false;
+
+	// Instantiate picture analyze
+	ImgProc obj = new ImgProc();
+	// Instantiate Assignment 1
+	Assignment1 assign1 = new Assignment1();
+
+	// Instantiate Object for qrcode
+	Object[] res;
+	ArrayList<String> qrcode = null;
+
 	// String[][] grid = new String[963][1078];
 
 	/*
@@ -41,12 +51,8 @@ public class FlightSearch {
 	 * }
 	 */
 
-	public FlightSearch() {
-		ImgProc obj = new ImgProc();
-		Assignment1 assign1 = new Assignment1();
-		Object[] res;
-		ArrayList<String> qrcode = null;
-
+	public void search() {
+		// spin 10 times and scan for hulahop and qrcode
 		for (int i = 0; i < 10; i++) {
 
 			res = obj.findQRCodes();
@@ -58,39 +64,45 @@ public class FlightSearch {
 				break;
 			} else if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
-
-				SpaceXGUI.getInstance().appendToConsole("HEJ");
 				break;
 			}
 			GeneralMotorCon.getInstance().spin90Left();
 		}
 
 		while (!qrcodeFound) {
-
-			GeneralMotorCon.getInstance().forward(2000);
+			// if qrcode still not found, forward a bit and do scan again.
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
-
-			if (!qrcode.isEmpty()) {
+			
+			// Checking for Hulahop found
+			if (assign1.updateHulaHoop()) {
 				qrcodeFound = true;
-
+				map = true;
+				break;
+			} else if (!qrcode.isEmpty()) {
+				qrcodeFound = true;
+				break;
 			}
+			// Forward with 2000 mills
+			GeneralMotorCon.getInstance().forward(2000);
 		}
 
-		// GeneralMotorCon.getInstance().landing();
-
 		while (!map) {
+			
+			// Scanning for QRcode and storage in arraylist
 			res = obj.findQRCodes();
 			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 
+			// Counting total QRcode scanned
 			for (int j = 0; j < qrcode.size(); j++) {
-
+				
+				// Checking for Hulahop 
 				if (assign1.updateHulaHoop()) {
 					map = true;
 					break;
 				} else if (qrcode.get(j).equals("W00.00")) {
 
-					// spin 180 grader
+					// spin 180 grader if QRcode match the exactly wall.
 					GeneralMotorCon.getInstance().spin90Right();
 					GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
