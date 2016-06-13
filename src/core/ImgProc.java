@@ -41,7 +41,8 @@ public class ImgProc {
 	private Scalar greenScalar = new Scalar(0,200,0); //found a circle and QR code text
 	private Scalar redScalar = new Scalar(200,0,0); // found a square
 	private Scalar blueScalar = new Scalar(0,0,200); //square QR scan area
-	private int minDiagonalLength = 100;
+	private int minDiagonalLength = 125;
+	private int maxRectHeight = 620;
 	
 	public static void main(String[] args) {
 		ImgProc obj = new ImgProc();
@@ -107,7 +108,7 @@ public class ImgProc {
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),0,0);
 		Imgproc.Canny(grayImg, grayImg, 10, 50);
-		//Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
+		Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
 		//Imgproc.erode(grayImg, grayImg, new Mat());
 		List<Rect> rects;
 		switch (assignment) {
@@ -192,13 +193,16 @@ public class ImgProc {
         int radius;
         Point center = new Point();
         Mat circles = new Mat();
-		int dp = 2, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 100;
+		int dp = 1, minDist = 150, minRadius = 125, maxRadius = 540, param1 = 100, param2 = 130;
         Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
         		, minDist, param1, param2, minRadius, maxRadius);
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
 		//Mat lines = new Mat();
 		//int lineLength = 200, threshold = 100, maxLineGap = 50;
 		//Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
+		
+		System.out.println("Rects: " + rects.size() + " circles: "+circles.cols());
+		
         for (int x = 0; x < circles.cols(); x++) {
         	circlePoints = circles.get(0,x);
         	if (circlePoints == null) {
@@ -210,6 +214,7 @@ public class ImgProc {
 	        //Imgproc.circle(drawingMat, pt, radius, blueScalar,2);
 	        //checking if there is a rect below the circle, if there 
 	        int distanceBetweenRectAndCircle = 45;
+	        Imgproc.circle(drawingMat, center, radius, blueScalar,3);
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		
@@ -274,9 +279,11 @@ public class ImgProc {
 			Rect rect =  findRectangle(contours.get(i));
 			//checks distance between topleft and bottomright
 			//QR codes are on A3, which height is sqrt(2) times bigger than width - 1.4, which is why we check for 1.25 and 1.55
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength && rect.height < (rect.width*1.52) && rect.height > (rect.width*1.28)) {
+			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength && rect.height < (rect.width*1.55) && rect.height > (rect.width*1.25)) {
+				if(rect.br().y - rect.tl().y < maxRectHeight) {
 				rects.add(rect);
 				Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
+				}
 			} 
 		}
 		
@@ -399,7 +406,7 @@ public class ImgProc {
 			Result scanResult;
 			if(useHint) {
 				Map<DecodeHintType,Object> tmpHintsMap = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
-	            tmpHintsMap.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+	          //  tmpHintsMap.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
 	            tmpHintsMap.put(DecodeHintType.POSSIBLE_FORMATS, EnumSet.allOf(BarcodeFormat.class));
 	            scanResult = reader.decode(bitmap,tmpHintsMap);
 			} else {
