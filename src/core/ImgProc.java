@@ -151,9 +151,9 @@ public class ImgProc {
 		}
 		
 		imgOut = convertMatToBufferedImage(drawingMat);
-		//SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
+		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		//SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage1(grayImg), false);
-		//SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
+		SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
 		return res;
 	}
 	
