@@ -57,7 +57,7 @@ public class ImgProc {
 	
 	public void savePicture(String fileName, Boolean isFront) {
 		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		Mat originalMat = convertBufferedImageToMa(imgIn);
+		Mat originalMat = convertBufferedImageToMat(imgIn);
 		Imgcodecs.imwrite("materials\\"+fileName+".png",originalMat);
 	}
 
@@ -85,7 +85,7 @@ public class ImgProc {
 			try {
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\picture_"+index+".png"));
 				res = picRunDown(assignment,isFront,imgIn);
-				Imgcodecs.imwrite("materials\\front\\"+index+".png",convertBufferedImageToMa(imgOut));
+				Imgcodecs.imwrite("materials\\front\\"+index+".png",convertBufferedImageToMat(imgOut));
 				
 			} catch (Exception ex) {
 				System.out.println(index);
@@ -107,7 +107,7 @@ public class ImgProc {
 		Mat drawingMat;
 		Mat grayImg = new Mat();
 		//image from drone cam
-		originalMat = convertBufferedImageToMa(test);
+		originalMat = convertBufferedImageToMat(test);
 		drawingMat = originalMat.clone();
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),2,2);
@@ -119,10 +119,10 @@ public class ImgProc {
 		case 0:
 			//hulahops assignment
 			if(isFront) {
-				rects = findPosibleQrPortrait(grayImg, drawingMat);
+				rects = findPosibleQrBoth(grayImg, drawingMat);
 				Object[] temp  = checkRectsForQrText(rects, originalMat, drawingMat);
 				res[0] = temp;
-				res[1] = checkImageForHulaHoops(grayImg, rects, originalMat, drawingMat);
+				res[1] = checkImageForHulaHoops(grayImg, (ArrayList<Rect>)temp[1], originalMat, drawingMat);
 				res[2] = rects;
 			} else {
 				
@@ -280,9 +280,8 @@ public class ImgProc {
 	}
 	
 	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
-		double[] circlePoints = new double[3];
-        int radius;
-        Point center = new Point();
+		double x,y, radius;
+        //Point center = new Point();
         ArrayList<String[]> hulahops = new ArrayList<String[]>();
 		for(int i = 0 ; i< rects.size(); i++) {
 			List<Rect> hulahopRect = new ArrayList<Rect>();
@@ -293,36 +292,38 @@ public class ImgProc {
 				qrText = qrTextList.get(0);
 			}
 			if(qrText.contains("P")) {
-				circlePoints[0] = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
-				circlePoints[1] = rects.get(i).tl().y - (rects.get(i).height*1.2);
-				circlePoints[2] = rects.get(i).height;
-	    		center.set(circlePoints);
-		        radius = (int)Math.round(circlePoints[2]);
-		        
-				int picWidth = 640;
-				int picHeight = 360;
-				 if (circlePoints[0] > picWidth && circlePoints[1] < picHeight){
-					//1. qaudrant
-					circlePoints[0] = circlePoints[0] - picWidth;
-					circlePoints[1] = -circlePoints[1] + picHeight;
-				}else if(circlePoints[0] > picWidth && circlePoints[1] > picHeight) {
-					//2. qaudrant
-					circlePoints[0] = circlePoints[0] - picWidth;
-					circlePoints[1] = -circlePoints[1] + picHeight;
-				} else if (circlePoints[0] < picWidth && circlePoints[1] > picHeight) {
-					//3. qaudrant
-					circlePoints[0] = circlePoints[0] - picWidth;
-					circlePoints[1] = -circlePoints[1] + picHeight;
-				} else if(circlePoints[0] < picWidth && circlePoints[1] < picHeight) {
-					//4. qaudrant
-					circlePoints[0] = circlePoints[0] - picWidth;
-					circlePoints[1] = -circlePoints[1] + picHeight;
-				}
-				 Imgproc.circle(drawingMat, center, radius, greenScalar,3);
-				hulahops.add(new String[] {""+circlePoints[0] ,""+circlePoints[1], ""+circlePoints[2], qrText});
+				x = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
+				radius = (rects.get(i).width*1.3);
+				y = rects.get(i).tl().y - (rects.get(i).width*1.4)*1.2; //width*1.4 for height, * 1.2 for hulahop center
+				coordinateDisplacement(x,y);
+				Imgproc.circle(drawingMat, new Point(x,y), 1, greenScalar, 6);
+				Imgproc.circle(drawingMat, new Point(x,y), (int)Math.round(radius), greenScalar,3);
+				hulahops.add(new String[] {""+x ,""+y, ""+radius, qrText});
 			}
 		}
 		return hulahops;
+	}
+	
+	public void coordinateDisplacement(double x, double y) {
+		int picWidth = 640; //half of real size
+		int picHeight = 360; //half of real size
+		if (x> picWidth && y< picHeight){
+			//1. qaudrant
+			x = x - picWidth;
+			y = -y + picHeight;
+		} else if(x > picWidth && y > picHeight) {
+			//2. qaudrant
+			x = x - picWidth;
+			y = -y + picHeight;
+		} else if (x < picWidth && y > picHeight) {
+			//3. qaudrant
+			x = x - picWidth;
+			y = -y + picHeight;
+		} else if(x < picWidth && y < picHeight) {
+			//4. qaudrant
+			x = x - picWidth;
+			y = -y + picHeight;
+		}
 	}
 	
 	private List<Rect> findPosibleQrPortrait(Mat grayImg, Mat drawingMat) {
@@ -485,7 +486,7 @@ public class ImgProc {
 		return bufferedImg;
 	}
 	
-	private Mat convertBufferedImageToMa(BufferedImage bufferedImg) {
+	private Mat convertBufferedImageToMat(BufferedImage bufferedImg) {
 		byte[] pixels = ((DataBufferByte) bufferedImg.getRaster().getDataBuffer()).getData();
 		//create Mat from byte[]
 		Mat mat = new Mat(bufferedImg.getHeight(),bufferedImg.getWidth(),CvType.CV_8UC3);
