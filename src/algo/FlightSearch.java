@@ -52,12 +52,32 @@ public class FlightSearch {
 	 * }
 	 */
 
+	public void qrcodeScan(){
+		res = obj.findQRCodes();
+		qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
+	}
+	
+	public void forwardCheck() {
+		GeneralMotorCon.getInstance().forward(2000);
+		qrcodeScan();
+
+		for (int g = 0; g < qrcode.size(); g++) {
+			if (assign1.updateHulaHoop()) {
+				forwardControl = false;
+				map = true;
+				break;
+
+			} else if (qrcode.get(g).contains("W")) {
+				forwardControl = false;
+				break;
+			}
+		}
+	}
+
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
-		/*for (int i = 0; i < 10; i++) {
-
-			res = obj.findQRCodes();
-			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
+		for (int i = 0; i < 10; i++) {
+			qrcodeScan();
 
 			if (assign1.updateHulaHoop()) {
 				qrcodeFound = true;
@@ -71,9 +91,8 @@ public class FlightSearch {
 		}
 
 		while (!qrcodeFound) {
-			// if qrcode still not found, forward a bit and do scan again.
-			res = obj.findQRCodes();
-			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
+			// Scan for qrcode.
+			qrcodeScan();
 			
 			// Checking for Hulahop found
 			if (assign1.updateHulaHoop()) {
@@ -86,18 +105,17 @@ public class FlightSearch {
 			}
 			// Forward with 2000 mills
 			GeneralMotorCon.getInstance().forward(2000);
-		}*/
+		}
 
 		while (!map) {
-			
+
 			// Scanning for QRcode and storage in arraylist
-			res = obj.findQRCodes();
-			qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
+			qrcodeScan();
 
 			// Counting total QRcode scanned
 			for (int j = 0; j < qrcode.size(); j++) {
-				
-				// Checking for Hulahop 
+
+				// Checking for Hulahop
 				if (assign1.updateHulaHoop()) {
 					map = true;
 					break;
@@ -117,7 +135,7 @@ public class FlightSearch {
 					GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
 
-				}else if (qrcode.get(j).equals("W00.03")) {
+				} else if (qrcode.get(j).equals("W00.03")) {
 					GeneralMotorCon.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.04")) {
@@ -194,22 +212,7 @@ public class FlightSearch {
 				}
 			}
 			while (forwardControl) {
-				GeneralMotorCon.getInstance().forward(2000);
-				res = obj.findQRCodes();
-				qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
-
-				for (int g = 0; g < qrcode.size(); g++) {
-					if (assign1.updateHulaHoop()) {
-						forwardControl = false;
-						map = true;
-						break;
-
-					} else if (qrcode.get(g).contains("W")) {
-						forwardControl = false;
-						break;
-					}
-				}
-
+				forwardCheck();
 			}
 		}
 
