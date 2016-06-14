@@ -24,8 +24,8 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private CommandManager cmd;	//The CommandManager for the drone command
 	private int speed = 10;		//The speed the drone will move with7
 	private int sideTime = 200;
-	private int spinTime = 50;	
-	private int spinSpeed = 2;
+	private int spinTime = 500;	
+	private int spinSpeed = 15;
 	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spin90Speed = 50;
 	private int hoverTime = 2000;
@@ -33,8 +33,8 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private int altitudeSpeed = 30;
 	private int altitudeTime = 200;
 	
-	private int cycleSpinSpeed = 2;
-	private int cycleTime = 50;
+	private int cycleSpinSpeed = 5;
+	private int cycleTime = 500;
 	private int cycleSpeed = 10;
 	
 	private static int runningID = 0;

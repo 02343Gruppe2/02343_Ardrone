@@ -100,7 +100,7 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().landing();
 			*/
 			GeneralMotorConSchedule.getInstance().setDrone(drone);
-			GeneralMotorCon.getInstance().setDrone(drone);
+			//GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorConSchedule.getInstance().takeoff();
 			//GeneralMotorConSchedule.getInstance().raiseAltitude();
 			//GeneralMotorConSchedule.getInstance().raiseAltitude();
@@ -109,7 +109,7 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().hover();
 			GeneralMotorConSchedule.getInstance().pauseFor(5000);
 			//GeneralMotorConSchedule.getInstance().spinLeft();
-			GeneralMotorCon.getInstance().spinLeft();
+			GeneralMotorConSchedule.getInstance().cycleLeft()
 			GeneralMotorConSchedule.getInstance().pauseFor(5000);
 			GeneralMotorConSchedule.getInstance().landing();
 			
