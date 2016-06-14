@@ -21,8 +21,8 @@ public class GeneralMotorCon implements GeneralMotorListener{
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
 	private int speed = 10;		//The speed the drone will move with
-	private int spinTime = 500;	
-	private int spinSpeed = 15;
+	private int spinTime = 50;	
+	private int spinSpeed = 2;
 	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spin90Speed = 50;
 	private int hoverTime = 2000;

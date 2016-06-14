@@ -66,6 +66,7 @@ public class SpaceXDrone {
 			});
 			// Start the drone managers (NavData, CommandManager etc.)
 			drone.start();
+			drone.reset();
 			drone.getCommandManager().setVideoCodec(VideoCodec.H264_720P);
 			drone.getCommandManager().setVideoChannel(VideoChannel.LARGE_HORI_SMALL_VERT);
 			drone.getVideoManager().addImageListener(new ImageListener() {
@@ -99,13 +100,23 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().landing();
 			*/
 			GeneralMotorConSchedule.getInstance().setDrone(drone);
+			GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorConSchedule.getInstance().takeoff();
-			GeneralMotorConSchedule.getInstance().raiseAltitude();
-			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			//GeneralMotorConSchedule.getInstance().raiseAltitude();
+			//GeneralMotorConSchedule.getInstance().raiseAltitude();
+			//GeneralMotorConSchedule.getInstance().raiseAltitude();
+			
+			GeneralMotorConSchedule.getInstance().hover();
+			GeneralMotorConSchedule.getInstance().pauseFor(5000);
+			//GeneralMotorConSchedule.getInstance().spinLeft();
+			GeneralMotorCon.getInstance().spinLeft();
+			GeneralMotorConSchedule.getInstance().pauseFor(5000);
+			GeneralMotorConSchedule.getInstance().landing();
+			
+			
 					
 			//fs.search();
-			assig1.flyHulaHoop();
+			//assig1.flyHulaHoop();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();

@@ -353,6 +353,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			public void run() {
 				int id = newRunningThread();
 				if(isRunningThread(id))cmd.spinLeft(spinSpeed).doFor(spinTime);
+				//if(isRunningThread(id))cmd.move(0, 0, 0, spinSpeed).doFor(spinTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
