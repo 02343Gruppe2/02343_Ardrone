@@ -88,6 +88,7 @@ public class ImgProc {
 				Imgcodecs.imwrite("materials\\front\\"+index+".png",convertBufferedImageToMa(imgOut));
 				
 			} catch (Exception ex) {
+				System.out.println(index);
 			}
 		}*/
 		
@@ -150,9 +151,9 @@ public class ImgProc {
 		}
 		
 		imgOut = convertMatToBufferedImage(drawingMat);
-		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
+		//SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		//SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage1(grayImg), false);
-		SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
+		//SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
 		return res;
 	}
 	
@@ -193,7 +194,7 @@ public class ImgProc {
 		return new Object[] {qrCodes, outRects};
 	}
 	
-	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+	private  ArrayList<String[]> checkImageForHulaHoopsOld(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double[] circlePoints = new double[3];
 		double[] lineVec = new double[4];
 		///List<Rect> rects = (List<Rect>)rectArr[1];
@@ -275,6 +276,55 @@ public class ImgProc {
         		}
         	}
         }
+		return hulahops;
+	}
+	
+	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
+		double[] circlePoints = new double[3];
+        int radius;
+        Point center = new Point();
+        ArrayList<String[]> hulahops = new ArrayList<String[]>();
+		for(int i = 0 ; i< rects.size(); i++) {
+			List<Rect> hulahopRect = new ArrayList<Rect>();
+			hulahopRect.add(rects.get(i));
+			List<String> qrTextList = (List<String>)checkRectsForQrText(hulahopRect, originalMat, drawingMat)[0];
+			String qrText = "";
+			if(!qrTextList.isEmpty()) {
+				qrText = qrTextList.get(0);
+			}
+			if(qrText.contains("P")) {
+				System.out.println("contained P");
+				// rect.br.x - rect.tl.x = længde
+				circlePoints[0] = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
+				circlePoints[1] = rects.get(i).tl().y - (rects.get(i).height*1.2);
+				circlePoints[2] = rects.get(i).height;
+				System.out.println("x: "+ circlePoints[0] + " y: " + circlePoints[1] + " radius: "+circlePoints[2]);
+	    		center.set(circlePoints);
+		        radius = (int)Math.round(circlePoints[2]);
+		        
+				int picWidth = 640;
+				int picHeight = 360;
+				 if (circlePoints[0] > picWidth && circlePoints[1] < picHeight){
+					//1. qaudrant
+					circlePoints[0] = circlePoints[0] - picWidth;
+					circlePoints[1] = -circlePoints[1] + picHeight;
+				}else if(circlePoints[0] > picWidth && circlePoints[1] > picHeight) {
+					//2. qaudrant
+					circlePoints[0] = circlePoints[0] - picWidth;
+					circlePoints[1] = -circlePoints[1] + picHeight;
+				} else if (circlePoints[0] < picWidth && circlePoints[1] > picHeight) {
+					//3. qaudrant
+					circlePoints[0] = circlePoints[0] - picWidth;
+					circlePoints[1] = -circlePoints[1] + picHeight;
+				} else if(circlePoints[0] < picWidth && circlePoints[1] < picHeight) {
+					//4. qaudrant
+					circlePoints[0] = circlePoints[0] - picWidth;
+					circlePoints[1] = -circlePoints[1] + picHeight;
+				}
+				 Imgproc.circle(drawingMat, center, radius, greenScalar,3);
+				hulahops.add(new String[] {""+circlePoints[0] ,""+circlePoints[1], ""+circlePoints[2], qrText});
+			}
+		}
 		return hulahops;
 	}
 	
