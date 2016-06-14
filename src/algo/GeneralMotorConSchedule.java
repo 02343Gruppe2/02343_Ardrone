@@ -22,14 +22,19 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private static GeneralMotorConSchedule ourInstance = new GeneralMotorConSchedule();
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
-	private int speed = 10;		//The speed the drone will move with
-	private int spinTime = 500;	
-	private int spinSpeed = 15;
+	private int speed = 10;		//The speed the drone will move with7
+	private int sideTime = 200;
+	private int spinTime = 50;	
+	private int spinSpeed = 2;
 	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
 	private int spin90Speed = 50;
 	private int hoverTime = 2000;
 	
-	private int cycleSpinSpeed = 15;
+	private int altitudeSpeed = 30;
+	private int altitudeTime = 200;
+	
+	private int cycleSpinSpeed = 2;
+	private int cycleTime = 50;
 	private int cycleSpeed = 10;
 	
 	private static int runningID = 0;
@@ -228,7 +233,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.down(speed).doFor(1000);
+				if(isRunningThread(id))cmd.down(altitudeSpeed).doFor(altitudeTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -246,7 +251,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.up(30).doFor(500);
+				if(isRunningThread(id))cmd.up(altitudeSpeed).doFor(altitudeTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -275,7 +280,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goRight(speed).doFor(spinTime);
+				if(isRunningThread(id))cmd.goRight(speed).doFor(sideTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -293,7 +298,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goLeft(speed).doFor(spinTime);
+				if(isRunningThread(id))cmd.goLeft(speed).doFor(sideTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -347,7 +352,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.spinLeft(spinSpeed).doFor(500);
+				if(isRunningThread(id))cmd.spinLeft(spinSpeed).doFor(spinTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -365,7 +370,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.spinRight(spinSpeed).doFor(500);
+				if(isRunningThread(id))cmd.spinRight(spinSpeed).doFor(spinTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -382,7 +387,8 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.move(0, -cycleSpeed, 0, cycleSpinSpeed).doFor(500);
+				hover();
+				if(isRunningThread(id))cmd.move(0, -cycleSpeed, 0, cycleSpinSpeed).doFor(cycleTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -400,7 +406,8 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.move(0, cycleSpeed, 0, -cycleSpinSpeed).doFor(500);
+				hover();
+				if(isRunningThread(id))cmd.move(0, cycleSpeed, 0, -cycleSpinSpeed).doFor(cycleTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}

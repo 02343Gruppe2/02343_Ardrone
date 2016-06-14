@@ -102,10 +102,10 @@ public class SpaceXDrone {
 			GeneralMotorConSchedule.getInstance().takeoff();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
 			GeneralMotorConSchedule.getInstance().raiseAltitude();
-			GeneralMotorConSchedule.getInstance().raiseAltitude();
+			//GeneralMotorConSchedule.getInstance().raiseAltitude();
 					
-			fs.search();
-			//assig1.flyHulaHoop();
+			//fs.search();
+			assig1.flyHulaHoop();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();

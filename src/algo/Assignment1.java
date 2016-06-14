@@ -211,7 +211,7 @@ public class Assignment1 implements Runnable{
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				if(!threadRun) return;
 			}
-			GeneralMotorConSchedule.getInstance().pauseFor(50);
+			GeneralMotorConSchedule.getInstance().pauseFor(100);
 		}
 		finished = true;
 		threadRun = false;
@@ -293,9 +293,9 @@ public class Assignment1 implements Runnable{
 	/**
 	 * Do Random
 	 * gives a random number between 1-3 for making a movement decision
-	 * 1 - straight to the side
-	 * 2 - spin to the side
-	 * 3 - cycle to the side (cannot happen twice in a row)  
+	 * 0 - straight to the side
+	 * 1 - spin to the side
+	 * 2 - cycle to the side (cannot happen twice in a row)  
 	 * @return - random number
 	 */
 	private int doRandom(){
@@ -307,12 +307,12 @@ public class Assignment1 implements Runnable{
 				return 0;
 			} else if(randomNum >= 33) {
 				randomNoCycleLoop = false;
-				return 1;
+				return 0;
 			} else if(!randomNoCycleLoop) {
 				runner = false;
 			}	
 		}
 		randomNoCycleLoop = true;
-		return 2;
+		return 0;
 	}
 }
