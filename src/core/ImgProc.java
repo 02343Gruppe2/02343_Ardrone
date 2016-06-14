@@ -293,12 +293,9 @@ public class ImgProc {
 				qrText = qrTextList.get(0);
 			}
 			if(qrText.contains("P")) {
-				System.out.println("contained P");
-				// rect.br.x - rect.tl.x = længde
 				circlePoints[0] = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
 				circlePoints[1] = rects.get(i).tl().y - (rects.get(i).height*1.2);
 				circlePoints[2] = rects.get(i).height;
-				System.out.println("x: "+ circlePoints[0] + " y: " + circlePoints[1] + " radius: "+circlePoints[2]);
 	    		center.set(circlePoints);
 		        radius = (int)Math.round(circlePoints[2]);
 		        
