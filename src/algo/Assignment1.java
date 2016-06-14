@@ -26,7 +26,7 @@ public class Assignment1 implements Runnable{
 	// For how long the drone should do a task
 	int doTime = 1000;
 	// A failure margin
-	int adjustmentTolerance = 85;	//about 75 (or 3.50)
+	int adjustmentTolerance = 100;	//about 75 (or 3.50)
 	int variableTolerance = 0; // (-2/3)*radius + 200 = tolerance
 	// Instantiate the pictures hula hoop
 	//Object[] picHulaHoops = obj.findHulaHoops();
@@ -34,7 +34,7 @@ public class Assignment1 implements Runnable{
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
 	double radius;
-	private int magicForwardNum = 645000;		//calculated 430000
+	private int magicForwardNum = 430000*4;		//calculated 430000
 	private int shittyDroneConstant = 0;		//65 positiv for shitty right movement and negative for shitty left movement
 	private int lastMovement = 0;	// 1 = forward, 2 = backwards, 3 = right, 4 = left
 	// To check if the drone have flown through the hula hoop
@@ -211,7 +211,7 @@ public class Assignment1 implements Runnable{
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				if(!threadRun) return;
 			}
-			GeneralMotorConSchedule.getInstance().pauseFor(100);
+			GeneralMotorConSchedule.getInstance().pauseFor(150);
 		}
 		finished = true;
 		threadRun = false;
@@ -307,7 +307,7 @@ public class Assignment1 implements Runnable{
 				return 0;
 			} else if(randomNum >= 33) {
 				randomNoCycleLoop = false;
-				return 0;
+				return 1;
 			} else if(!randomNoCycleLoop) {
 				runner = false;
 			}	
