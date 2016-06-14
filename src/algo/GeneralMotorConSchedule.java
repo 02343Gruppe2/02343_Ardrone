@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import utils.FormattedTimeStamp;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
+import de.yadrone.base.command.FlyingMode;
 
 
 //TODO: Test Schedulling 
@@ -33,11 +34,12 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	
 	private static int runningID = 0;
 	private static int runningThreads = 0;
+	private static final boolean printToConsole = true;
 	
 	/* Different variables */
 	private int batLvl = 0;
 	private long threadTimer = 0;
-	private final boolean printToConsole = true;
+	
 
 	/**
 	 * General Motor Controller Constructor
@@ -56,6 +58,10 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	public void setDrone(ARDrone drone) {
 		this.drone = drone;
 		this.cmd = this.drone.getCommandManager();
+		//this.cmd.setFlyingMode(FlyingMode.HOVER_ON_TOP_OF_ORIENTED_ROUNDEL);
+		//this.cmd.setHoveringRange(2000);
+		//this.cmd.setMaxVz(200);
+		//this.cmd.setMaxYaw(150);
 	}
 	
 	/**
@@ -67,26 +73,26 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 		return ourInstance;
 	}
 	
-	private int newRunningThread(){
+	private synchronized static int newRunningThread(){
 		runningID++;
 		runningThreads++;
 		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - New Running Thread ID: " + runningID + ", Running threads: " + runningThreads);
 		return runningID;
 	}
 	
-	private boolean isRunningThread(int id) {
+	private synchronized static boolean isRunningThread(int id) {
 		//SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - is " + id + " running?: ");
 		if (id == runningID){
-			//SpaceXGUI.getInstance().appendToConsole("yes");
+			SpaceXGUI.getInstance().appendToConsole("\n "+ id + " yes");
 			return true;
 		}
-		//SpaceXGUI.getInstance().appendToConsole("no");
+		SpaceXGUI.getInstance().appendToConsole("\n" + id + " no");
 		return false;
 	}
 	
 	public GeneralMotorConSchedule hover() {
 		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Hovering");
-		cmd.hover().doFor(200);
+		cmd.hover().doFor(100);
 		return this;
 	}
 	
@@ -103,8 +109,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
-				if(isRunningThread(id))cmd.forward(speed).doFor(time);
+				if(isRunningThread(id))cmd.forward(speed).doFor(time+100);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -124,8 +129,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
-				if(isRunningThread(id))cmd.backward(speed).doFor(time);
+				if(isRunningThread(id))cmd.backward(speed).doFor(time+100);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -224,7 +228,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.down(speed).doFor(1000);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -243,8 +246,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
-				if(isRunningThread(id))cmd.up(speed).doFor(1000);
+				if(isRunningThread(id))cmd.up(30).doFor(500);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -273,7 +275,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.goRight(speed).doFor(spinTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -292,7 +293,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.goLeft(speed).doFor(spinTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -311,8 +311,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
-				if(isRunningThread(id))cmd.goRight(speed).doFor(millis);
+				if(isRunningThread(id))cmd.goRight(speed).doFor(millis+100);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -330,8 +329,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
-				if(isRunningThread(id))cmd.goLeft(speed).doFor(millis);
+				if(isRunningThread(id))cmd.goLeft(speed).doFor(millis+100);
 				if(isRunningThread(id))hover();
 				runningThreads--;
 			}
@@ -349,7 +347,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.spinLeft(spinSpeed).doFor(500);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -368,7 +365,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.spinRight(spinSpeed).doFor(500);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -386,7 +382,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.move(0, -cycleSpeed, 0, cycleSpinSpeed).doFor(500);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -405,7 +400,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				hover();
 				if(isRunningThread(id))cmd.move(0, cycleSpeed, 0, -cycleSpinSpeed).doFor(500);
 				if(isRunningThread(id))hover();
 				runningThreads--;

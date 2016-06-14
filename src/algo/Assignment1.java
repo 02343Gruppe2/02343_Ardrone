@@ -57,14 +57,6 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start");
 		while(threadRun) {
 			try{
-				/*Long timeChecker = (new Date().getTime() - 20000);
-				Long iniTime = GeneralMotorCon.getInstance().getThreadTimer();
-				if(iniTime < timeChecker){
-					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun timer finish, timeChecker: " + timeChecker + ". ThreadTimer: " + GeneralMotorCon.getInstance().getThreadTimer());
-					finished = true;
-					threadRun = false;
-				}
-				*/
 				if(lastCircleTime < (new Date().getTime()-20000)) {
 					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found for too long timer, stopping search");
 					threadRun = false;
@@ -72,27 +64,6 @@ public class Assignment1 implements Runnable{
 				}
 				else if(lastCircleTime < (new Date().getTime()-5000)){
 					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found timer, start backin up");
-					/*switch(doRandom()) {
-					case 0:
-						GeneralMotorConSchedule.getInstance().forward(500);
-						break;
-					case 1:
-						GeneralMotorConSchedule.getInstance().backward(500);
-						break;
-					case 2:
-						switch(doRandom()){
-						case 0:
-							GeneralMotorConSchedule.getInstance().spinLeft();
-							break;
-						case 1:
-							GeneralMotorConSchedule.getInstance().spinRight();
-							break;
-						default:
-							GeneralMotorConSchedule.getInstance().backward(500);
-							break;
-						}
-						break;
-					} */
 					switch(lastMovement) {
 					case 1:
 						GeneralMotorConSchedule.getInstance().backward(500);
@@ -249,8 +220,9 @@ public class Assignment1 implements Runnable{
 	}
 	 
 	public boolean updateHulaHoop() {
+		int updateInteger = 0;
 		try{
-			int updateInteger = 0;
+			
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
@@ -309,7 +281,7 @@ public class Assignment1 implements Runnable{
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error: " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error " + updateInteger + ": " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
