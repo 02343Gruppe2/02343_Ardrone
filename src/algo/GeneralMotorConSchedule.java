@@ -22,20 +22,30 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private static GeneralMotorConSchedule ourInstance = new GeneralMotorConSchedule();
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;	//The CommandManager for the drone command
+	
+	/* Standard move Variables */
+	private int hoverTime = 2000;
 	private int speed = 10;		//The speed the drone will move with7
 	private int sideTime = 200;
-	private int spinTime = 250;	
-	private int spinSpeed = 15;
-	private int spin90Time = 3000;	//The time for the drone to spin 90degress with given speed, TODO test the time.
-	private int spin90Speed = 50;
-	private int hoverTime = 2000;
 	
+	/* Static Spin Variables */
+	private int spinTime = 250;		
+	private int spinSpeed = 15;
+	
+	/* Spin 90 degrees Variables */
+	private int spin90Time = 3000;	//TODO: test the time.
+	private int spin90Speed = 50;
+	
+	/* Altitude Variables */
 	private int altitudeSpeed = 30;
 	private int altitudeTime = 200;
 	
+	/* Cycle Variables */
 	private int cycleSpinSpeed = 15;
 	private int cycleTime = 250;
 	private int cycleSpeed = 10;
+	
+	
 	
 	private static int runningID = 0;
 	private static int runningThreads = 0;

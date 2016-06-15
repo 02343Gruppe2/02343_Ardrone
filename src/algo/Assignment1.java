@@ -24,33 +24,36 @@ public class Assignment1 implements Runnable{
 	
 	// For how long the drone should do a task
 	int doTime = 1000;
-	// A failure margin
-	int adjustmentTolerance = 100;	//about 75 (or 3.50)
-	int variableTolerance = 0; // (-2/3)*radius + 200 = tolerance
 	
-	// The cordiants and radius of the hula hoop in focus
-	double x, y;
-	double radius;
+	/* A failure margin */
+	int adjustmentTolerance = 100;			//adjustment used for the y-axis
+	int variableTolerance = 0; 				//adjustment used for the x-axis, calculated: (-2/3)*radius + 200 = tolerance
+	private int shittyDroneConstant = 0;	//To make sure the drone get through the circle, since the drones forward strafs abit to the right 65 positiv for shitty right movement and negative for shitty left movement
+	
+	/* The information of the last found hulahoop */
+	double x, y;		//middle coordinate
+	double radius;		//Radius 
+	String qrcode = "";	//The QRCode to the hulahoop
 	
 	// A number to make sure the drone fly forward long enough
 	private int magicForwardNum = 430000*4;		//calculated 4300007
-	// To make sure the drone get through the circle, since the drones forward strafs abit to the right
-	private int shittyDroneConstant = 0;		//65 positiv for shitty right movement and negative for shitty left movement
+	 
+	/* Check timer variables */
 	// Used to check which movement the drone did last
 	private int lastMovement = 0;	// 1 = forward, 2 = backwards, 3 = right, 4 = left
-	
-	// To check if the drone have flown through the hula hoop
-	private static boolean finished = false;
 	// Check if the threadRun shoud stop the drone
 	private static boolean threadRun = false;
 	// Last time the drone saw a circle
 	private static long lastCircleTime = new Date().getTime();
+	
+	
+	
+	// To check if the drone have flown through the hula hoop
+	private static boolean finished = false;
 	// Makes sure the drone doesn't do a cycle movement 2 times in a row
 	private boolean randomNoCycleLoop = false;
 	// The amount of hula hoops
 	private int numHulaHoop = 4;
-	// The QRcode on the hula hoop
-	String qrcode = "";
 	
 	// List of the hula hoops the drone have flown through
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();
