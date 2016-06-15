@@ -236,7 +236,7 @@ public class Assignment1 implements Runnable{
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
 				if(!threadRun) return;
 			}
-			//GeneralMotorConSchedule.getInstance().pauseFor(150);
+			GeneralMotorConSchedule.getInstance().pauseFor(200);
 		}
 		finished = true;
 		threadRun = false;

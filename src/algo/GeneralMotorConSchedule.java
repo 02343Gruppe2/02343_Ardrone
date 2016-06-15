@@ -25,11 +25,11 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	
 	/* Standard move Variables */
 	private int hoverTime = 2000;			// The time to hover (not in use)
-	private int sideTime = 200;				// The time the drone fly directly left or right.
+	private int sideTime = 100;				// The time the drone fly directly left or right.
 	private int speed = 10;					// The speed the drone will move with (Forward and backward)
 	
 	/* Static Spin Variables */
-	private int spinTime = 250;		
+	private int spinTime = 150;		
 	private int spinSpeed = 15;
 	
 	/* Spin 90 degrees Variables */
@@ -38,11 +38,11 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	
 	/* Altitude Variables */
 	private int altitudeSpeed = 15;
-	private int altitudeTime = 200;
+	private int altitudeTime = 100;
 	
 	/* Cycle Variables */
 	private int cycleSpinSpeed = 15;
-	private int cycleTime = 250;
+	private int cycleTime = 150;
 	private int cycleSpeed = 10;
 	
 	/* Schedule Thread ID */
@@ -131,14 +131,19 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id)) {
-					try {
-						cmd.forward(speed);
-						Thread.sleep(time);
-					} catch (InterruptedException e) {
-						
+				int runNum = (int)time/500;
+				while (runNum > 0) {
+					if(isRunningThread(id)) {
+						try {
+							cmd.forward(speed);
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							
+						}
 					}
+					runNum--;
 				}
+				
 				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
