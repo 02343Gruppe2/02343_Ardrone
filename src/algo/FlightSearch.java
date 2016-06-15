@@ -8,6 +8,8 @@ package algo;
 
 import java.util.ArrayList;
 
+import org.opencv.core.Rect;
+
 import core.ImgProc;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
@@ -28,35 +30,34 @@ public class FlightSearch {
 	Object[] res;
 	ArrayList<String> qrcode = null;
 
-	// String[][] grid = new String[963][1078];
-
-	/*
-	 * public void FlyMapping() {
-	 * 
-	 * // Wall 0 grid[188][23] = "W000.00"; grid[338][28] = "W00.01";
-	 * grid[515][23] = "W00.02"; grid[694][28] = "W00.03"; grid[840][23] =
-	 * "W00.04";
-	 * 
-	 * // Wall 1 grid[926][115] = "W01.00"; grid[926][324] = "W01.01";
-	 * grid[926][566] = "W01.02"; grid[926][721] = "W01.03"; grid[926][904] =
-	 * "W01.04";
-	 * 
-	 * // Wall 2 grid[847][1064] = "W02.00"; grid[656][995] = "W02.01";
-	 * grid[420][1070] = "W02.02"; grid[350][1070] = "W02.03"; grid[150][1070] =
-	 * "W02.04";
-	 * 
-	 * // Wall 3 grid[10][997] = "W03.00"; grid[10][740] = "W03.01";
-	 * grid[10][561] = "W03.02"; grid[10][357] = "W03.03"; grid[10][108] =
-	 * "W03.04";
-	 * 
-	 * }
-	 */
-
+	 /*String[][] grid = new String[963][1078];
+	 
+	  public void FlyMapping() {
+	  
+	  // Wall 0 grid[188][23] = "W000.00"; grid[338][28] = "W00.01";
+	  grid[515][23] = "W00.02"; grid[694][28] = "W00.03"; grid[840][23] =
+	  "W00.04";
+	  
+	  // Wall 1 grid[926][115] = "W01.00"; grid[926][324] = "W01.01";
+	  grid[926][566] = "W01.02"; grid[926][721] = "W01.03"; grid[926][904] =
+	  "W01.04";
+	  
+	  // Wall 2 grid[847][1064] = "W02.00"; grid[656][995] = "W02.01";
+	  grid[420][1070] = "W02.02"; grid[350][1070] = "W02.03"; grid[150][1070] =
+	  "W02.04";
+	  
+	  // Wall 3 grid[10][997] = "W03.00"; grid[10][740] = "W03.01";
+	  grid[10][561] = "W03.02"; grid[10][357] = "W03.03"; grid[10][108] =
+	  "W03.04"; 
+	  }*/
+	 
+	//QRcode scanner metode.
 	public void qrcodeScan(){
 		res = obj.findQRCodes();
 		qrcode = (ArrayList<String>) ((Object[]) res[0])[0];
 	}
 	
+	// Metode for forward check.
 	public void forwardCheck() {
 		GeneralMotorCon.getInstance().forward(2000);
 		qrcodeScan();
@@ -73,7 +74,15 @@ public class FlightSearch {
 			}
 		}
 	}
-
+	
+	public void adjustdrone(int j){
+		Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
+		double x = ((rect.br().x - rect.tl().x)/2)+ rect.tl().x, y = ((rect.br().y - rect.tl().y)/2) + rect.tl().y;
+		ImgProc.coordinateDisplacement(x, y);
+		
+		
+	}
+	
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
 		for (int i = 0; i < 10; i++) {

@@ -304,7 +304,7 @@ public class ImgProc {
 		return hulahops;
 	}
 	
-	public void coordinateDisplacement(double x, double y) {
+	public static void coordinateDisplacement(double x, double y) {
 		int picWidth = 640; //half of real size
 		int picHeight = 360; //half of real size
 		if (x> picWidth && y< picHeight){
