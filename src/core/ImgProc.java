@@ -112,21 +112,17 @@ public class ImgProc {
 		Imgproc.cvtColor(originalMat, grayImg, Imgproc.COLOR_BGRA2GRAY); 
 		Imgproc.GaussianBlur(grayImg, grayImg, new Size(5,5),2,2);
 		Imgproc.Canny(grayImg, grayImg, 25, 50);
-		//Imgproc.dilate(grayImg, grayImg, new Mat()); //seems like it makes it worse
-		//Imgproc.erode(grayImg, grayImg, new Mat());
 		List<Rect> rects;
 		switch (assignment) {
 		case 0:
-			//hulahops assignment
-			if(isFront) {
+			//hulahoops assignment
+			
 				rects = findPosibleQrBoth(grayImg, drawingMat);
 				Object[] temp  = checkRectsForQrText(rects, originalMat, drawingMat);
 				res[0] = temp;
 				res[1] = checkImageForHulaHoops(grayImg, (ArrayList<Rect>)temp[1], originalMat, drawingMat);
 				res[2] = rects;
-			} else {
-				
-			}
+			
 			break;
 		case 1: 
 			//cube finding assignment
@@ -153,7 +149,7 @@ public class ImgProc {
 		imgOut = convertMatToBufferedImage(drawingMat);
 		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		//SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage1(grayImg), false);
-		SpaceXGUI.getInstance().appendToConsole("\nPicture rundown time: " + (new Date().getTime() - time)  + " ms");
+		SpaceXGUI.getInstance().appendToConsole("Picture rundown","time: " + (new Date().getTime() - time)  + " ms");
 		return res;
 	}
 	
@@ -226,21 +222,7 @@ public class ImgProc {
 	        for(int c = 0;c<rects.size();c++) {
         		if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
         		
-        			//check if we can find a stand
-        			/*for(int v = 0;v < lines.cols() ; v++) {
-        				lineVec = lines.get(0, v); // lineVec: [0] = x1, [1] = y1, [2] = x2, [3] = y2
-        				Imgproc.line(drawingMat, new Point(lineVec[0],lineVec[1]), new Point(lineVec[2],lineVec[3]), greenScalar,2);
-        					
-        				int errorMargin = 10;
-        				if((lineVec[0] >= center.x-radius - errorMargin && lineVec[2] <= center.x-radius + errorMargin) || 
-        						(lineVec[0] <= center.x+radius + errorMargin && lineVec[2] >= center.x+radius - errorMargin) &&
-        						(lineVec[0] +errorMargin > lineVec[3] && lineVec[0] - errorMargin < lineVec[3]) &&
-        						((lineVec[3] - lineVec[1] > 100 ) || lineVec[1] - lineVec[3] > 100 )) { //check if x1 - x2 > min line length or x2 - x1 > min line length*/
-                			//In our picture we have 0,0 in the top left corner, but we want the 0,0 to be the center of the picture 
-                			//which is why we do the following calculations depending on where it is
-                			//Imgproc.line(drawingMat, new Point(lineVec[0],lineVec[1]), new Point(lineVec[2],lineVec[3]), greenScalar,2);
-        			
-                			// draw the found circle
+        	
                 			Imgproc.circle(drawingMat, center, radius, greenScalar,4);
                 			int picWidth = 640;
                 			int picHeight = 360;
@@ -281,7 +263,6 @@ public class ImgProc {
 	
 	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double x,y, radius;
-        //Point center = new Point();
         ArrayList<String[]> hulahops = new ArrayList<String[]>();
 		for(int i = 0 ; i< rects.size(); i++) {
 			List<Rect> hulahopRect = new ArrayList<Rect>();
