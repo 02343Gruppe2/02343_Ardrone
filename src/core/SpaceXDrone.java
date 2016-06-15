@@ -53,7 +53,7 @@ public class SpaceXDrone {
 		
 		
 		try {
-			SpaceXGUI.getInstance().appendToConsole(TAG, "Welcome to SpaceX Drone GUI");;
+			SpaceXGUI.getInstance("Welcome to SpaceX Drone GUI");
 			// Create instance of new ARDrone
 			drone = new ARDrone();
 			
