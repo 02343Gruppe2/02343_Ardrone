@@ -41,8 +41,11 @@ public class Assignment1 implements Runnable{
 	
 	// To check if the drone have flown through the hula hoop
 	private static boolean finished = false;
+	// Check if the threadRun shoud stop the drone
 	private static boolean threadRun = false;
+	// Last time the drone saw a circle
 	private static long lastCircleTime = new Date().getTime();
+	// Makes sure the drone doesn't do a cycle movement 2 times in a row
 	private boolean randomNoCycleLoop = false;
 	// The amount of hula hoops
 	private int numHulaHoop = 4;
@@ -54,6 +57,9 @@ public class Assignment1 implements Runnable{
 	// Making a list with the objects from the picture analyze
 	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulaHoops()[1];
 	
+	/**
+	 * 
+	 */
 	public void run() {
 		resetTime();
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start");
@@ -117,15 +123,24 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished");
 	}
 	
+	/**
+	 * 
+	 */
 	public void resetTime(){
 		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - reset thread timer");
 		lastCircleTime = new Date().getTime();
 	}
 	
+	/**
+	 * 
+	 */
 	private void setVariableTolerance() {
 		variableTolerance = (int)(-((0.666) * radius) + 200);
 	}
 	
+	/**
+	 * 
+	 */
 	public boolean flyHulaHoop() {
 		finished = false;
 		threadRun = true;
@@ -146,11 +161,17 @@ public class Assignment1 implements Runnable{
 		return true;
 	}
 	
+	/**
+	 * 
+	 */
 	public boolean isFinished() {
 		if(doneHulaHoop.size() > numHulaHoop-1) return true;
 		return false;
 	}
 	
+	/**
+	 * 
+	 */
 	public void flyThrough() {
 		boolean middle = false;
 		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough");
@@ -221,6 +242,9 @@ public class Assignment1 implements Runnable{
 		//doneHulaHoop.add(qrcode);
 	}
 	 
+	/**
+	 * 
+	 */
 	public boolean updateHulaHoop() {
 		int updateInteger = 0;
 		try{
