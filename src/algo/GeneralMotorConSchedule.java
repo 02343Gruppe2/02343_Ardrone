@@ -20,20 +20,20 @@ import de.yadrone.base.command.FlyingMode;
  */
 public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private static GeneralMotorConSchedule ourInstance = new GeneralMotorConSchedule();
-	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
-	private CommandManager cmd;	//The CommandManager for the drone command
+	private ARDrone drone;					//The drone object (might be unused because of CommandManager)
+	private CommandManager cmd;				//The CommandManager for the drone command
 	
 	/* Standard move Variables */
-	private int hoverTime = 2000;
-	private int speed = 10;		//The speed the drone will move with7
-	private int sideTime = 200;
+	private int hoverTime = 2000;			// The time to hover (not in use)
+	private int sideTime = 200;				// The time the drone fly directly left or right.
+	private int speed = 10;					// The speed the drone will move with (Forward and backward)
 	
 	/* Static Spin Variables */
 	private int spinTime = 250;		
 	private int spinSpeed = 15;
 	
 	/* Spin 90 degrees Variables */
-	private int spin90Time = 3000;	//TODO: test the time.
+	private int spin90Time = 3000;			//TODO: test the time.
 	private int spin90Speed = 50;
 	
 	/* Altitude Variables */
@@ -45,16 +45,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private int cycleTime = 250;
 	private int cycleSpeed = 10;
 	
+	/* Schedule Thread ID */
+	private static int runningID = 0;		//The ID of the thread which started last
+	private static int runningThreads = 0;	// Number of threads running 
 	
-	
-	private static int runningID = 0;
-	private static int runningThreads = 0;
+	/* Debugging */
 	private static final boolean printToConsole = true;
 	
 	/* Different variables */
 	private int batLvl = 0;
-	private long threadTimer = 0;
-	
 
 	/**
 	 * General Motor Controller Constructor
@@ -73,10 +72,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	public void setDrone(ARDrone drone) {
 		this.drone = drone;
 		this.cmd = this.drone.getCommandManager();
-		//this.cmd.setFlyingMode(FlyingMode.HOVER_ON_TOP_OF_ORIENTED_ROUNDEL);
-		//this.cmd.setHoveringRange(2000);
-		//this.cmd.setMaxVz(200);
-		//this.cmd.setMaxYaw(150);
 	}
 	
 	/**
@@ -88,6 +83,12 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 		return ourInstance;
 	}
 	
+	/**
+	 * New Running Thread
+	 * Method for the schedule threads updates the running ID and gives
+	 * the new ID as return
+	 * @return - The new Running ID
+	 */
 	private synchronized static int newRunningThread(){
 		runningID++;
 		runningThreads++;
@@ -95,6 +96,12 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 		return runningID;
 	}
 	
+	/**
+	 * is Running Thread?
+	 * checking if the thread has the right to run now
+	 * @param id - the tested id
+	 * @return - true if the given id is the current running one
+	 */
 	private synchronized static boolean isRunningThread(int id) {
 		//SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - is " + id + " running?: ");
 		if (id == runningID){
@@ -426,6 +433,10 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 		return this;
 	}
 	
+	/**
+	 * Pause for
+	 * @param millis - The time you want to pause the calling thread
+	 */
 	public void pauseFor(int millis) {
 		waitFor(millis);
 	}
