@@ -295,16 +295,18 @@ public class ImgProc {
 				x = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
 				radius = (rects.get(i).width*1.3);
 				y = rects.get(i).tl().y - (rects.get(i).width*1.4)*1.2; //width*1.4 for height, * 1.2 for hulahop center
-				coordinateDisplacement(x,y);
+				System.out.println("\n Before displacement "+"X: " + x + "Y: " + y);
 				Imgproc.circle(drawingMat, new Point(x,y), 1, greenScalar, 6);
 				Imgproc.circle(drawingMat, new Point(x,y), (int)Math.round(radius), greenScalar,3);
-				hulahops.add(new String[] {""+x ,""+y, ""+radius, qrText});
+				double[] displaced = coordinateDisplacement(x,y);				
+				System.out.println("\n X: " + displaced[0] + "Y: " + displaced[1]);
+				hulahops.add(new String[] {""+displaced[0],""+displaced[1], ""+radius, qrText});
 			}
 		}
 		return hulahops;
 	}
 	
-	public static void coordinateDisplacement(double x, double y) {
+	public static double[] coordinateDisplacement(double x, double y) {
 		int picWidth = 640; //half of real size
 		int picHeight = 360; //half of real size
 		if (x> picWidth && y< picHeight){
@@ -323,7 +325,10 @@ public class ImgProc {
 			//4. qaudrant
 			x = x - picWidth;
 			y = -y + picHeight;
+			
+			
 		}
+		return new double[]{x,y};
 	}
 	
 	private List<Rect> findPosibleQrPortrait(Mat grayImg, Mat drawingMat) {
