@@ -37,7 +37,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private int spin90Speed = 50;
 	
 	/* Altitude Variables */
-	private int altitudeSpeed = 30;
+	private int altitudeSpeed = 15;
 	private int altitudeTime = 200;
 	
 	/* Cycle Variables */
@@ -132,7 +132,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			public void run() {
 				int id = newRunningThread();
 				if(isRunningThread(id))cmd.forward(speed).doFor(time);
-				if(isRunningThread(id))hover();
+				//if(isRunningThread(id))hover();
 				runningThreads--;
 			}
 		});
