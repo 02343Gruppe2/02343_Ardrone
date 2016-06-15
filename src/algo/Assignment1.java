@@ -36,7 +36,7 @@ public class Assignment1 implements Runnable{
 	String qrcode = "";	//The QRCode to the hulahoop
 	
 	// A number to make sure the drone fly forward long enough
-	private int magicForwardNum = 430000*4;		//calculated 4300007
+	private int magicForwardNum = 430000*2;		//calculated 4300007
 	 
 	/* Check timer variables */
 	// Used to check which movement the drone did last

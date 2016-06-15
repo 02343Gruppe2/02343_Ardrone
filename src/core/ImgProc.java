@@ -449,8 +449,8 @@ public class ImgProc {
 		LuminanceSource source = new BufferedImageLuminanceSource(image);
 		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 		// decode the barcode (if only QR codes are used, the QRCodeReader might be a better choice)
-		QRCodeReader reader = new QRCodeReader();
-		//QRCodeReader qrreader = new QRCodeReader();	
+		//MultiFormatReader reader = new MultiFormatReader();
+		QRCodeReader reader = new QRCodeReader();	
 		try {
 			Result scanResult;
 			if(useHint) {
