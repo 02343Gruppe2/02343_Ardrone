@@ -21,22 +21,24 @@ import utils.FormattedTimeStamp;
 public class Assignment1 implements Runnable{
 	// Instantiate picture analyze
 	ImgProc obj = new ImgProc();
-	// Check if the drone is ready to fly forward
-	int forwardControl = 0;
+	
 	// For how long the drone should do a task
 	int doTime = 1000;
 	// A failure margin
 	int adjustmentTolerance = 100;	//about 75 (or 3.50)
 	int variableTolerance = 0; // (-2/3)*radius + 200 = tolerance
-	// Instantiate the pictures hula hoop
-	//Object[] picHulaHoops = obj.findHulaHoops();
 	
 	// The cordiants and radius of the hula hoop in focus
 	double x, y;
 	double radius;
-	private int magicForwardNum = 430000*4;		//calculated 430000
+	
+	// A number to make sure the drone fly forward long enough
+	private int magicForwardNum = 430000*4;		//calculated 4300007
+	// To make sure the drone get through the circle, since the drones forward strafs abit to the right
 	private int shittyDroneConstant = 0;		//65 positiv for shitty right movement and negative for shitty left movement
+	// Used to check which movement the drone did last
 	private int lastMovement = 0;	// 1 = forward, 2 = backwards, 3 = right, 4 = left
+	
 	// To check if the drone have flown through the hula hoop
 	private static boolean finished = false;
 	private static boolean threadRun = false;
