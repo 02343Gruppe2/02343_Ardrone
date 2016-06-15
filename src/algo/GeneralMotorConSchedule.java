@@ -4,7 +4,6 @@ import gui.SpaceXGUI;
 
 import java.awt.event.ActionListener;
 
-import utils.FormattedTimeStamp;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
 import de.yadrone.base.command.FlyingMode;
@@ -22,6 +21,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private static GeneralMotorConSchedule ourInstance = new GeneralMotorConSchedule();
 	private ARDrone drone;					//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;				//The CommandManager for the drone command
+	private static final String TAG= "GMCS";
 	
 	/* Standard move Variables */
 	private int hoverTime = 2000;			// The time to hover (not in use)
@@ -92,7 +92,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	private synchronized static int newRunningThread(){
 		runningID++;
 		runningThreads++;
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - New Running Thread ID: " + runningID + ", Running threads: " + runningThreads);
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - New Running Thread ID: " + runningID + ", Running threads: " + runningThreads);
 		return runningID;
 	}
 	
@@ -103,17 +103,17 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * @return - true if the given id is the current running one
 	 */
 	private synchronized static boolean isRunningThread(int id) {
-		//SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - is " + id + " running?: ");
+		//SpaceXGUI.getInstance().appendToConsole(TAG," - is " + id + " running?: ");
 		if (id == runningID){
-			SpaceXGUI.getInstance().appendToConsole("\n "+ id + " yes");
+			SpaceXGUI.getInstance().appendToConsole(TAG,id + " yes");
 			return true;
 		}
-		SpaceXGUI.getInstance().appendToConsole("\n" + id + " no");
+		SpaceXGUI.getInstance().appendToConsole(TAG,id + " no");
 		return false;
 	}
 	
 	public GeneralMotorConSchedule hover() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Hovering");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Hovering");
 		cmd.hover().doFor(100);
 		return this;
 	}
@@ -125,7 +125,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * @throws InterruptedException
 	 */
 	public GeneralMotorConSchedule forward(int time) {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Forward for: " + time);
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Forward for: " + time);
 		
 		cmd.schedule(0, new Runnable(){
 			@Override
@@ -158,7 +158,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * @throws InterruptedException
 	 */
 	public GeneralMotorConSchedule backward(int time) {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Backward for: " + time);
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Backward for: " + time);
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -184,7 +184,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 */
 	public GeneralMotorConSchedule takeoff() {
 		//TODO: test the time and flattrim stuff to get a good takeoff
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Takingoff");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Takingoff");
 		cmd.waitFor(1000);
 		cmd.takeOff();
 		cmd.waitFor(5000);
@@ -199,7 +199,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * Land the drone
 	 */
 	public void landing() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - landing");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - landing");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -213,7 +213,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	
 	
 	public void waitFor(int millis) {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - wait for: " + millis);
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - wait for: " + millis);
 		//cmd.waitFor(millis);
 		try {
 			Thread.sleep(millis);
@@ -229,7 +229,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 */
 	public GeneralMotorConSchedule spin90Left() {
 		//TODO: test the speed and time90 for both spin to get a good spin
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning 90 left");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - spinning 90 left");
 		
 		cmd.schedule(0, new Runnable(){
 			@Override
@@ -250,7 +250,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * @throws InterruptedException
 	 */
 	public GeneralMotorConSchedule spin90Right() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning 90 right");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - spinning 90 right");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -269,7 +269,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * lowering the altitude a little bit
 	 */
 	public GeneralMotorConSchedule lowerAltitude() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - lowering altitude");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - lowering altitude");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -294,7 +294,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * raising the altitude a little bit
 	 */
 	public GeneralMotorConSchedule raiseAltitude() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - raising altitude");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - raising altitude");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -330,7 +330,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * Move the drone a little to the right
 	 */
 	public GeneralMotorConSchedule right() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Right");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Right");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -355,7 +355,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * Move the drone a little to the left
 	 */
 	public GeneralMotorConSchedule left() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Left");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Left");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -380,7 +380,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * Move the drone a little to the right
 	 */
 	public GeneralMotorConSchedule right(int millis) {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Right");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Right");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -405,7 +405,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * Move the drone a little to the left
 	 */
 	public GeneralMotorConSchedule left(int millis) {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Left");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Left");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -430,7 +430,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * spins the drone a little to the left
 	 */
 	public GeneralMotorConSchedule spinLeft() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning left");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - spinning left");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -456,7 +456,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * spins the drone a little to the right
 	 */
 	public GeneralMotorConSchedule spinRight() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - spinning right");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - spinning right");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -480,7 +480,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * turns right while spinning left
 	 */
 	public GeneralMotorConSchedule cycleRight() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Cycle right");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Cycle right");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
@@ -499,7 +499,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	 * turns left while spinning right
 	 */
 	public GeneralMotorConSchedule cycleLeft() {
-		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - Cycle left");
+		if(printToConsole)SpaceXGUI.getInstance().appendToConsole(TAG," - Cycle left");
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {

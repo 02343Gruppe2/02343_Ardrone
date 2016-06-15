@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
-import utils.FormattedTimeStamp;
-
 public class Assignment1 implements Runnable{
+	private static final String TAG = "Assignment1";
+	
 	// Instantiate picture analyze
 	ImgProc obj = new ImgProc();
 	
@@ -65,17 +65,17 @@ public class Assignment1 implements Runnable{
 	 */
 	public void run() {
 		resetTime();
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "]Assignment1] - threadrun start");
+		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
 		while(threadRun) {
 			try{
 				if(lastCircleTime < (new Date().getTime()-20000)) {
-					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found for too long timer, stopping search");
+					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
 					threadRun = false;
 					finished = true;
 					return;
 				}
 				else if(lastCircleTime < (new Date().getTime()-5000)){
-					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found timer, start backin up");
+					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
 					switch(lastMovement) {
 					case 1:
 						GeneralMotorConSchedule.getInstance().backward(500);
@@ -111,19 +111,19 @@ public class Assignment1 implements Runnable{
 				}
 				Thread.sleep(5000);
 			} catch (InterruptedException e ){
-				SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun InteruptedException ");		
+				SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
 			}
 			
 		}
 		finished = true;
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - threadrun finished");
+		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");
 	}
 	
 	/**
 	 * 
 	 */
 	public void resetTime(){
-		SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - reset thread timer");
+		SpaceXGUI.getInstance().appendToConsole(TAG," - reset thread timer");
 		lastCircleTime = new Date().getTime();
 	}
 	
@@ -141,7 +141,7 @@ public class Assignment1 implements Runnable{
 		finished = false;
 		threadRun = true;
 		new Thread(this).start();
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Fly Ini");
+		SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
 		while (!finished) {
 			updateHulaHoop();
 					
@@ -170,20 +170,20 @@ public class Assignment1 implements Runnable{
 	 */
 	public void flyThrough() {
 		boolean middle = false;
-		SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough");
+		SpaceXGUI.getInstance().appendToConsole(TAG," - FlyThrough");
 		while (!middle) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - FlyThrough while loop");
+			SpaceXGUI.getInstance().appendToConsole(TAG," - FlyThrough while loop");
 			boolean check = updateHulaHoop();
 			if(check) {
 				setVariableTolerance();
 				if(x < (variableTolerance-shittyDroneConstant) && x > -(variableTolerance+shittyDroneConstant)) {
 					if(y < (adjustmentTolerance) && y > -(adjustmentTolerance)){
-						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Middle found");
-						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Radius: " + radius);
-						SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - variableTolerance: " + variableTolerance);
+						SpaceXGUI.getInstance().appendToConsole(TAG," - Middle found");
+						SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
+						SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
 						if(radius> 160){
 							middle = true;
-							SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Final fly through");
+							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
 							int forwardFor = (int)(magicForwardNum/radius);
 							GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
@@ -233,7 +233,7 @@ public class Assignment1 implements Runnable{
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
 				}	
 			} else {
-				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");
+				SpaceXGUI.getInstance().appendToConsole(TAG," - Lost the hulahoop");
 				if(!threadRun) return;
 			}
 			GeneralMotorConSchedule.getInstance().pauseFor(200);
@@ -251,7 +251,7 @@ public class Assignment1 implements Runnable{
 		int updateInteger = 0;
 		try{
 			
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data");
+			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
 			updateInteger = 1;
@@ -271,17 +271,17 @@ public class Assignment1 implements Runnable{
 					updateInteger = 8;
 					qrcode = s[3];
 					updateInteger = 9;
-					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done");
+					SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done");
 					updateInteger = 10;
 					resetTime();
 					updateInteger = 11;
-					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
+					SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
 					updateInteger = 12;
-					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
+					SpaceXGUI.getInstance().appendToConsole(TAG," - y: " + y);
 					updateInteger = 13;
-					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
+					SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
 					updateInteger = 14;
-					SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+					SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
 					updateInteger = 15;
 					lastCircleTime = new Date().getTime();
 					return true;
@@ -298,22 +298,22 @@ public class Assignment1 implements Runnable{
 				}
 			}
 			updateInteger = 20;
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Updating HulaHoop data done, with no QRcode");
+			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done, with no QRcode");
 			resetTime();
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - x: " + x);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - y: " + y);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - radius: " + radius);
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - QRcode: " + qrcode);
+			SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
+			SpaceXGUI.getInstance().appendToConsole(TAG," - y: " + y);
+			SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
+			SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
 			lastCircleTime = new Date().getTime();
 			updateInteger = 21;
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NullPointerException, Error " + updateInteger + ": " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole(TAG," - NullPointerException, Error " + updateInteger + ": " + e.toString());
 		} catch (NumberFormatException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - NumberFormatException, Error: " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole(TAG," - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
-			SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - IndexOutOfBoundsException, Error: " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole(TAG," - IndexOutOfBoundsException, Error: " + e.toString());
 		}		
 		return false;
 	}
