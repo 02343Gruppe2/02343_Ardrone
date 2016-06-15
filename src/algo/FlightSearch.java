@@ -14,12 +14,13 @@ import core.ImgProc;
 import de.yadrone.base.IARDrone;
 import de.yadrone.base.command.CommandManager;
 import gui.SpaceXGUI;
-import utils.FormattedTimeStamp;
 
 public class FlightSearch {
 	boolean qrcodeFound = false;
 	boolean map = false;
 	boolean forwardControl = false;
+
+	private final String TAG = "FlightSearch";
 
 	// Instantiate picture analyze
 	ImgProc obj = new ImgProc();
@@ -60,7 +61,6 @@ public class FlightSearch {
 
 	// Metode for forward check.
 	public void forwardCheck() {
-		GeneralMotorCon.getInstance().forward(2000);
 		qrcodeScan();
 
 		for (int g = 0; g < qrcode.size(); g++) {
@@ -74,36 +74,39 @@ public class FlightSearch {
 				break;
 			}
 		}
+		GeneralMotorCon.getInstance().forward(2000);
 	}
 
 	public void adjustdrone(int j, String currentQr) {
-		int errormargin = 100, rectangleWidth = 100;
+		int errormargin = 100, rectangleWidth = 180;
 		boolean isyadjusted = false, isxadjusted = false, newQRCode = true, distance = false;
 
 		int scanCounter = 0;
-		while (!isyadjusted && !isxadjusted && !distance) {
-			if (newQRCode && scanCounter < 5) {
+		while ((!isyadjusted || !isxadjusted || !distance) && scanCounter < 5) {
+			if (newQRCode) {
 				Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
 				double x = ((rect.br().x - rect.tl().x) / 2) + rect.tl().x,
 						y = ((rect.br().y - rect.tl().y) / 2) + rect.tl().y;
 				double[] displacedCoordinates = ImgProc.coordinateDisplacement(x, y);
 				x = displacedCoordinates[0];
 				y = displacedCoordinates[1];
+
+				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				if (x > errormargin) {
-					GeneralMotorConSchedule.getInstance().right();
+					GeneralMotorConSchedule.getInstance().right().pauseFor(3000);
 				} else if (x < -errormargin) {
-					GeneralMotorConSchedule.getInstance().left();
+					GeneralMotorConSchedule.getInstance().left().pauseFor(3000);
 				} else {
 					isxadjusted = true;
 				}
 				if (y > errormargin) {
-					GeneralMotorConSchedule.getInstance().raiseAltitude();
+					GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(3000);
 				} else if (y < -errormargin) {
-					GeneralMotorConSchedule.getInstance().lowerAltitude();
+					GeneralMotorConSchedule.getInstance().lowerAltitude().pauseFor(3000);
 				} else {
 					isyadjusted = true;
 				}
-				SpaceXGUI.getInstance().appendToConsole("\nrect str: "+rect.width);
+				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				if (rect.width < rectangleWidth) {
 					GeneralMotorConSchedule.getInstance().forward(100);
 				} else {
@@ -111,6 +114,7 @@ public class FlightSearch {
 				}
 			}
 			qrcodeScan();
+
 			scanCounter++;
 			newQRCode = false;
 			for (j = 0; j < qrcode.size(); j++) {
@@ -125,6 +129,7 @@ public class FlightSearch {
 
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
+
 		for (int i = 0; i < 10; i++) {
 			qrcodeScan();
 
@@ -139,8 +144,7 @@ public class FlightSearch {
 			GeneralMotorCon.getInstance().spin90Left();
 		}
 
-		while (!qrcodeFound) {
-			// Scan for qrcode.
+		while (!qrcodeFound) { // Scan for qrcode.
 			qrcodeScan();
 
 			// Checking for Hulahop found
@@ -170,27 +174,37 @@ public class FlightSearch {
 					break;
 				} else if (qrcode.get(j).equals("W00.00")) {
 					adjustdrone(j, "W00.00");
+					GeneralMotorConSchedule.getInstance().landing();
 					// spin 180 grader if QRcode match the exactly wall.
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.01")) {
-					GeneralMotorCon.getInstance().right();
+					adjustdrone(j, "W00.01");
+					GeneralMotorConSchedule.getInstance().landing();
+					// GeneralMotorCon.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.02")) {
+					adjustdrone(j, "W00.02");
+					GeneralMotorConSchedule.getInstance().landing();
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.03")) {
-					GeneralMotorCon.getInstance().right();
+					adjustdrone(j, "W00.03");
+					GeneralMotorConSchedule.getInstance().landing();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 03 og landing");
+					// GeneralMotorCon.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.04")) {
+					adjustdrone(j, "W00.04");
+					GeneralMotorConSchedule.getInstance().landing();
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
+					// GeneralMotorCon.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W01.00")) {
