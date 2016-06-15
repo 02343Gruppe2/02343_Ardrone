@@ -81,7 +81,6 @@ public class SpaceXDrone {
 			
 			drone.getNavDataManager().addBatteryListener(new powerLevel());
 			running = true;
-			//flightAlgo = new FlightAlgo(drone);
 			Thread.sleep(10000);
 			assig1 = new Assignment1();
 			fs = new FlightSearch();
