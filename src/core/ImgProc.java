@@ -81,7 +81,7 @@ public class ImgProc {
 		Object[] res = null;
 
 		//picture from file
-		for(int index = 0;index<57;index++) {
+	/*	for(int index = 0;index<57;index++) {
 			try {
 				imgIn = convertMatToBufferedImage(Imgcodecs.imread("materials\\picture_"+index+".png"));
 				res = picRunDown(assignment,isFront,imgIn);
@@ -90,12 +90,12 @@ public class ImgProc {
 			} catch (Exception ex) {
 				System.out.println(index);
 			}
-		}
+		}*/
 
 
 		//picture from drone
-		//imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
-		//res = picRunDown(assignment,isFront,imgIn);
+		imgIn = SpaceXGUI.getInstance().getVPanel().getImg(isFront);
+		res = picRunDown(assignment,isFront,imgIn);
 
 		return res;
 	}
@@ -333,12 +333,17 @@ public class ImgProc {
 		List<MatOfPoint> contours = findContours(grayImg);
 		List<Rect> rects = new ArrayList<Rect>();
 		double factor = 1.5;
+		MatOfPoint2f outArray;
+		MatOfPoint mop;
+		Rect rect;
 		for(int i = 0;i <contours.size();i++) {
-
-			Rect rect =  findRectangle(contours.get(i));
+			outArray = new  MatOfPoint2f();
+			Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), outArray, 10, true);
+			mop = new MatOfPoint(outArray.toArray());
+			rect =  Imgproc.boundingRect(mop);
 			//checks distance between topleft and bottomright
 
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength && rect.height < maxRectHeight) {
+			if(rect.height < maxRectHeight && Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength) {
 				if(rect.width*factor > rect.height && rect.height*factor > rect.width) {
 					rects.add(rect);
 					Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
