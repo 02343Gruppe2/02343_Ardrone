@@ -72,6 +72,7 @@ public class Assignment1 implements Runnable{
 					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found for too long timer, stopping search");
 					threadRun = false;
 					finished = true;
+					return;
 				}
 				else if(lastCircleTime < (new Date().getTime()-5000)){
 					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "][Assignment1] - Threadrun no circle found timer, start backin up");
@@ -83,36 +84,28 @@ public class Assignment1 implements Runnable{
 						GeneralMotorConSchedule.getInstance().forward(500);
 						break;
 					case 3:
-						switch(doRandom()) {
-						case 0:
-							GeneralMotorConSchedule.getInstance().left();
-							break;
-						case 1:
-							GeneralMotorConSchedule.getInstance().spinLeft();
-							break;
-						case 2:
-							GeneralMotorConSchedule.getInstance().cycleRight();
-							break;
-						}
+						GeneralMotorConSchedule.getInstance().left();
 						break;
 					case 4:
-						switch(doRandom()) {
-						case 0:
-							GeneralMotorConSchedule.getInstance().right();
-							break;
-						case 1:
-							GeneralMotorConSchedule.getInstance().spinRight();
-							break;
-						case 2:
-							GeneralMotorConSchedule.getInstance().cycleLeft();
-							break;
-						}
+						GeneralMotorConSchedule.getInstance().right();
 						break;
 					case 5:
 						GeneralMotorConSchedule.getInstance().lowerAltitude();
 						break;
 					case 6:
 						GeneralMotorConSchedule.getInstance().raiseAltitude();
+						break;
+					case 7:
+						GeneralMotorConSchedule.getInstance().spinLeft();
+						break;
+					case 8:
+						GeneralMotorConSchedule.getInstance().spinRight();
+						break;
+					case 9:
+						GeneralMotorConSchedule.getInstance().cycleLeft();
+						break;
+					case 10:
+						GeneralMotorConSchedule.getInstance().cycleRight();
 						break;
 					}
 				}
@@ -192,7 +185,8 @@ public class Assignment1 implements Runnable{
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Final fly through");
 							doneHulaHoop.add(qrcode);
-							GeneralMotorConSchedule.getInstance().forward((int)(magicForwardNum/radius)).pauseFor((int)(magicForwardNum/radius));	
+							int forwardFor = (int)(magicForwardNum/radius);
+							GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
 						} else {
 							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
 						}
@@ -208,30 +202,35 @@ public class Assignment1 implements Runnable{
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().right();
+						lastMovement = 3;
 						break;
 					case 1:
 						GeneralMotorConSchedule.getInstance().spinRight();
+						lastMovement = 7;
 						break;
 					case 2:
 						GeneralMotorConSchedule.getInstance().cycleLeft();
+						lastMovement = 10;
 						break;
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
-					lastMovement = 3;
+					
 				} else {
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().left();
+						lastMovement = 4;
 						break;
 					case 1:
 						GeneralMotorConSchedule.getInstance().spinLeft();
+						lastMovement = 8;
 						break;
 					case 2:
 						GeneralMotorConSchedule.getInstance().cycleRight();
+						lastMovement = 9;
 						break;
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
-					lastMovement = 4;
 				}	
 			} else {
 				SpaceXGUI.getInstance().appendToConsole("\n[Assignment1] - Lost the hulahoop");

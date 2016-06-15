@@ -131,8 +131,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.forward(speed).doFor(time);
-				//if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+						cmd.forward(speed);
+						Thread.sleep(time);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -151,8 +158,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.backward(speed).doFor(time+100);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)){
+					try {
+					cmd.backward(speed); 
+						Thread.sleep(time);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -185,7 +199,7 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				newRunningThread();
-				hover();
+				cmd.hover();
 				cmd.landing();
 				runningThreads--;
 			}
@@ -195,7 +209,12 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 	
 	public void waitFor(int millis) {
 		if(printToConsole)SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] [GMC] - wait for: " + millis);
-		cmd.waitFor(millis);
+		//cmd.waitFor(millis);
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			
+		}
 	}
 	
 	/**
@@ -250,8 +269,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.down(altitudeSpeed).doFor(altitudeTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.down(altitudeSpeed);
+					Thread.sleep(altitudeTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -268,8 +294,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.up(altitudeSpeed).doFor(altitudeTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.up(altitudeSpeed);
+					Thread.sleep(altitudeTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -297,8 +330,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goRight(speed).doFor(sideTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.goRight(speed);
+					Thread.sleep(sideTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -315,8 +355,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goLeft(speed).doFor(sideTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.goLeft(speed);
+					Thread.sleep(sideTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -333,8 +380,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goRight(speed).doFor(millis+100);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.goRight(speed);
+					Thread.sleep(millis);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -351,8 +405,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.goLeft(speed).doFor(millis+100);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.goLeft(speed);
+					Thread.sleep(millis);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -369,9 +430,16 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.spinLeft(spinSpeed).doFor(spinTime);
+				if(isRunningThread(id)){
+					try {
+					cmd.spinLeft(spinSpeed);
+					Thread.sleep(spinTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
 				//if(isRunningThread(id))cmd.move(0, 0, 0, spinSpeed).doFor(spinTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
@@ -388,8 +456,15 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 			@Override
 			public void run() {
 				int id = newRunningThread();
-				if(isRunningThread(id))cmd.spinRight(spinSpeed).doFor(spinTime);
-				if(isRunningThread(id))hover();
+				if(isRunningThread(id)) {
+					try {
+					cmd.spinRight(spinSpeed);
+					Thread.sleep(spinTime);
+					} catch (InterruptedException e) {
+						
+					}
+				}
+				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}
 		});
