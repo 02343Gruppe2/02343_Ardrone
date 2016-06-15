@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -130,8 +131,8 @@ public class SpaceXGUI extends JPanel {
 	 * 
 	 * @param s Message to be appended.
 	 */
-	public void appendToConsole(String...strings) {
-		cPanel.appendText(strings);
+	public void appendToConsole(String tag, String msg) {
+		cPanel.appendText(tag, msg);
 	}
 	
 	/**

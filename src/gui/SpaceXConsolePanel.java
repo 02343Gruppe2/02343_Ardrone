@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -73,13 +74,16 @@ public class SpaceXConsolePanel extends JPanel {
 		add(sp);
 	}
 	
-	public void appendText(String...strings) {
-		for(String s : strings)
-			txtArea.append(s);
+	public void appendText(String tag, String msg) {
+		txtArea.append("\n"+getTime()+" ["+tag+"]: "+msg);
 	}
 
 	public void clearPanel() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private String getTime() {
+		return String.valueOf(new SimpleDateFormat("HH:mm:ss").format(java.util.Calendar.getInstance().getTime()));
 	}
 }
