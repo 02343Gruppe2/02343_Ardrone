@@ -19,7 +19,6 @@ import de.yadrone.base.exception.ARDroneException;
 import de.yadrone.base.exception.IExceptionListener;
 import de.yadrone.base.navdata.BatteryListener;
 import de.yadrone.base.video.ImageListener;
-import network.DroneConnection;
 import algo.Assignment1;
 import algo.FlightSearch;
 import algo.GeneralMotorCon;
