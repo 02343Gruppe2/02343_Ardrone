@@ -8,7 +8,6 @@ import gui.SpaceXGUI;
 
 import org.opencv.core.Core;
 
-import utils.FormattedTimeStamp;
 import de.yadrone.apps.controlcenter.plugins.battery.BatteryPanel;
 import de.yadrone.apps.paperchase.controller.PaperChaseKeyboardController;
 import de.yadrone.base.ARDrone;
@@ -32,6 +31,7 @@ public class SpaceXDrone {
 	Boolean imageIsReady;
 	int batteryPercentage;
 	int voltagePercentage;
+	final private String TAG = "SpaceX";
 	
 	public void swapCamera(IARDrone drone) {
 		imageIsReady = false;
@@ -53,14 +53,14 @@ public class SpaceXDrone {
 		
 		
 		try {
-			SpaceXGUI.getInstance("[" + FormattedTimeStamp.getTime() + "] Welcome to SpaceX Drone GUI");
+			SpaceXGUI.getInstance().appendToConsole(TAG, "Welcome to SpaceX Drone GUI");;
 			// Create instance of new ARDrone
 			drone = new ARDrone();
 			
 			drone.addExceptionListener(new IExceptionListener() {
 				public void exeptionOccurred(ARDroneException e) {
 					System.err.println("Drone exception: " + e.getMessage());
-					SpaceXGUI.getInstance().appendToConsole("\n[" + FormattedTimeStamp.getTime() + "] Critical drone error: " + e.getMessage());
+					SpaceXGUI.getInstance().appendToConsole(TAG ,"Critical drone error: " + e.getMessage());
 				}
 			});
 			// Start the drone managers (NavData, CommandManager etc.)
