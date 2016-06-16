@@ -74,15 +74,15 @@ public class FlightSearch {
 				break;
 			}
 		}
-		GeneralMotorCon.getInstance().forward(2000);
+		GeneralMotorConSchedule.getInstance().forward(2000).pauseFor(2000);;
 	}
 
 	public void adjustdrone(int j, String currentQr) {
-		int errormargin = 100, rectangleWidth = 180;
-		boolean isyadjusted = false, isxadjusted = false, newQRCode = true, distance = false;
+		int errormargin = 100, rectangleWidth = 130;
+		boolean newQRCode = true, adjust = false;
 
 		int scanCounter = 0;
-		while ((!isyadjusted || !isxadjusted || !distance) && scanCounter < 5) {
+		while ((!adjust) && scanCounter < 50) {
 			if (newQRCode) {
 				Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
 				double x = ((rect.br().x - rect.tl().x) / 2) + rect.tl().x,
@@ -90,33 +90,35 @@ public class FlightSearch {
 				double[] displacedCoordinates = ImgProc.coordinateDisplacement(x, y);
 				x = displacedCoordinates[0];
 				y = displacedCoordinates[1];
-
+				
+				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				if (x > errormargin) {
 					GeneralMotorConSchedule.getInstance().right().pauseFor(2000);
+					
 				} else if (x < -errormargin) {
 					GeneralMotorConSchedule.getInstance().left().pauseFor(2000);
-				} else {
-					isxadjusted = true;
-				}
-				if (y > errormargin) {
+					
+				} else if (y > errormargin) {
 					GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(2000);
+					
 				} else if (y < -errormargin) {
 					GeneralMotorConSchedule.getInstance().lowerAltitude().pauseFor(2000);
+						
+				}else if (rect.width < rectangleWidth) {
+					GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
+					GeneralMotorConSchedule.getInstance().hover().pauseFor(1000);
+					
 				} else {
-					isyadjusted = true;
-				}
-				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
-				if (rect.width < rectangleWidth) {
-					GeneralMotorConSchedule.getInstance().forward(100);
-				} else {
-					distance = true;
+					adjust = true;
+					break;
 				}
 			}
+			GeneralMotorConSchedule.getInstance().pauseFor(200);
 			qrcodeScan();
-
 			scanCounter++;
 			newQRCode = false;
+			SpaceXGUI.getInstance().appendToConsole(TAG, "Scanned, qrcode size: " + qrcode.size() + " current qrcode: "+currentQr);
 			for (j = 0; j < qrcode.size(); j++) {
 				if (qrcode.get(j).equals(currentQr)) {
 					newQRCode = true;
@@ -141,10 +143,10 @@ public class FlightSearch {
 				qrcodeFound = true;
 				break;
 			}
-			GeneralMotorCon.getInstance().spin90Left();
+			GeneralMotorConSchedule.getInstance().spinLeft().pauseFor(2000);
 		}
 
-		while (!qrcodeFound) { // Scan for qrcode.
+		while (!qrcodeFound) { // Scan for qrcode..
 			qrcodeScan();
 
 			// Checking for Hulahop found
@@ -157,7 +159,7 @@ public class FlightSearch {
 				break;
 			}
 			// Forward with 2000 mills
-			GeneralMotorCon.getInstance().forward(2000);
+			GeneralMotorConSchedule.getInstance().forward(2000).pauseFor(2000);
 		}
 
 		while (!map) {
@@ -174,122 +176,125 @@ public class FlightSearch {
 					break;
 				} else if (qrcode.get(j).equals("W00.00")) {
 					adjustdrone(j, "W00.00");
-					//GeneralMotorConSchedule.getInstance().landing();
+					GeneralMotorConSchedule.getInstance().landing();
 					// spin 180 grader if QRcode match the exactly wall.
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
-					forwardControl = true;
+					//GeneralMotorConSchedule.getInstance().spin90Right();
+					//GeneralMotorConSchedule.getInstance().spin90Right();
+					//forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.01")) {
 					adjustdrone(j, "W00.01");
-					//GeneralMotorConSchedule.getInstance().landing();
-					GeneralMotorCon.getInstance().right();
+					GeneralMotorConSchedule.getInstance().landing();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 01 og landing");
+					//GeneralMotorConSchedule.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.02")) {
 					adjustdrone(j, "W00.02");
-					//GeneralMotorConSchedule.getInstance().landing();
-					//SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02 og landing");
+					GeneralMotorConSchedule.getInstance().landing();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02 og landing");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
-					forwardControl = true;
+					//GeneralMotorConSchedule.getInstance().spin90Right();
+					//GeneralMotorConSchedule.getInstance().spin90Right();
+					//forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.03")) {
 					adjustdrone(j, "W00.03");
-					//GeneralMotorConSchedule.getInstance().landing();
+					GeneralMotorConSchedule.getInstance().landing();
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 03 og landing");
-					GeneralMotorCon.getInstance().right();
+					//GeneralMotorConSchedule.getInstance().right();
 
 				} else if (qrcode.get(j).equals("W00.04")) {
 					adjustdrone(j, "W00.04");
 					//GeneralMotorConSchedule.getInstance().landing();
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Right();
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W01.00")) {
 					adjustdrone(j, "W01.00");
+					GeneralMotorConSchedule.getInstance().landing();
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					//GeneralMotorConSchedule.getInstance().spin90Left();
+					//GeneralMotorConSchedule.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.01")) {
 					adjustdrone(j, "W01.01");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().landing();
+					//GeneralMotorConSchedule.getInstance().spin90Left();
+					//GeneralMotorConSchedule.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.02")) {
 					adjustdrone(j, "W01.02");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.03")) {
 					adjustdrone(j, "W01.03");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W01.04")) {
 					adjustdrone(j, "W01.04");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
 
 				} else if (qrcode.get(j).equals("W02.00")) {
 					adjustdrone(j, "W02.00");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 					
 				} else if (qrcode.get(j).equals("W02.01")) {
 					adjustdrone(j, "W02.01");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W02.02")) {
 					adjustdrone(j, "W02.02");
-					GeneralMotorCon.getInstance().left();
+					GeneralMotorConSchedule.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W02.03")) {
 					adjustdrone(j, "W02.03");
 					// Spin 180 grader
-					GeneralMotorCon.getInstance().spin90Left();
-					GeneralMotorCon.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
+					GeneralMotorConSchedule.getInstance().spin90Left();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W02.04")) {
 					adjustdrone(j, "W02.04");
-					GeneralMotorCon.getInstance().left();
+					GeneralMotorConSchedule.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W03.00")) {
 					adjustdrone(j, "W03.00");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W03.01")) {
 					adjustdrone(j, "W03.01");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W03.02")) {
 					adjustdrone(j, "W03.02");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W03.03")) {
 					adjustdrone(j, "W03.03");
 					//GeneralMotorConSchedule.getInstance().landing();
 					//SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 03.03 og landing");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W03.04")) {
 					adjustdrone(j, "W03.04");
-					GeneralMotorCon.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 
 				}
 			}
@@ -299,7 +304,7 @@ public class FlightSearch {
 		}
 
 		// TODO ændre run to fly
-		GeneralMotorCon.getInstance().lowerAltitude();
+		GeneralMotorConSchedule.getInstance().lowerAltitude();
 		assign1.flyHulaHoop();
 
 	}
