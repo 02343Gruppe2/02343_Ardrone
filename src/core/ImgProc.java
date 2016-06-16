@@ -117,7 +117,7 @@ public class ImgProc {
 		case 0:
 			//hulahoops assignment
 
-			rects = findPossibleQrBoth(grayImg, drawingMat);
+			rects = findPossibleQrRectangle(grayImg, drawingMat);
 			Object[] temp  = checkRectsForQrText(rects, originalMat, drawingMat);
 			res[0] = temp;
 			res[1] = checkImageForHulaHoops(grayImg, (ArrayList<Rect>)temp[1], originalMat, drawingMat);
@@ -126,12 +126,12 @@ public class ImgProc {
 			break;
 		case 1: 
 			//cube finding assignment
-			rects = findPossibleQrBoth(grayImg, drawingMat);
+			rects = findPossibleQrRectangle(grayImg, drawingMat);
 			checkForCubes(originalMat, drawingMat, rects);
 			break;
 		case 2:
 			//air fields assignment
-			rects = findPossibleQrBoth(grayImg, drawingMat);
+			rects = findPossibleQrRectangle(grayImg, drawingMat);
 			List<String> qrTexts =  (List<String>)checkRectsForQrText(rects, originalMat, drawingMat)[0];
 			if(qrTexts.size() > 0) {
 				res[0] = qrTexts;
@@ -140,7 +140,7 @@ public class ImgProc {
 			res[1] = checkForPosibleAirfield(originalMat, drawingMat, grayImg, rects);
 			break;
 		default:
-			rects = findPosibleQrPortrait(grayImg, drawingMat);
+			rects = findPossibleQrRectangle(grayImg, drawingMat);
 			res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
 			res[1] = rects;
 			break;
@@ -310,40 +310,27 @@ public class ImgProc {
 		return new double[]{x,y};
 	}
 
-	private List<Rect> findPosibleQrPortrait(Mat grayImg, Mat drawingMat) {
-		List<MatOfPoint> contours = findContours(grayImg);
-		List<Rect> rects = new ArrayList<Rect>();
-
-		for(int i = 0;i <contours.size();i++) {
-			Rect rect =  findRectangle(contours.get(i));
-			//checks distance between topleft and bottomright
-			//QR codes are on A3, which height is sqrt(2) times bigger than width - 1.4, which is why we check for 1.25 and 1.55
-			if(Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength && rect.height < (rect.width*1.55) && rect.height > (rect.width*1.25)) {
-				if(rect.br().y - rect.tl().y < maxRectHeight) {
-					rects.add(rect);
-					Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
-				}
-			} 
-		}
-
-		return rects;
-	}
-
-	private List<Rect> findPossibleQrBoth(Mat grayImg, Mat drawingMat) {
-		List<MatOfPoint> contours = findContours(grayImg);
+	private List<Rect> findPossibleQrRectangle(Mat grayImg, Mat drawingMat) {
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Mat hierarchy = new Mat();
+		int mode = Imgproc.RETR_LIST;
+		int method = Imgproc.CHAIN_APPROX_SIMPLE;
+		Imgproc.findContours(grayImg, contours, hierarchy, mode, method);
 		List<Rect> rects = new ArrayList<Rect>();
 		double factor = 1.5;
 		MatOfPoint2f outArray;
 		MatOfPoint mop;
 		Rect rect;
+		//check each contour for a rectangle
 		for(int i = 0;i <contours.size();i++) {
 			outArray = new  MatOfPoint2f();
 			Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), outArray, 10, true);
 			mop = new MatOfPoint(outArray.toArray());
 			rect =  Imgproc.boundingRect(mop);
+			
 			//checks distance between topleft and bottomright
-
 			if(rect.height < maxRectHeight && Point2D.distance(rect.tl().x, rect.tl().y, rect.br().x, rect.br().y) > minDiagonalLength) {
+				//check that the width and height are within the factor of each other (rectangle where the 
 				if(rect.width*factor > rect.height && rect.height*factor > rect.width) {
 					rects.add(rect);
 					Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), redScalar,3);
@@ -351,13 +338,6 @@ public class ImgProc {
 			}
 		}
 		return rects;
-	}
-
-	private Rect findRectangle (MatOfPoint points) {
-		MatOfPoint2f outArray = new  MatOfPoint2f();
-		Imgproc.approxPolyDP(new MatOfPoint2f(points.toArray()), outArray, 10, true);
-		MatOfPoint mop = new MatOfPoint(outArray.toArray());
-		return Imgproc.boundingRect(mop);
 	}
 
 	private Object[] checkForPosibleAirfield(Mat originalMat, Mat drawingMat, Mat grayImg, List<Rect> rects) {
@@ -433,15 +413,6 @@ public class ImgProc {
 		}
 
 		return res;
-	}
-
-	private List<MatOfPoint> findContours(Mat image) {
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat hierarchy = new Mat();
-		int mode = Imgproc.RETR_LIST;
-		int method = Imgproc.CHAIN_APPROX_SIMPLE;
-		Imgproc.findContours(image, contours, hierarchy, mode, method);
-		return contours;
 	}
 
 	private String lookForQr(BufferedImage image, Boolean useHint) {
