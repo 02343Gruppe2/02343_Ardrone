@@ -44,9 +44,20 @@ public class Assignment1 implements Runnable{
 	private static long lastCircleTime = new Date().getTime();		// Last time the drone saw a circle	
 
 	/* Hula Hoop Variables and Constants*/
-	private int numHulaHoop = 4;														// The amount of hula hoops
-	private String[] allHulaHoops = new String[]{"P.00", "P.01", "P.02", "P.03"};		// The HulaHoop QRCodes
+	private int numHulaHoop = 4;														// The amount of hula hoops		
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();							// List of the hula hoops the drone have flown through
+	ArrayList<String> allHulaHoops = new ArrayList<String>(); 							// The HulaHoop QRCodes
+	
+	public Assignment1() {
+		for(int i = 0; i < numHulaHoop; i++) {
+			if(i < 10) {
+				allHulaHoops.add("P.0" + i );
+			}
+			else {
+				allHulaHoops.add("P." + i);
+			}
+		}
+	}
 	
 	/**
 	 * Fly Hula Hoop
@@ -60,14 +71,12 @@ public class Assignment1 implements Runnable{
 		SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
 		while (!finished) {
 			updateHulaHoop();
-					
-			flyThrough();
 	
-			/*if(qrcode == ("P.0" + doneHulaHoop.size())) {			
+			if(qrcode == allHulaHoops.get(doneHulaHoop.size())) {			
 				flyThrough();
-			}*/
+			}
 			
-			//if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
+			if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
 		}
 		threadRun = false;
 		return true;
@@ -149,7 +158,7 @@ public class Assignment1 implements Runnable{
 		finished = true;
 		threadRun = false;
 		//GeneralMotorCon.getInstance().forward((2000/radius));
-		//doneHulaHoop.add(qrcode);
+		doneHulaHoop.add(qrcode);
 	}
 	 
 	/**
