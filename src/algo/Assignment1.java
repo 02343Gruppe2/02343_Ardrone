@@ -19,123 +19,39 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Assignment1 implements Runnable{
 	private static final String TAG = "Assignment1";
 	
-	// Instantiate picture analyze
+	/* Picture Analyze */
 	ImgProc obj = new ImgProc();
-	
-	// For how long the drone should do a task
-	int doTime = 1000;
-	
+	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulaHoops()[1];		// Making a list with the objects from the picture analyze
+
+
 	/* A failure margin */
-	int adjustmentTolerance = 100;			//adjustment used for the y-axis
+	int adjustmentTolerance = 120;			//adjustment used for the y-axis
 	int variableTolerance = 0; 				//adjustment used for the x-axis, calculated: (-2/3)*radius + 200 = tolerance
 	private int shittyDroneConstant = 0;	//To make sure the drone get through the circle, since the drones forward strafs abit to the right 65 positiv for shitty right movement and negative for shitty left movement
 	
 	/* The information of the last found hulahoop */
-	double x, y;		//middle coordinate
-	double radius;		//Radius 
-	String qrcode = "";	//The QRCode to the hulahoop
+	double x, y;				//middle coordinate
+	double radius;				//Radius 
+	String qrcode = "";			//The QRCode to the hulahoop
 	
-	// A number to make sure the drone fly forward long enough
-	private int magicForwardNum = 430000*2;		//calculated 4300007
-	 
-	/* Check timer variables */
-	// Used to check which movement the drone did last
-	private int lastMovement = 0;	// 1 = forward, 2 = backwards, 3 = right, 4 = left
-	// Check if the threadRun shoud stop the drone
-	private static boolean threadRun = false;
-	// Last time the drone saw a circle
-	private static long lastCircleTime = new Date().getTime();
+	private final int magicForwardNum = 430000*2;	// A number to make sure the drone fly forward long enough
+	private int lastMovement = 0;					// 1 = forward, 2 = backwards, 3 = right, 4 = left
 	
-	
-	
-	// To check if the drone have flown through the hula hoop
-	private static boolean finished = false;
-	// Makes sure the drone doesn't do a cycle movement 2 times in a row
-	private boolean randomNoCycleLoop = false;
-	// The amount of hula hoops
-	private int numHulaHoop = 4;
-	
-	// List of the hula hoops the drone have flown through
-	ArrayList<String> doneHulaHoop = new ArrayList<String>();
-	// Making a list with the objects from the picture analyze
-	ArrayList<String[]> hulaHoop = (ArrayList<String[]>) obj.findHulaHoops()[1];
+	/* Running variables */	
+	private static boolean finished = false;						// The finishing of the main thread
+	private boolean randomNoCycleLoop = false;						// Makes sure the drone doesn't do a cycle movement 2 times in a row
+	private static boolean threadRun = false;						// Check for the timerThread
+	private static long lastCircleTime = new Date().getTime();		// Last time the drone saw a circle	
+
+	/* Hula Hoop Variables and Constants*/
+	private int numHulaHoop = 4;														// The amount of hula hoops
+	private String[] allHulaHoops = new String[]{"P.00", "P.01", "P.02", "P.03"};		// The HulaHoop QRCodes
+	ArrayList<String> doneHulaHoop = new ArrayList<String>();							// List of the hula hoops the drone have flown through
 	
 	/**
-	 * 
-	 */
-	public void run() {
-		resetTime();
-		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
-		while(threadRun) {
-			try{
-				if(lastCircleTime < (new Date().getTime()-20000)) {
-					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
-					threadRun = false;
-					finished = true;
-					return;
-				}
-				else if(lastCircleTime < (new Date().getTime()-5000)){
-					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
-					switch(lastMovement) {
-					case 1:
-						GeneralMotorConSchedule.getInstance().backward(500);
-						break;
-					case 2:
-						GeneralMotorConSchedule.getInstance().forward(500);
-						break;
-					case 3:
-						GeneralMotorConSchedule.getInstance().left();
-						break;
-					case 4:
-						GeneralMotorConSchedule.getInstance().right();
-						break;
-					case 5:
-						GeneralMotorConSchedule.getInstance().lowerAltitude();
-						break;
-					case 6:
-						GeneralMotorConSchedule.getInstance().raiseAltitude();
-						break;
-					case 7:
-						GeneralMotorConSchedule.getInstance().spinLeft();
-						break;
-					case 8:
-						GeneralMotorConSchedule.getInstance().spinRight();
-						break;
-					case 9:
-						GeneralMotorConSchedule.getInstance().cycleLeft();
-						break;
-					case 10:
-						GeneralMotorConSchedule.getInstance().cycleRight();
-						break;
-					}
-				}
-				Thread.sleep(5000);
-			} catch (InterruptedException e ){
-				SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
-			}
-			
-		}
-		finished = true;
-		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");
-	}
-	
-	/**
-	 * 
-	 */
-	public void resetTime(){
-		SpaceXGUI.getInstance().appendToConsole(TAG," - reset thread timer");
-		lastCircleTime = new Date().getTime();
-	}
-	
-	/**
-	 * 
-	 */
-	private void setVariableTolerance() {
-		variableTolerance = (int)(-((0.666) * radius) + 200);
-	}
-	
-	/**
-	 * 
+	 * Fly Hula Hoop
+	 * This is the method to call when you've found hulahoop and want to fly through it
+	 * @return - true if it flew through a hula hoop
 	 */
 	public boolean flyHulaHoop() {
 		finished = false;
@@ -158,17 +74,9 @@ public class Assignment1 implements Runnable{
 	}
 	
 	/**
-	 * 
+	 * Fly Through
 	 */
-	public boolean isFinished() {
-		if(doneHulaHoop.size() > numHulaHoop-1) return true;
-		return false;
-	}
-	
-	/**
-	 * 
-	 */
-	public void flyThrough() {
+	private void flyThrough() {
 		boolean middle = false;
 		SpaceXGUI.getInstance().appendToConsole(TAG," - FlyThrough");
 		while (!middle) {
@@ -181,7 +89,7 @@ public class Assignment1 implements Runnable{
 						SpaceXGUI.getInstance().appendToConsole(TAG," - Middle found");
 						SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
 						SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
-						if(radius> 160){
+						if(radius > 240){
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
@@ -245,59 +153,39 @@ public class Assignment1 implements Runnable{
 	}
 	 
 	/**
-	 * 
+	 * Update Hula Hoop
+	 * checks for hula hoop and saves the x, y, radius and QRcode
+	 * @return - true, if a hulahoop was found.
 	 */
 	public boolean updateHulaHoop() {
-		int updateInteger = 0;
 		try{
-			
 			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data");
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			radius = 0;
-			updateInteger = 1;
 			if(hulaHoop.size() == 0) return false;
-			updateInteger = 2;
 			if(hulaHoop.isEmpty()) return false;
-			updateInteger = 3;
 			for (String[] s : hulaHoop){
-				updateInteger = 4;
 				if(s[3].contains("P")){
-					updateInteger = 5;
 					x = Double.parseDouble(s[0]);
-					updateInteger = 6;
 					y = Double.parseDouble(s[1]);
-					updateInteger = 7;
 					radius = Double.parseDouble(s[2]);
-					updateInteger = 8;
 					qrcode = s[3];
-					updateInteger = 9;
 					SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done");
-					updateInteger = 10;
 					resetTime();
-					updateInteger = 11;
 					SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
-					updateInteger = 12;
 					SpaceXGUI.getInstance().appendToConsole(TAG," - y: " + y);
-					updateInteger = 13;
 					SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
-					updateInteger = 14;
 					SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
-					updateInteger = 15;
 					lastCircleTime = new Date().getTime();
 					return true;
 				}
 				if(Double.parseDouble(s[2]) > radius){
-					updateInteger = 16;
 					x = Double.parseDouble(s[0]);
-					updateInteger = 17;
 					y = Double.parseDouble(s[1]);
-					updateInteger = 18;
 					radius = Double.parseDouble(s[2]);
-					updateInteger = 19;
 					//qrcode = s[3];
 				}
 			}
-			updateInteger = 20;
 			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done, with no QRcode");
 			resetTime();
 			SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
@@ -305,11 +193,10 @@ public class Assignment1 implements Runnable{
 			SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
 			SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
 			lastCircleTime = new Date().getTime();
-			updateInteger = 21;
 			return true;
 			
 		} catch (NullPointerException e) {
-			SpaceXGUI.getInstance().appendToConsole(TAG," - NullPointerException, Error " + updateInteger + ": " + e.toString());
+			SpaceXGUI.getInstance().appendToConsole(TAG," - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole(TAG," - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
@@ -342,5 +229,96 @@ public class Assignment1 implements Runnable{
 		}
 		randomNoCycleLoop = true;
 		return 0;
+	}
+
+
+	/**
+	 * Reset Time
+	 * method which resets the last circle found time.
+	 */
+	private void resetTime(){
+		SpaceXGUI.getInstance().appendToConsole(TAG," - reset thread timer");
+		lastCircleTime = new Date().getTime();
+	}
+	
+	/**
+	 * Set Variable Tolerance
+	 * Setting the variable tolerance for the x-axis
+	 */
+	private void setVariableTolerance() {
+		variableTolerance = (int)(-((0.666) * radius) + 300);
+		SpaceXGUI.getInstance().appendToConsole(TAG, "variableTolerance: " + variableTolerance);
+	}
+	
+	/**
+	 * is Finished?
+	 * @return - true, if all hula hoops have been found
+	 */
+	public boolean isFinished() {
+		if(doneHulaHoop.size() > numHulaHoop-1) return true;
+		return false;
+	}
+	
+	/**
+	 * The Thread timer
+	 * a thread run which controls if the drone 
+	 * haven't been able to find a hula hoop
+	 * for a specific time and makes counter movements
+	 * the first few times.  
+	 */
+	public void run() {
+		resetTime();
+		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
+		while(threadRun) {
+			try{
+				if(lastCircleTime < (new Date().getTime()-20000)) {
+					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
+					threadRun = false;
+					finished = true;
+					return;
+				}
+				else if(lastCircleTime < (new Date().getTime()-5000)){
+					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
+					switch(lastMovement) {
+					case 1:
+						GeneralMotorConSchedule.getInstance().backward(500);
+						break;
+					case 2:
+						GeneralMotorConSchedule.getInstance().forward(500);
+						break;
+					case 3:
+						GeneralMotorConSchedule.getInstance().left();
+						break;
+					case 4:
+						GeneralMotorConSchedule.getInstance().right();
+						break;
+					case 5:
+						GeneralMotorConSchedule.getInstance().lowerAltitude();
+						break;
+					case 6:
+						GeneralMotorConSchedule.getInstance().raiseAltitude();
+						break;
+					case 7:
+						GeneralMotorConSchedule.getInstance().spinLeft();
+						break;
+					case 8:
+						GeneralMotorConSchedule.getInstance().spinRight();
+						break;
+					case 9:
+						GeneralMotorConSchedule.getInstance().cycleLeft();
+						break;
+					case 10:
+						GeneralMotorConSchedule.getInstance().cycleRight();
+						break;
+					}
+				}
+				Thread.sleep(5000);
+			} catch (InterruptedException e ){
+				SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
+			}
+			
+		}
+		finished = true;
+		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");
 	}
 }
