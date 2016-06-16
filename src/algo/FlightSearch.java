@@ -94,19 +94,19 @@ public class FlightSearch {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				if (x > errormargin) {
-					GeneralMotorConSchedule.getInstance().right().pauseFor(2000);
+					GeneralMotorConSchedule.getInstance().right().pauseFor(500);
 					
 				} else if (x < -errormargin) {
-					GeneralMotorConSchedule.getInstance().left().pauseFor(2000);
+					GeneralMotorConSchedule.getInstance().left().pauseFor(500);
 					
 				} else if (y > errormargin) {
-					GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(2000);
+					GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(500);
 					
 				} else if (y < -errormargin) {
-					GeneralMotorConSchedule.getInstance().lowerAltitude().pauseFor(2000);
+					GeneralMotorConSchedule.getInstance().lowerAltitude().pauseFor(500);
 						
 				}else if (rect.width < rectangleWidth) {
-					GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
+					GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
 					GeneralMotorConSchedule.getInstance().hover().pauseFor(1000);
 					
 				} else {
