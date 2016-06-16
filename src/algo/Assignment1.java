@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Assignment1 implements Runnable{
 	private static final String TAG = "Assignment1";
+	private static final boolean printToConsoleDebug = true;
 	
 	/* Picture Analyze */
 	ImgProc obj = new ImgProc();
@@ -49,7 +50,7 @@ public class Assignment1 implements Runnable{
 	ArrayList<String> allHulaHoops = new ArrayList<String>(); 							// The HulaHoop QRCodes
 	
 	public Assignment1() {
-		for(int i = 0; i < numHulaHoop; i++) {
+		for(int i = 2; i < numHulaHoop; i++) {	//TODO: i start from 0
 			if(i < 10) {
 				allHulaHoops.add("P.0" + i );
 			}
@@ -68,16 +69,20 @@ public class Assignment1 implements Runnable{
 		finished = false;
 		threadRun = true;
 		new Thread(this).start();
-		SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
 		while (!finished) {
-			updateHulaHoop();
+			//updateHulaHoop();
 	
+			flyThrough();
+			/*
 			if(qrcode == allHulaHoops.get(doneHulaHoop.size())) {			
 				flyThrough();
 			}
+			*/
 			
-			if(doneHulaHoop.size() > numHulaHoop-1) finished = true;
+			if(doneHulaHoop.size() >= numHulaHoop) finished = true;
 		}
+		if(printToConsoleDebug) SpaceXGUI.getInstance().appendToConsole(TAG, "Next QRCode to find: " + allHulaHoops.get(doneHulaHoop.size()));
 		threadRun = false;
 		return true;
 	}
@@ -87,25 +92,25 @@ public class Assignment1 implements Runnable{
 	 */
 	private void flyThrough() {
 		boolean middle = false;
-		SpaceXGUI.getInstance().appendToConsole(TAG," - FlyThrough");
 		while (!middle) {
-			SpaceXGUI.getInstance().appendToConsole(TAG," - FlyThrough while loop");
 			boolean check = updateHulaHoop();
 			if(check) {
 				setVariableTolerance();
 				if(x < (variableTolerance-shittyDroneConstant) && x > -(variableTolerance+shittyDroneConstant)) {
 					if(y < (adjustmentTolerance) && y > -(adjustmentTolerance)){
-						SpaceXGUI.getInstance().appendToConsole(TAG," - Middle found");
-						SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
-						SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
-						if(radius > 240){
+						if(printToConsoleDebug){
+							SpaceXGUI.getInstance().appendToConsole(TAG," - Middle found");
+							SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
+							SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
+						}
+						if(radius > 210){
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
 							int forwardFor = (int)(magicForwardNum/radius);
-							GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
+							if(printToConsoleDebug)GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
 						} else {
-							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
+							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(1000);
 						}
 						lastMovement = 1;
 					} else if(y > 0){
@@ -150,7 +155,7 @@ public class Assignment1 implements Runnable{
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
 				}	
 			} else {
-				SpaceXGUI.getInstance().appendToConsole(TAG," - Lost the hulahoop");
+				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Lost the hulahoop");
 				if(!threadRun) return;
 			}
 			GeneralMotorConSchedule.getInstance().pauseFor(200);
@@ -168,49 +173,32 @@ public class Assignment1 implements Runnable{
 	 */
 	public boolean updateHulaHoop() {
 		try{
-			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data");
+			if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data, looking for: " + allHulaHoops.get(doneHulaHoop.size()));
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
-			radius = 0;
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
 			for (String[] s : hulaHoop){
-				if(s[3].contains("P")){
+				if(s[3].contains(allHulaHoops.get(doneHulaHoop.size()))){
 					x = Double.parseDouble(s[0]);
 					y = Double.parseDouble(s[1]);
 					radius = Double.parseDouble(s[2]);
 					qrcode = s[3];
-					SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done");
 					resetTime();
 					SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
 					SpaceXGUI.getInstance().appendToConsole(TAG," - y: " + y);
 					SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
 					SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
-					lastCircleTime = new Date().getTime();
 					return true;
 				}
-				if(Double.parseDouble(s[2]) > radius){
-					x = Double.parseDouble(s[0]);
-					y = Double.parseDouble(s[1]);
-					radius = Double.parseDouble(s[2]);
-					//qrcode = s[3];
-				}
 			}
-			SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data done, with no QRcode");
-			resetTime();
-			SpaceXGUI.getInstance().appendToConsole(TAG," - x: " + x);
-			SpaceXGUI.getInstance().appendToConsole(TAG," - y: " + y);
-			SpaceXGUI.getInstance().appendToConsole(TAG," - radius: " + radius);
-			SpaceXGUI.getInstance().appendToConsole(TAG," - QRcode: " + qrcode);
-			lastCircleTime = new Date().getTime();
-			return true;
-			
 		} catch (NullPointerException e) {
 			SpaceXGUI.getInstance().appendToConsole(TAG," - NullPointerException, Error: " + e.toString());
 		} catch (NumberFormatException e) {
 			SpaceXGUI.getInstance().appendToConsole(TAG," - NumberFormatException, Error: " + e.toString());
 		} catch (IndexOutOfBoundsException e) {
 			SpaceXGUI.getInstance().appendToConsole(TAG," - IndexOutOfBoundsException, Error: " + e.toString());
-		}		
+		}
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - No QRcode");
 		return false;
 	}
 	
@@ -246,7 +234,7 @@ public class Assignment1 implements Runnable{
 	 * method which resets the last circle found time.
 	 */
 	private void resetTime(){
-		SpaceXGUI.getInstance().appendToConsole(TAG," - reset thread timer");
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - reset thread timer");
 		lastCircleTime = new Date().getTime();
 	}
 	
@@ -256,7 +244,7 @@ public class Assignment1 implements Runnable{
 	 */
 	private void setVariableTolerance() {
 		variableTolerance = (int)(-((0.666) * radius) + 300);
-		SpaceXGUI.getInstance().appendToConsole(TAG, "variableTolerance: " + variableTolerance);
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG, "variableTolerance: " + variableTolerance);
 	}
 	
 	/**
@@ -277,17 +265,17 @@ public class Assignment1 implements Runnable{
 	 */
 	public void run() {
 		resetTime();
-		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
 		while(threadRun) {
 			try{
 				if(lastCircleTime < (new Date().getTime()-20000)) {
-					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
+					if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
 					threadRun = false;
 					finished = true;
 					return;
 				}
 				else if(lastCircleTime < (new Date().getTime()-5000)){
-					SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
+					if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
 					switch(lastMovement) {
 					case 1:
 						GeneralMotorConSchedule.getInstance().backward(500);
@@ -323,11 +311,11 @@ public class Assignment1 implements Runnable{
 				}
 				Thread.sleep(5000);
 			} catch (InterruptedException e ){
-				SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
+				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
 			}
 			
 		}
 		finished = true;
-		SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");
 	}
 }
