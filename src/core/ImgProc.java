@@ -275,7 +275,7 @@ public class ImgProc {
 			if(qrText.contains("P")) {
 				x = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
 				radius = (rects.get(i).width*1.3);
-				y = rects.get(i).tl().y - (rects.get(i).width*1.4)*1.2; //width*1.4 for height, * 1.2 for hulahop center
+				y = rects.get(i).tl().y - (rects.get(i).width*1.4)*1.15; //width*1.4 for height, * 1.2 for hulahop center
 				Imgproc.circle(drawingMat, new Point(x,y), 1, greenScalar, 6);
 				Imgproc.circle(drawingMat, new Point(x,y), (int)Math.round(radius), greenScalar,3);
 				double[] displaced = coordinateDisplacement(x,y);				
