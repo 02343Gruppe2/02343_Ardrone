@@ -103,7 +103,7 @@ public class Assignment1 implements Runnable{
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
 							SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
 						}
-						if(radius > 210){
+						if(radius > 190){
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
