@@ -101,7 +101,7 @@ public class ImgProc {
 	}
 
 	private Object[] picRunDown(int assignment, boolean isFront, BufferedImage test) {
-		long time = new Date().getTime();
+		//long time = new Date().getTime();
 		Object[] res = new Object[3];
 		Mat originalMat;
 		Mat drawingMat;
@@ -149,7 +149,7 @@ public class ImgProc {
 		imgOut = convertMatToBufferedImage(drawingMat);
 		SpaceXGUI.getInstance().getVPanel().setImg(imgOut, isFront);
 		//SpaceXGUI.getInstance().getVPanel().setImg(convertMatToBufferedImage1(grayImg), false);
-		SpaceXGUI.getInstance().appendToConsole("Picture rundown","time: " + (new Date().getTime() - time)  + " ms");
+		//SpaceXGUI.getInstance().appendToConsole("Picture rundown","time: " + (new Date().getTime() - time)  + " ms");
 		return res;
 	}
 
