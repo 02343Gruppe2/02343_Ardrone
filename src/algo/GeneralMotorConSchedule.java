@@ -2,11 +2,8 @@ package algo;
 
 import gui.SpaceXGUI;
 
-import java.awt.event.ActionListener;
-
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.CommandManager;
-import de.yadrone.base.command.FlyingMode;
 
 
 //TODO: Test Schedulling 
@@ -17,7 +14,7 @@ import de.yadrone.base.command.FlyingMode;
  * @author Anders Bækhøj Larsen
  *
  */
-public class GeneralMotorConSchedule implements GeneralMotorListener{
+public class GeneralMotorConSchedule {
 	private static GeneralMotorConSchedule ourInstance = new GeneralMotorConSchedule();
 	private ARDrone drone;					//The drone object (might be unused because of CommandManager)
 	private CommandManager cmd;				//The CommandManager for the drone command
@@ -314,7 +311,6 @@ public class GeneralMotorConSchedule implements GeneralMotorListener{
 		return this;
 	}
 
-	@Override
 	public void onStop() {
 		cmd.schedule(0, new Runnable(){
 			@Override

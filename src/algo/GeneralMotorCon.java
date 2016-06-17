@@ -15,7 +15,7 @@ import de.yadrone.base.command.LEDAnimation;
  * @author Anders Bækhøj Larsen
  *
  */
-public class GeneralMotorCon implements GeneralMotorListener{
+public class GeneralMotorCon {
 	private static GeneralMotorCon ourInstance = new GeneralMotorCon();
 	private static final String TAG= "GMC";
 	private ARDrone drone;		//The drone object (might be unused because of CommandManager)
@@ -164,7 +164,6 @@ public class GeneralMotorCon implements GeneralMotorListener{
 		cmd.hover().doFor(hoverTime);
 	}
 
-	@Override
 	public void onStop() {
 		cmd.move(0, 0, speed, speed);
 		cmd.hover().doFor(hoverTime);
