@@ -52,7 +52,7 @@ public class FlightSearch {
 				break;
 			}
 		}
-		GeneralMotorConSchedule.getInstance().forward(2000).pauseFor(2000);;
+		GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);;
 	}
 
 	public void adjustdrone(int j, String currentQr) {
@@ -71,26 +71,28 @@ public class FlightSearch {
 				
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
-				if (x > errormargin) {
+				
+				if (x < errormargin && x > -errormargin ) {
+					if(y < errormargin && y > -errormargin){
+						if(rect.width < rectangleWidth){
+							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
+						}else{
+							adjust = true;
+							break;
+						}
+					}else if(y > 0){
+						GeneralMotorConSchedule.getInstance().raiseAltitude();
+					}else {
+						GeneralMotorConSchedule.getInstance().lowerAltitude();
+					}
+					
+				} else if(x > 0 ){
 					GeneralMotorConSchedule.getInstance().right();
-					
-				} else if (x < -errormargin) {
+				}else {
 					GeneralMotorConSchedule.getInstance().left();
-					
-				} else if (y > errormargin) {
-					GeneralMotorConSchedule.getInstance().raiseAltitude();
-					
-				} else if (y < -errormargin) {
-					GeneralMotorConSchedule.getInstance().lowerAltitude();
-						
-				}else if (rect.width < rectangleWidth) {
-					GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
-					
-				} else {
-					adjust = true;
-					break;
 				}
 			}
+			
 			//GeneralMotorConSchedule.getInstance().pauseFor(200);
 			qrcodeScan();
 			scanCounter++;
@@ -108,8 +110,8 @@ public class FlightSearch {
 
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
-/*
-		for (int i = 0; i < 10; i++) {
+
+		for (int i = 0; i < 30; i++) {
 			qrcodeScan();
 
 			if (assign1.updateHulaHoop()) {
@@ -120,7 +122,7 @@ public class FlightSearch {
 				qrcodeFound = true;
 				break;
 			}
-			GeneralMotorConSchedule.getInstance().spinLeft().pauseFor(2000);
+			GeneralMotorConSchedule.getInstance().spinLeft().pauseFor(500);
 		}
 
 		while (!qrcodeFound) { // Scan for qrcode..
@@ -136,9 +138,9 @@ public class FlightSearch {
 				break;
 			}
 			// Forward with 2000 mills
-			GeneralMotorConSchedule.getInstance().forward(2000).pauseFor(2000);
+			GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
 		}
-*/
+
 		while (!map) {
 
 			// Scanning for QRcode and storage in arraylist
@@ -234,7 +236,9 @@ public class FlightSearch {
 
 				} else if (qrcode.get(j).equals("W02.02")) {
 					adjustdrone(j, "W02.02");
-					GeneralMotorConSchedule.getInstance().left();
+					GeneralMotorConSchedule.getInstance().landing();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02.02 og landing");
+					//GeneralMotorConSchedule.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W02.03")) {
 					adjustdrone(j, "W02.03");
