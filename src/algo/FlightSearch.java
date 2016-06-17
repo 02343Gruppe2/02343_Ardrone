@@ -72,27 +72,26 @@ public class FlightSearch {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				if (x > errormargin) {
-					GeneralMotorConSchedule.getInstance().right().pauseFor(500);
+					GeneralMotorConSchedule.getInstance().right();
 					
 				} else if (x < -errormargin) {
-					GeneralMotorConSchedule.getInstance().left().pauseFor(500);
+					GeneralMotorConSchedule.getInstance().left();
 					
 				} else if (y > errormargin) {
-					GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(500);
+					GeneralMotorConSchedule.getInstance().raiseAltitude();
 					
 				} else if (y < -errormargin) {
-					GeneralMotorConSchedule.getInstance().lowerAltitude().pauseFor(500);
+					GeneralMotorConSchedule.getInstance().lowerAltitude();
 						
 				}else if (rect.width < rectangleWidth) {
 					GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
-					GeneralMotorConSchedule.getInstance().hover().pauseFor(1000);
 					
 				} else {
 					adjust = true;
 					break;
 				}
 			}
-			GeneralMotorConSchedule.getInstance().pauseFor(200);
+			//GeneralMotorConSchedule.getInstance().pauseFor(200);
 			qrcodeScan();
 			scanCounter++;
 			newQRCode = false;
@@ -109,7 +108,7 @@ public class FlightSearch {
 
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
-
+/*
 		for (int i = 0; i < 10; i++) {
 			qrcodeScan();
 
@@ -139,7 +138,7 @@ public class FlightSearch {
 			// Forward with 2000 mills
 			GeneralMotorConSchedule.getInstance().forward(2000).pauseFor(2000);
 		}
-
+*/
 		while (!map) {
 
 			// Scanning for QRcode and storage in arraylist
