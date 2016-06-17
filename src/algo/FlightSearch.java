@@ -31,28 +31,6 @@ public class FlightSearch {
 	Object[] res;
 	ArrayList<String> qrcode = null;
 
-	/*
-	 * String[][] grid = new String[963][1078];
-	 * 
-	 * public void FlyMapping() {
-	 * 
-	 * // Wall 0 grid[188][23] = "W000.00"; grid[338][28] = "W00.01";
-	 * grid[515][23] = "W00.02"; grid[694][28] = "W00.03"; grid[840][23] =
-	 * "W00.04";
-	 * 
-	 * // Wall 1 grid[926][115] = "W01.00"; grid[926][324] = "W01.01";
-	 * grid[926][566] = "W01.02"; grid[926][721] = "W01.03"; grid[926][904] =
-	 * "W01.04";
-	 * 
-	 * // Wall 2 grid[847][1064] = "W02.00"; grid[656][995] = "W02.01";
-	 * grid[420][1070] = "W02.02"; grid[350][1070] = "W02.03"; grid[150][1070] =
-	 * "W02.04";
-	 * 
-	 * // Wall 3 grid[10][997] = "W03.00"; grid[10][740] = "W03.01";
-	 * grid[10][561] = "W03.02"; grid[10][357] = "W03.03"; grid[10][108] =
-	 * "W03.04"; }
-	 */
-
 	// QRcode scanner metode.
 	public void qrcodeScan() {
 		res = obj.findQRCodes();
