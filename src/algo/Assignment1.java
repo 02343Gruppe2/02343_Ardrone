@@ -46,13 +46,15 @@ public class Assignment1 implements Runnable{
 
 	/* Hula Hoop Variables and Constants*/
 	private int numHulaHoop = 4;									// The amount of hula hoops		
-	private int radiusForwardCheck = 190;							// The radius the hula hops has to have for the drone to fly forward
-	private int pauseWhile = 200;									// The amount the while loop has to wait
+	private final int radiusForwardCheck = 190;						// The radius the hula hops has to have for the drone to fly forward
+	private final int pauseWhile = 200;								// The amount the while loop has to wait
+	private final int shortWaitTime = 5000;							// The short wait time before the drone backtracks last movements
+	private final int longWaitTime = shortWaitTime*4;							// The long wait time before the thread stops
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();		// List of the hula hoops the drone have flown through
 	ArrayList<String> allHulaHoops = new ArrayList<String>(); 		// The HulaHoop QRCodes
 	
 	public Assignment1() {
-		for(int i = 2; i < numHulaHoop; i++) {	//TODO: i start from 0
+		for(int i = 0; i < numHulaHoop; i++) {	//TODO: i start from 0
 			if(i < 10) {
 				allHulaHoops.add("P.0" + i );
 			}
@@ -263,13 +265,13 @@ public class Assignment1 implements Runnable{
 		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
 		while(threadRun) {
 			try{
-				if(lastCircleTime < (new Date().getTime()-20000)) {
+				if(lastCircleTime < (new Date().getTime()-longWaitTime)) {
 					if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found for too long timer, stopping search");
 					threadRun = false;
 					finished = true;
 					return;
 				}
-				else if(lastCircleTime < (new Date().getTime()-5000)){
+				else if(lastCircleTime < (new Date().getTime()-shortWaitTime)){
 					if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
 					switch(lastMovement) {
 					case 1:
@@ -304,7 +306,7 @@ public class Assignment1 implements Runnable{
 						break;
 					}
 				}
-				Thread.sleep(5000);
+				Thread.sleep(shortWaitTime);
 			} catch (InterruptedException e ){
 				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
 			}
