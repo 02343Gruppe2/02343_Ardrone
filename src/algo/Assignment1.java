@@ -35,21 +35,23 @@ public class Assignment1 implements Runnable{
 	double radius;				//Radius 
 	String qrcode = "";			//The QRCode to the hulahoop
 	
+	/* Movement constants and variables */
 	private final int magicForwardNum = 430000*2;	// A number to make sure the drone fly forward long enough
 	private int lastMovement = 0;					// 1 = forward, 2 = backwards, 3 = right, 4 = left
+	private final int radiusForwardCheck = 190;		// The radius the hula hops has to have for the drone to fly forward
 	
-	/* Running variables */	
+	/* Thread running variables */	
 	private static boolean finished = false;						// The finishing of the main thread
 	private boolean randomNoCycleLoop = false;						// Makes sure the drone doesn't do a cycle movement 2 times in a row
 	private static boolean threadRun = false;						// Check for the timerThread
 	private static long lastCircleTime = new Date().getTime();		// Last time the drone saw a circle	
-
-	/* Hula Hoop Variables and Constants*/
-	private int numHulaHoop = 4;									// The amount of hula hoops		
-	private final int radiusForwardCheck = 190;						// The radius the hula hops has to have for the drone to fly forward
 	private final int pauseWhile = 200;								// The amount the while loop has to wait
 	private final int shortWaitTime = 5000;							// The short wait time before the drone backtracks last movements
-	private final int longWaitTime = shortWaitTime*4;							// The long wait time before the thread stops
+	private final int longWaitTime = shortWaitTime*4;				// The long wait time before the thread stops
+	
+	
+	/* Hula Hoop Variables and Constants*/
+	private int numHulaHoop = 4;									// The amount of hula hoops		
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();		// List of the hula hoops the drone have flown through
 	ArrayList<String> allHulaHoops = new ArrayList<String>(); 		// The HulaHoop QRCodes
 	
