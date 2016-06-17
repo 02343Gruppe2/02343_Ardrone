@@ -99,9 +99,9 @@ public class SpaceXDrone {
 			*/
 			GeneralMotorConSchedule.getInstance().setDrone(drone);
 			GeneralMotorConSchedule.getInstance().takeoff();
-			GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(2000);
-			GeneralMotorConSchedule.getInstance().raiseAltitude().pauseFor(2000);
-			//GeneralMotorConSchedule.getInstance().raiseAltitude();
+			for (int i = 0; i < 15; i++) {
+				GeneralMotorConSchedule.getInstance().raiseAltitude();
+			}
 			
 			//GeneralMotorConSchedule.getInstance().hover();
 			//GeneralMoto.ConSchedule.getInstance().pauseFor(5000);

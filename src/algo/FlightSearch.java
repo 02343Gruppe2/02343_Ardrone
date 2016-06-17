@@ -72,10 +72,16 @@ public class FlightSearch {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				
+				while((rect.width < 100)) {
+					GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
+					rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
+					SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
+				}
+				
 				if (x < errormargin && x > -errormargin ) {
 					if(y < errormargin && y > -errormargin){
 						if(rect.width < rectangleWidth){
-							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
+							GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
 						}else{
 							adjust = true;
 							break;
@@ -236,8 +242,11 @@ public class FlightSearch {
 
 				} else if (qrcode.get(j).equals("W02.02")) {
 					adjustdrone(j, "W02.02");
-					GeneralMotorConSchedule.getInstance().landing();
+					//GeneralMotorConSchedule.getInstance().landing();
+					GeneralMotorConSchedule.getInstance().spin90Right();
+					GeneralMotorConSchedule.getInstance().spin90Right();
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02.02 og landing");
+					forwardControl = true;
 					//GeneralMotorConSchedule.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W02.03")) {
