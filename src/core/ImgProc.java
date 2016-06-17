@@ -117,7 +117,7 @@ public class ImgProc {
 		case 0:
 			//hulahoops assignment
 
-			rects = findPossibleQrRectangle(grayImg, drawingMat);
+			rects = checkPossibleQrRectangle(grayImg, drawingMat);
 			Object[] temp  = checkRectsForQrText(rects, originalMat, drawingMat);
 			res[0] = temp;
 			res[1] = checkImageForHulaHoops(grayImg, (ArrayList<Rect>)temp[1], originalMat, drawingMat);
@@ -126,12 +126,12 @@ public class ImgProc {
 			break;
 		case 1: 
 			//cube finding assignment
-			rects = findPossibleQrRectangle(grayImg, drawingMat);
+			rects = checkPossibleQrRectangle(grayImg, drawingMat);
 			checkForCubes(originalMat, drawingMat, rects);
 			break;
 		case 2:
 			//air fields assignment
-			rects = findPossibleQrRectangle(grayImg, drawingMat);
+			rects = checkPossibleQrRectangle(grayImg, drawingMat);
 			List<String> qrTexts =  (List<String>)checkRectsForQrText(rects, originalMat, drawingMat)[0];
 			if(qrTexts.size() > 0) {
 				res[0] = qrTexts;
@@ -140,7 +140,7 @@ public class ImgProc {
 			res[1] = checkForPosibleAirfield(originalMat, drawingMat, grayImg, rects);
 			break;
 		default:
-			rects = findPossibleQrRectangle(grayImg, drawingMat);
+			rects = checkPossibleQrRectangle(grayImg, drawingMat);
 			res[0] = checkRectsForQrText(rects, originalMat, drawingMat);
 			res[1] = rects;
 			break;
@@ -310,7 +310,7 @@ public class ImgProc {
 		return new double[]{x,y};
 	}
 
-	private List<Rect> findPossibleQrRectangle(Mat grayImg, Mat drawingMat) {
+	private List<Rect> checkPossibleQrRectangle(Mat grayImg, Mat drawingMat) {
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		Mat hierarchy = new Mat();
 		int mode = Imgproc.RETR_LIST;
