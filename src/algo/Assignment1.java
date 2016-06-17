@@ -45,9 +45,11 @@ public class Assignment1 implements Runnable{
 	private static long lastCircleTime = new Date().getTime();		// Last time the drone saw a circle	
 
 	/* Hula Hoop Variables and Constants*/
-	private int numHulaHoop = 4;														// The amount of hula hoops		
-	ArrayList<String> doneHulaHoop = new ArrayList<String>();							// List of the hula hoops the drone have flown through
-	ArrayList<String> allHulaHoops = new ArrayList<String>(); 							// The HulaHoop QRCodes
+	private int numHulaHoop = 4;									// The amount of hula hoops		
+	private int radiusForwardCheck = 190;							// The radius the hula hops has to have for the drone to fly forward
+	private int pauseWhile = 200;									// The amount the while loop has to wait
+	ArrayList<String> doneHulaHoop = new ArrayList<String>();		// List of the hula hoops the drone have flown through
+	ArrayList<String> allHulaHoops = new ArrayList<String>(); 		// The HulaHoop QRCodes
 	
 	public Assignment1() {
 		for(int i = 2; i < numHulaHoop; i++) {	//TODO: i start from 0
@@ -71,14 +73,8 @@ public class Assignment1 implements Runnable{
 		new Thread(this).start();
 		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
 		while (!finished) {
-			//updateHulaHoop();
 	
 			flyThrough();
-			/*
-			if(qrcode == allHulaHoops.get(doneHulaHoop.size())) {			
-				flyThrough();
-			}
-			*/
 			
 			if(doneHulaHoop.size() >= numHulaHoop) finished = true;
 		}
@@ -88,8 +84,8 @@ public class Assignment1 implements Runnable{
 	}
 	
 	/**
-	 * Fly Through
-	 */
+	* Fly Through
+	*/
 	private void flyThrough() {
 		boolean middle = false;
 		while (!middle) {
@@ -103,7 +99,7 @@ public class Assignment1 implements Runnable{
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
 							SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
 						}
-						if(radius > 190){
+						if(radius > radiusForwardCheck){
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
@@ -158,11 +154,10 @@ public class Assignment1 implements Runnable{
 				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Lost the hulahoop");
 				if(!threadRun) return;
 			}
-			GeneralMotorConSchedule.getInstance().pauseFor(200);
+			GeneralMotorConSchedule.getInstance().pauseFor(pauseWhile);
 		}
 		finished = true;
 		threadRun = false;
-		//GeneralMotorCon.getInstance().forward((2000/radius));
 		doneHulaHoop.add(qrcode);
 	}
 	 
