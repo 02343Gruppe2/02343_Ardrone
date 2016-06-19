@@ -158,14 +158,7 @@ public class ImgProc {
 		List<Rect> outRects = new ArrayList<Rect>();
 		Boolean qrExist;
 		for(int i = 0;i<rects.size();i++) {
-			/*double tlx = (rects.get(i).tl().x-10 < 0) ? rects.get(i).tl().x : rects.get(i).tl().x-10;
-			double tly = (rects.get(i).tl().y-10 < 0) ? rects.get(i).tl().y : rects.get(i).tl().y-10;
-			double brx = (rects.get(i).br().x+10 > 640) ? rects.get(i).br().x : rects.get(i).br().x+10;
-			double bry = (rects.get(i).br().y+10 > 360) ? rects.get(i).br().y : rects.get(i).br().y+10;
-			Rect rect = new Rect(new Point(tlx,tly), new Point(brx,bry));
-			//Rect with 10 more px surrounding
-			Imgproc.rectangle(drawingMat, rect.tl(), rect.br(), blueScalar);*/
-
+			//creating a submat of the mat to check for qr codes
 			Mat possibleQrMat = originalMat.submat(rects.get(i));
 			BufferedImage possibleQrBufImg = convertMatToBufferedImage(possibleQrMat);
 
@@ -183,101 +176,36 @@ public class ImgProc {
 				if (qrExist == false){
 					qrCodes.add(qrText);
 					outRects.add(rects.get(i));
-
 				}
 			}
 		}
 		return new Object[] {qrCodes, outRects};
 	}
 
-	private  ArrayList<String[]> checkImageForHulaHoopsOld(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
-		double[] circlePoints = new double[3];
-		double[] lineVec = new double[4];
-		///List<Rect> rects = (List<Rect>)rectArr[1];
-		//	List<String> qrCodes = (List<String>)rectArr[0];
-		int radius;
-		Point center = new Point();
-		Mat circles = new Mat();
-		int dp = 1, minDist = 200, minRadius = 150, maxRadius = 540, param1 = 100, param2 = 100;
-		Imgproc.HoughCircles(grayImg, circles, Imgproc.CV_HOUGH_GRADIENT, dp
-				, minDist, param1, param2, minRadius, maxRadius);
-		ArrayList<String[]> hulahops = new ArrayList<String[]>();
-		//Mat lines = new Mat();
-		//int lineLength = 200, threshold = 100, maxLineGap = 50;
-		//Imgproc.HoughLinesP(grayImg, lines, 1, Math.PI/180, threshold, lineLength, maxLineGap);
-
-		System.out.println("Rects: " + rects.size() + " circles: "+circles.cols());
-
-		for (int x = 0; x < circles.cols(); x++) {
-			circlePoints = circles.get(0,x);
-			if (circlePoints == null) {
-				//TODO return so that we know that there are no more balls
-				break;
-			}
-			center.set(circlePoints);
-			radius = (int)Math.round(circlePoints[2]);
-			//checking if there is a rect below the circle, if there 
-			int distanceBetweenRectAndCircle = 45;
-			Imgproc.circle(drawingMat, center, radius, blueScalar,3);
-			for(int c = 0;c<rects.size();c++) {
-				if((center.y+radius) < rects.get(c).tl().y && rects.get(c).tl().y < (center.y+radius+distanceBetweenRectAndCircle) && rects.get(c).br().x > center.x &&  rects.get(c).tl().x < center.x) {
-
-
-					Imgproc.circle(drawingMat, center, radius, greenScalar,4);
-					int picWidth = 640;
-					int picHeight = 360;
-					if (circlePoints[0] > picWidth && circlePoints[1] < picHeight){
-						//1. qaudrant
-						circlePoints[0] = circlePoints[0] - picWidth;
-						circlePoints[1] = -circlePoints[1] + picHeight;
-					}else if(circlePoints[0] > picWidth && circlePoints[1] > picHeight) {
-						//2. qaudrant
-						circlePoints[0] = circlePoints[0] - picWidth;
-						circlePoints[1] = -circlePoints[1] + picHeight;
-					} else if (circlePoints[0] < picWidth && circlePoints[1] > picHeight) {
-						//3. qaudrant
-						circlePoints[0] = circlePoints[0] - picWidth;
-						circlePoints[1] = -circlePoints[1] + picHeight;
-					} else if(circlePoints[0] < picWidth && circlePoints[1] < picHeight) {
-						//4. qaudrant
-						circlePoints[0] = circlePoints[0] - picWidth;
-						circlePoints[1] = -circlePoints[1] + picHeight;
-					}
-					List<Rect> hulahopRect = new ArrayList<Rect>();
-					hulahopRect.add(rects.get(c));
-					List<String> qrTextList = (List<String>)checkRectsForQrText(hulahopRect, originalMat, drawingMat)[0];
-					String qrText = null;
-					if(!qrTextList.isEmpty()) {
-						qrText = qrTextList.get(0);
-					}
-					hulahops.add(new String[] {""+circlePoints[0] ,""+circlePoints[1], ""+circlePoints[2], qrText});
-					//}
-					//}
-
-
-				}
-			}
-		}
-		return hulahops;
-	}
-
 	private  ArrayList<String[]> checkImageForHulaHoops(Mat grayImg, List<Rect> rects, Mat originalMat, Mat drawingMat) {
 		double x,y, radius;
 		ArrayList<String[]> hulahops = new ArrayList<String[]>();
 		for(int i = 0 ; i< rects.size(); i++) {
+			//creating a list with the rect to check for QR
 			List<Rect> hulahopRect = new ArrayList<Rect>();
 			hulahopRect.add(rects.get(i));
 			List<String> qrTextList = (List<String>)checkRectsForQrText(hulahopRect, originalMat, drawingMat)[0];
+			//see if we got a qr code
 			String qrText = "";
 			if(!qrTextList.isEmpty()) {
 				qrText = qrTextList.get(0);
 			}
+			//see if qr code is hulahoop
 			if(qrText.contains("P")) {
+				//calculate x, y and radius esitmation of the hulahoop based on the rectangle with QR
 				x = (rects.get(i).br().x - rects.get(i).tl().x)/2 + rects.get(i).tl().x;
 				radius = (rects.get(i).width*1.3);
 				y = rects.get(i).tl().y - (rects.get(i).width*1.4)*1.15; //width*1.4 for height, * 1.2 for hulahop center
+				//draw center of cirle
 				Imgproc.circle(drawingMat, new Point(x,y), 1, greenScalar, 6);
+				//draw circle
 				Imgproc.circle(drawingMat, new Point(x,y), (int)Math.round(radius), greenScalar,3);
+				//change coordinates so 0,0 is in the center of the image instead of top left corner
 				double[] displaced = coordinateDisplacement(x,y);				
 				hulahops.add(new String[] {""+displaced[0],""+displaced[1], ""+radius, qrText});
 			}
