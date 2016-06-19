@@ -22,7 +22,7 @@ public class FlightSearch {
 	boolean newQRCode = true;
 	boolean adjust = false;
 	
-	int errormargin = 0, rectangleWidth = 130;
+	int errormargin = 0, rectangleWidth = 190;
 	
 	private final String TAG = "FlightSearch";
 
@@ -81,13 +81,13 @@ public class FlightSearch {
 					SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				}*/
 				
-				errormargin=rect.width*2-100; 
-				
+				//errormargin=rect.width*2-100; 
+				errormargin=(int)(600*0.9886)^rect.width;
 				SpaceXGUI.getInstance().appendToConsole(TAG, "Erromargin: " + errormargin);
 				if (x < errormargin && x > -errormargin ) {
 					if(y < errormargin && y > -errormargin){
 						if(rect.width < rectangleWidth){
-							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(1000);
+							GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);
 						}else{
 							adjust = true;
 							break;
@@ -121,7 +121,7 @@ public class FlightSearch {
 	}
 
 	public void afstand(){
-		for(int i = 0; i < 10;i++){
+		while(true){
 			qrcodeScan();
 			for(int j=0; j<qrcode.size(); j++){
 			Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
@@ -134,7 +134,7 @@ public class FlightSearch {
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
 
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 4; i++) {
 			qrcodeScan();
 
 			/*if (assign1.updateHulaHoop()) {
@@ -145,7 +145,7 @@ public class FlightSearch {
 				qrcodeFound = true;
 				break;
 			}
-			GeneralMotorConSchedule.getInstance().spinLeft().pauseFor(500);
+			GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
 		}
 
 		while (!qrcodeFound) { // Scan for qrcode..
@@ -178,6 +178,9 @@ public class FlightSearch {
 					break;
 				} else*/ if (qrcode.get(j).equals("P.02")) {
 					adjustdrone(j, "P.02");
+					GeneralMotorConSchedule.getInstance().hover().pauseFor(5000);
+					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
 					GeneralMotorConSchedule.getInstance().landing();
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet P.02 og landing");
 					// spin 180 grader if QRcode match the exactly wall.
