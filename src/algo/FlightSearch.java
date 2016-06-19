@@ -22,7 +22,7 @@ public class FlightSearch {
 	boolean newQRCode = true;
 	boolean adjust = false;
 	
-	int errormargin = 0, rectangleWidth = 190;
+	int errormargin = 0, rectangleWidth = 170;
 	
 	private final String TAG = "FlightSearch";
 
@@ -56,7 +56,7 @@ public class FlightSearch {
 				break;
 			}
 		}
-		GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);;
+		GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);;
 	}
 
 	public void adjustdrone(int j, String currentQr) {
@@ -82,12 +82,12 @@ public class FlightSearch {
 				}*/
 				
 				//errormargin=rect.width*2-100; 
-				errormargin=(int)(600*0.9886)^rect.width;
+				errormargin= (int)(600*Math.pow(0.9886, rect.width));
 				SpaceXGUI.getInstance().appendToConsole(TAG, "Erromargin: " + errormargin);
 				if (x < errormargin && x > -errormargin ) {
 					if(y < errormargin && y > -errormargin){
 						if(rect.width < rectangleWidth){
-							GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);
+							GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
 						}else{
 							adjust = true;
 							break;
@@ -105,7 +105,7 @@ public class FlightSearch {
 				}
 			}
 			
-			//GeneralMotorConSchedule.getInstance().pauseFor(200);
+			GeneralMotorConSchedule.getInstance().pauseFor(200);
 			qrcodeScan();
 			scanCounter++;
 			newQRCode = false;
@@ -122,6 +122,7 @@ public class FlightSearch {
 
 	public void afstand(){
 		while(true){
+
 			qrcodeScan();
 			for(int j=0; j<qrcode.size(); j++){
 			Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
@@ -161,7 +162,7 @@ public class FlightSearch {
 				break;
 			}
 			// Forward with 2000 mills
-			GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(500);
+			GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);
 		}
 
 		while (!map) {
@@ -178,14 +179,11 @@ public class FlightSearch {
 					break;
 				} else*/ if (qrcode.get(j).equals("P.02")) {
 					adjustdrone(j, "P.02");
-					GeneralMotorConSchedule.getInstance().hover().pauseFor(5000);
-					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
 					GeneralMotorConSchedule.getInstance().landing();
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet P.02 og landing");
 					// spin 180 grader if QRcode match the exactly wall.
-					//GeneralMotorConSchedule.getInstance().spin90Right();
-					//GeneralMotorConSchedule.getInstance().spin90Right();
+					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
 					//forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.01")) {
@@ -263,11 +261,15 @@ public class FlightSearch {
 
 				} else if (qrcode.get(j).equals("W02.02")) {
 					adjustdrone(j, "W02.02");
-					GeneralMotorConSchedule.getInstance().landing();
+					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+					GeneralMotorConSchedule.getInstance().hover().pauseFor(3000);
+					//GeneralMotorConSchedule.getInstance().landing();
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02.02");
 					//GeneralMotorConSchedule.getInstance().spin90Right();
 					//GeneralMotorConSchedule.getInstance().spin90Right();
-					//forwardControl = true;
+					forwardControl = true;
 					//GeneralMotorConSchedule.getInstance().left();
 
 				} else if (qrcode.get(j).equals("W02.03")) {
