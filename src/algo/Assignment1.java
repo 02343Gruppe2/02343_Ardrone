@@ -15,6 +15,7 @@ import core.ImgProc;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
+import algo.GeneralMotorConSchedule;
 
 public class Assignment1 implements Runnable{
 	private static final String TAG = "Assignment1";
@@ -37,8 +38,8 @@ public class Assignment1 implements Runnable{
 	
 	/* Movement constants and variables */
 	private final int magicForwardNum = 430000*2;	// A number to make sure the drone fly forward long enough
-	private int lastMovement = 0;					// 1 = forward, 2 = backwards, 3 = right, 4 = left
 	private final int radiusForwardCheck = 190;		// The radius the hula hops has to have for the drone to fly forward
+
 	
 	/* Thread running variables */	
 	private static boolean finished = false;						// The finishing of the main thread
@@ -112,27 +113,21 @@ public class Assignment1 implements Runnable{
 						} else {
 							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(1000);
 						}
-						lastMovement = 1;
 					} else if(y > 0){
 						GeneralMotorConSchedule.getInstance().raiseAltitude();
-						lastMovement = 5;
 					} else {
 						GeneralMotorConSchedule.getInstance().lowerAltitude();
-						lastMovement = 6;
 					}
 				} else if(x > 0){
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().right();
-						lastMovement = 3;
 						break;
 					case 1:
 						GeneralMotorConSchedule.getInstance().spinRight();
-						lastMovement = 7;
 						break;
 					case 2:
 						GeneralMotorConSchedule.getInstance().cycleLeft();
-						lastMovement = 10;
 						break;
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
@@ -141,15 +136,12 @@ public class Assignment1 implements Runnable{
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().left();
-						lastMovement = 4;
 						break;
 					case 1:
 						GeneralMotorConSchedule.getInstance().spinLeft();
-						lastMovement = 8;
 						break;
 					case 2:
 						GeneralMotorConSchedule.getInstance().cycleRight();
-						lastMovement = 9;
 						break;
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
@@ -265,6 +257,7 @@ public class Assignment1 implements Runnable{
 	public void run() {
 		resetTime();
 		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun start");
+		int backtrackCounter = 0;
 		while(threadRun) {
 			try{
 				if(lastCircleTime < (new Date().getTime()-longWaitTime)) {
@@ -275,44 +268,47 @@ public class Assignment1 implements Runnable{
 				}
 				else if(lastCircleTime < (new Date().getTime()-shortWaitTime)){
 					if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Threadrun no circle found timer, start backin up");
-					switch(lastMovement) {
-					case 1:
+					switch(GeneralMotorConSchedule.getInstance().getLastMovement(backtrackCounter)) {
+					case GeneralMotorConSchedule.MOVED_FORWARD:
 						GeneralMotorConSchedule.getInstance().backward(500);
 						break;
-					case 2:
+					case GeneralMotorConSchedule.MOVED_BACKWARD:
 						GeneralMotorConSchedule.getInstance().forward(500);
 						break;
-					case 3:
+					case GeneralMotorConSchedule.MOVED_RIGHT:
 						GeneralMotorConSchedule.getInstance().left();
 						break;
-					case 4:
+					case GeneralMotorConSchedule.MOVED_LEFT:
 						GeneralMotorConSchedule.getInstance().right();
 						break;
-					case 5:
+					case GeneralMotorConSchedule.MOVED_RAISEALT:
 						GeneralMotorConSchedule.getInstance().lowerAltitude();
 						break;
-					case 6:
+					case GeneralMotorConSchedule.MOVED_LOWERALT:
 						GeneralMotorConSchedule.getInstance().raiseAltitude();
 						break;
-					case 7:
+					case GeneralMotorConSchedule.MOVED_SPINRIGHT:
 						GeneralMotorConSchedule.getInstance().spinLeft();
 						break;
-					case 8:
+					case GeneralMotorConSchedule.MOVED_SPINLEFT:
 						GeneralMotorConSchedule.getInstance().spinRight();
 						break;
-					case 9:
+					case GeneralMotorConSchedule.MOVED_CYCLERIGHT:
 						GeneralMotorConSchedule.getInstance().cycleLeft();
 						break;
-					case 10:
+					case GeneralMotorConSchedule.MOVED_CYCLELEFT:
 						GeneralMotorConSchedule.getInstance().cycleRight();
 						break;
 					}
+					backtrackCounter++;
+				}
+				else {
+					backtrackCounter = 0;
 				}
 				Thread.sleep(shortWaitTime);
 			} catch (InterruptedException e ){
 				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun InteruptedException ");		
 			}
-			
 		}
 		finished = true;
 		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - threadrun finished");

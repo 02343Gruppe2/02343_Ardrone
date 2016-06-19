@@ -42,12 +42,27 @@ public class GeneralMotorConSchedule {
 	private int cycleTime = 150;
 	private int cycleSpeed = 10;
 	
+	/* Last Movement records */
+	private int[] recordedMovement = new int[]{0, 0, 0, 0, 0};
+	
 	/* Schedule Thread ID */
 	private static int runningID = 0;		//The ID of the thread which started last
 	private static int runningThreads = 0;	// Number of threads running 
 	
 	/* Debugging */
 	private static final boolean printToConsole = true;
+	
+	/* Last movement Constants */
+	public static final int MOVED_FORWARD = 1;
+	public static final int MOVED_BACKWARD = 2;
+	public static final int MOVED_RIGHT = 3;
+	public static final int MOVED_LEFT = 4;
+	public static final int MOVED_RAISEALT = 5;
+	public static final int MOVED_LOWERALT = 6;
+	public static final int MOVED_SPINRIGHT = 7;
+	public static final int MOVED_SPINLEFT = 8;
+	public static final int MOVED_CYCLERIGHT = 9;
+	public static final int MOVED_CYCLELEFT = 10;
 	
 	/* Different variables */
 	private int batLvl = 0;
@@ -133,6 +148,7 @@ public class GeneralMotorConSchedule {
 					if(isRunningThread(id)) {
 						try {
 							cmd.forward(speed);
+							addLastMovement(MOVED_FORWARD);
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							
@@ -162,7 +178,8 @@ public class GeneralMotorConSchedule {
 				int id = newRunningThread();
 				if(isRunningThread(id)){
 					try {
-					cmd.backward(speed); 
+						cmd.backward(speed);
+						addLastMovement(MOVED_BACKWARD);
 						Thread.sleep(time);
 					} catch (InterruptedException e) {
 						
@@ -233,6 +250,7 @@ public class GeneralMotorConSchedule {
 			public void run() {
 				int id = newRunningThread();
 				hover();
+				addLastMovement(MOVED_SPINLEFT);
 				if(isRunningThread(id))cmd.spinLeft(spin90Speed).doFor(spin90Time);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -253,6 +271,7 @@ public class GeneralMotorConSchedule {
 			public void run() {
 				int id = newRunningThread();
 				hover();
+				addLastMovement(MOVED_SPINRIGHT);
 				if(isRunningThread(id))cmd.spinRight(spin90Speed).doFor(spin90Time);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -274,6 +293,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.down(altitudeSpeed);
+					addLastMovement(MOVED_LOWERALT);
 					Thread.sleep(altitudeTime);
 					} catch (InterruptedException e) {
 						
@@ -299,6 +319,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.up(altitudeSpeed);
+					addLastMovement(MOVED_RAISEALT);
 					Thread.sleep(altitudeTime);
 					} catch (InterruptedException e) {
 						
@@ -334,6 +355,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.goRight(speed);
+					addLastMovement(MOVED_RIGHT);
 					Thread.sleep(sideTime);
 					} catch (InterruptedException e) {
 						
@@ -359,6 +381,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.goLeft(speed);
+					addLastMovement(MOVED_LEFT);
 					Thread.sleep(sideTime);
 					} catch (InterruptedException e) {
 						
@@ -384,6 +407,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.goRight(speed);
+					addLastMovement(MOVED_RIGHT);
 					Thread.sleep(millis);
 					} catch (InterruptedException e) {
 						
@@ -409,6 +433,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.goLeft(speed);
+					addLastMovement(MOVED_LEFT);
 					Thread.sleep(millis);
 					} catch (InterruptedException e) {
 						
@@ -434,6 +459,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)){
 					try {
 					cmd.spinLeft(spinSpeed);
+					addLastMovement(MOVED_SPINLEFT);
 					Thread.sleep(spinTime);
 					} catch (InterruptedException e) {
 						
@@ -460,6 +486,7 @@ public class GeneralMotorConSchedule {
 				if(isRunningThread(id)) {
 					try {
 					cmd.spinRight(spinSpeed);
+					addLastMovement(MOVED_SPINRIGHT);
 					Thread.sleep(spinTime);
 					} catch (InterruptedException e) {
 						
@@ -482,6 +509,7 @@ public class GeneralMotorConSchedule {
 			public void run() {
 				int id = newRunningThread();
 				hover();
+				addLastMovement(MOVED_CYCLERIGHT);
 				if(isRunningThread(id))cmd.move(0, -cycleSpeed, 0, cycleSpinSpeed).doFor(cycleTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -501,6 +529,7 @@ public class GeneralMotorConSchedule {
 			public void run() {
 				int id = newRunningThread();
 				hover();
+				addLastMovement(MOVED_CYCLELEFT);
 				if(isRunningThread(id))cmd.move(0, cycleSpeed, 0, -cycleSpinSpeed).doFor(cycleTime);
 				if(isRunningThread(id))hover();
 				runningThreads--;
@@ -523,5 +552,37 @@ public class GeneralMotorConSchedule {
 
 	public void setBatLvl(int batLvl) {
 		this.batLvl = batLvl;
+	}
+	
+	/**
+	 * Add Last Movement
+	 * @param movement - the movement 
+	 *  0 - None
+	 *  1 - Forward
+	 *  2 - Backward
+	 *  3 - Right
+	 *  4 - Left
+	 *  5 - RaiseAlt
+	 *  6 - LowerAlt
+	 *  7 - SpinRight
+	 *  8 - SpinLeft
+	 *  9 - CycleRight
+	 *  10 - CycleLeft
+	 */
+	private void addLastMovement(int movement){
+		recordedMovement[4] = recordedMovement[3];
+		recordedMovement[3] = recordedMovement[2];
+		recordedMovement[2] = recordedMovement[1];
+		recordedMovement[1] = recordedMovement[0];
+		recordedMovement[0] = movement;
+	}
+	
+	/**
+	 * Get Last Movement
+	 * @param index - which movement to get
+	 * @return - the indexed movement
+	 */
+	public int getLastMovement(int index) {
+		return recordedMovement[index];
 	}
 }
