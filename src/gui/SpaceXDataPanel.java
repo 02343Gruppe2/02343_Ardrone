@@ -101,6 +101,10 @@ public class SpaceXDataPanel extends JPanel {
 		imageNumberLabel.setText("Number of images: " + String.valueOf(imageNumber));
 	}
 	
+	public long getImageNumber() {
+		return this.imageNumber;
+	}
+	
 	public void updateBattery() {
 		batteryPercentage = GeneralMotorCon.getInstance().getBatLvl();
 		batteryWatch.setText("Battery Percetage: " + batteryPercentage+ "%");
