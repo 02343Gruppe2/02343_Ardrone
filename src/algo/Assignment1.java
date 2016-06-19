@@ -156,13 +156,27 @@ public class Assignment1 implements Runnable{
 		finished = true;
 		threadRun = false;
 	}
+	
+	/**
+	 * Check QR code
+	 * @param qrcodes - the QRCodes to be checked
+	 * @return - true if it contains the wanted hula hoop
+	 */
+	public boolean checkQRCode(ArrayList<String> qrcodes) {
+		
+		for (String s : qrcodes) {
+			if(s.contains(allHulaHoops.get(doneHulaHoop.size()))) return true;
+		}
+		
+		return false;
+	}
 	 
 	/**
 	 * Update Hula Hoop
 	 * checks for hula hoop and saves the x, y, radius and QRcode
 	 * @return - true, if a hulahoop was found.
 	 */
-	public boolean updateHulaHoop() {
+	private boolean updateHulaHoop() {
 		try{
 			if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data, looking for: " + allHulaHoops.get(doneHulaHoop.size()));
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
