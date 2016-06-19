@@ -101,6 +101,10 @@ public class SpaceXDataPanel extends JPanel {
 		imageNumberLabel.setText("Number of images: " + String.valueOf(imageNumber));
 	}
 	
+	/**
+	 * Get Image Number
+	 * @return the number of images received from the drone.
+	 */
 	public long getImageNumber() {
 		return this.imageNumber;
 	}

@@ -35,6 +35,7 @@ public class Assignment1 implements Runnable{
 	double x, y;				//middle coordinate
 	double radius;				//Radius 
 	String qrcode = "";			//The QRCode to the hulahoop
+	long lastImgNumber = 0;
 	
 	/* Movement constants and variables */
 	private final int magicForwardNum = 430000*2;	// A number to make sure the drone fly forward long enough
@@ -79,7 +80,7 @@ public class Assignment1 implements Runnable{
 		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Fly Ini");
 		while (!finished) {
 	
-			flyThrough();
+			hulaHoopAdjustment();
 			
 			if(doneHulaHoop.size() >= numHulaHoop) finished = true;
 		}
@@ -91,7 +92,7 @@ public class Assignment1 implements Runnable{
 	/**
 	* Fly Through
 	*/
-	private void flyThrough() {
+	private void hulaHoopAdjustment() {
 		boolean middle = false;
 		while (!middle) {
 			boolean check = updateHulaHoop();
@@ -168,6 +169,12 @@ public class Assignment1 implements Runnable{
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
+			long actualImgNumber = SpaceXGUI.getInstance().getImageNumber(); 
+			if(lastImgNumber <= actualImgNumber){
+				lastImgNumber = actualImgNumber;
+				return false;
+			}
+			lastImgNumber = actualImgNumber;
 			for (String[] s : hulaHoop){
 				if(s[3].contains(allHulaHoops.get(doneHulaHoop.size()))){
 					x = Double.parseDouble(s[0]);

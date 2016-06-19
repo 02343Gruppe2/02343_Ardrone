@@ -145,4 +145,12 @@ public class SpaceXGUI extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 	}
+	
+	/**
+	 * Get Image Number
+	 * @return the number of images received from the drone.
+	 */
+	public long getImageNumber(){
+		return dPanel.getImageNumber();
+	}
 }
