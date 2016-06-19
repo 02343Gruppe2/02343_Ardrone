@@ -23,7 +23,7 @@ public class FlightSearch {
 	boolean adjust = false;
 	
 	int errormargin = 0, rectangleWidth = 170;
-	
+	long imgNumber = SpaceXGUI.getInstance().getImageNumber();
 	private final String TAG = "FlightSearch";
 
 	// Instantiate picture analyze
@@ -46,12 +46,12 @@ public class FlightSearch {
 		qrcodeScan();
 
 		for (int g = 0; g < qrcode.size(); g++) {
-			/*if (assign1.updateHulaHoop()) {
+			if (assign1.checkQRCode(qrcode)) {
 				forwardControl = false;
 				map = true;
 				break;
 
-			} else*/ if (qrcode.get(g).contains("W")) {
+			} else if (qrcode.get(g).contains("W")) {
 				forwardControl = false;
 				break;
 			}
@@ -74,15 +74,8 @@ public class FlightSearch {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				
-				/*while((rect.width < 100)) {
-					GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
-					qrcodeScan();
-					rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
-					SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
-				}*/
-				
 				//errormargin=rect.width*2-100; 
-				errormargin= (int)(600*Math.pow(0.9886, rect.width));
+				errormargin = (int)(600*Math.pow(0.9886, rect.width));
 				SpaceXGUI.getInstance().appendToConsole(TAG, "Erromargin: " + errormargin);
 				if (x < errormargin && x > -errormargin ) {
 					if(y < errormargin && y > -errormargin){
@@ -137,12 +130,13 @@ public class FlightSearch {
 
 		for (int i = 0; i < 4; i++) {
 			qrcodeScan();
-
-			/*if (assign1.updateHulaHoop()) {
+			SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode:"+qrcode);
+			if (assign1.checkQRCode(qrcode)) {
+				SpaceXGUI.getInstance().appendToConsole(TAG, "Result: " + assign1.checkQRCode(qrcode));
 				qrcodeFound = true;
 				map = true;
 				break;
-			} else*/ if (!qrcode.isEmpty()) {
+			} else if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
 				break;
 			}
@@ -153,11 +147,11 @@ public class FlightSearch {
 			qrcodeScan();
 
 			// Checking for Hulahop found
-			/*if (assign1.updateHulaHoop()) {
+			if (assign1.checkQRCode(qrcode)) {
 				qrcodeFound = true;
 				map = true;
 				break;
-			} else*/ if (!qrcode.isEmpty()) {
+			} else if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
 				break;
 			}
@@ -174,13 +168,13 @@ public class FlightSearch {
 			for (int j = 0; j < qrcode.size(); j++) {
 
 				// Checking for Hulahop
-				/*if (assign1.updateHulaHoop()) {
+				if (assign1.checkQRCode(qrcode)) {
 					map = true;
 					break;
-				} else*/ if (qrcode.get(j).equals("P.02")) {
-					adjustdrone(j, "P.02");
+				} else if (qrcode.get(j).equals("W00.00")) {
+					adjustdrone(j, "W00.00");
 					GeneralMotorConSchedule.getInstance().landing();
-					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet P.02 og landing");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.00");
 					// spin 180 grader if QRcode match the exactly wall.
 					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
 					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
@@ -317,7 +311,7 @@ public class FlightSearch {
 		}
 
 		// TODO ændre run to fly
-		GeneralMotorConSchedule.getInstance().lowerAltitude();
+		SpaceXGUI.getInstance().appendToConsole(TAG, "Assign1 tager over");
 		assign1.flyHulaHoop();
 
 	}
