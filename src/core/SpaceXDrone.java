@@ -112,8 +112,8 @@ public class SpaceXDrone {
 			
 			
 			//fs.afstand();	
-			fs.search();
-			//assig1.flyHulaHoop();
+			//fs.search();
+			assig1.flyHulaHoop();
 			
 			/*GeneralMotorCon.getInstance().setDrone(drone);
 			GeneralMotorCon.getInstance().takeoff();

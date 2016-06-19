@@ -155,7 +155,6 @@ public class Assignment1 implements Runnable{
 		}
 		finished = true;
 		threadRun = false;
-		doneHulaHoop.add(qrcode);
 	}
 	 
 	/**
@@ -170,8 +169,8 @@ public class Assignment1 implements Runnable{
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
 			long actualImgNumber = SpaceXGUI.getInstance().getImageNumber(); 
-			if(lastImgNumber <= actualImgNumber){
-				lastImgNumber = actualImgNumber;
+			if((lastImgNumber+5) >= (actualImgNumber)){
+				//lastImgNumber = actualImgNumber;
 				return false;
 			}
 			lastImgNumber = actualImgNumber;
