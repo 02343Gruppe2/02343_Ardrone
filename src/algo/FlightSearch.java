@@ -21,6 +21,7 @@ public class FlightSearch {
 	boolean forwardControl = false;
 	boolean newQRCode = true;
 	boolean adjust = false;
+	boolean revert = false;
 	
 	int errormargin = 0, rectangleWidth = 170;
 	long imgNumber = SpaceXGUI.getInstance().getImageNumber();
@@ -155,7 +156,7 @@ public class FlightSearch {
 				qrcodeFound = true;
 				break;
 			}
-			// Forward with 2000 mills
+			// Forward with 500 mills and pause 1 second after.
 			GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);
 		}
 
@@ -172,137 +173,173 @@ public class FlightSearch {
 					map = true;
 					break;
 				} else if (qrcode.get(j).equals("W00.00")) {
-					adjustdrone(j, "W00.00");
-					GeneralMotorConSchedule.getInstance().landing();
+					//adjustdrone(j, "W00.00");
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.00");
-					// spin 180 grader if QRcode match the exactly wall.
-					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					//GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					//forwardControl = true;
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);;
+					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.01")) {
 					adjustdrone(j, "W00.01");
-					GeneralMotorConSchedule.getInstance().landing();
-					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 01 og landing");
-					//GeneralMotorConSchedule.getInstance().right();
-
-				} else if (qrcode.get(j).equals("W00.02")) {
-					adjustdrone(j, "W00.02");
-					GeneralMotorConSchedule.getInstance().landing();
-					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02 og landing");
-					// Spin 180 grader
-					//GeneralMotorConSchedule.getInstance().spin90Right();
-					//GeneralMotorConSchedule.getInstance().spin90Right();
-					//forwardControl = true;
-
-				} else if (qrcode.get(j).equals("W00.03")) {
-					adjustdrone(j, "W00.03");
-					GeneralMotorConSchedule.getInstance().landing();
-					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 03 og landing");
-					//GeneralMotorConSchedule.getInstance().right();
-
-				} else if (qrcode.get(j).equals("W00.04")) {
-					adjustdrone(j, "W00.04");
-					//GeneralMotorConSchedule.getInstance().landing();
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Right();
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.01");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
 
+				} else if (qrcode.get(j).equals("W00.02") && !revert) {
+					adjustdrone(j, "W00.02");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.02");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					
+				} else if (qrcode.get(j).equals("W00.02") && revert){
+					adjustdrone(j, "W00.02");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet revert W00.02");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "Dronen Landing");
+					GeneralMotorConSchedule.getInstance().landing();
+					forwardControl = false;
+
+				} else if (qrcode.get(j).equals("W00.03") && !revert) {
+					adjustdrone(j, "W00.03");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.03");
+					GeneralMotorConSchedule.getInstance().right(1000).pauseFor(200);
+					forwardControl = false;
+					
+				} else if (qrcode.get(j).equals("W00.03") && revert){
+					adjustdrone(j, "W00.03");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.03");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+
+				} else if (qrcode.get(j).equals("W00.04") && !revert) {
+					adjustdrone(j, "W00.04");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.04");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					
+				} else if (qrcode.get(j).equals("W00.04") && revert){
+					adjustdrone(j, "W00.04");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.04");
+					GeneralMotorConSchedule.getInstance().left(1000).pauseFor(200);
+					forwardControl = false;
+					
 				} else if (qrcode.get(j).equals("W01.00")) {
 					adjustdrone(j, "W01.00");
-					GeneralMotorConSchedule.getInstance().landing();
-					// Spin 180 grader
-					//GeneralMotorConSchedule.getInstance().spin90Left();
-					//GeneralMotorConSchedule.getInstance().spin90Left();
-
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W01.00");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					
 				} else if (qrcode.get(j).equals("W01.01")) {
 					adjustdrone(j, "W01.01");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().landing();
-					//GeneralMotorConSchedule.getInstance().spin90Left();
-					//GeneralMotorConSchedule.getInstance().spin90Left();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W01.01");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W01.02")) {
 					adjustdrone(j, "W01.02");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Left();
-					GeneralMotorConSchedule.getInstance().spin90Left();
-
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W01.02");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					
 				} else if (qrcode.get(j).equals("W01.03")) {
 					adjustdrone(j, "W01.03");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Left();
-					GeneralMotorConSchedule.getInstance().spin90Left();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W01.03");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W01.04")) {
 					adjustdrone(j, "W01.04");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Left();
-					GeneralMotorConSchedule.getInstance().spin90Left();
-
-				} else if (qrcode.get(j).equals("W02.00")) {
-					adjustdrone(j, "W02.00");
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W01.04");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
 					
-				} else if (qrcode.get(j).equals("W02.01")) {
+				} else if (qrcode.get(j).equals("W02.00") && !revert) {
+					adjustdrone(j, "W02.00");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.00");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					revert = true;
+				
+				} else if (qrcode.get(j).equals("W02.00") && revert){
+					adjustdrone(j, "W02.00");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.00");
+					forwardControl = true;					
+					
+				} else if (qrcode.get(j).equals("W02.01") && !revert) {
 					adjustdrone(j, "W02.01");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Left();
-					GeneralMotorConSchedule.getInstance().spin90Left();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.01");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-
-				} else if (qrcode.get(j).equals("W02.02")) {
+					
+				} else if (qrcode.get(j).equals("W02.01") && revert){
+					adjustdrone(j, "W02.01");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.01");
+					GeneralMotorConSchedule.getInstance().right(1000).pauseFor(200);
+					forwardControl = false;
+					
+				} else if (qrcode.get(j).equals("W02.02") && !revert) {
 					adjustdrone(j, "W02.02");
-					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
-					GeneralMotorConSchedule.getInstance().hover().pauseFor(3000);
-					//GeneralMotorConSchedule.getInstance().landing();
-					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 02.02");
-					//GeneralMotorConSchedule.getInstance().spin90Right();
-					//GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.02");
+					GeneralMotorConSchedule.getInstance().left(1000).pauseFor(200);
+					forwardControl = false;
+					
+				} else if (qrcode.get(j).equals("W02.02") && revert){
+					adjustdrone(j, "W02.02");
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.02");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-					//GeneralMotorConSchedule.getInstance().left();
-
+					
 				} else if (qrcode.get(j).equals("W02.03")) {
 					adjustdrone(j, "W02.03");
-					// Spin 180 grader
-					GeneralMotorConSchedule.getInstance().spin90Left();
-					GeneralMotorConSchedule.getInstance().spin90Left();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.03");
+					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(3000);
 					forwardControl = true;
-
+					
 				} else if (qrcode.get(j).equals("W02.04")) {
 					adjustdrone(j, "W02.04");
-					GeneralMotorConSchedule.getInstance().left();
-
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.04");
+					GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(3000);
+					forwardControl = true;
+					
 				} else if (qrcode.get(j).equals("W03.00")) {
 					adjustdrone(j, "W03.00");
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W03.00");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-
+					
 				} else if (qrcode.get(j).equals("W03.01")) {
 					adjustdrone(j, "W03.01");
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W03.01");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-
+					
 				} else if (qrcode.get(j).equals("W03.02")) {
 					adjustdrone(j, "W03.02");
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W03.02");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-
+					
 				} else if (qrcode.get(j).equals("W03.03")) {
 					adjustdrone(j, "W03.03");
-					//GeneralMotorConSchedule.getInstance().landing();
-					//SpaceXGUI.getInstance().appendToConsole(TAG, "fundet 03.03 og landing");
-					GeneralMotorConSchedule.getInstance().spin90Right();
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W03.03");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
-
+					
 				} else if (qrcode.get(j).equals("W03.04")) {
 					adjustdrone(j, "W03.04");
-					GeneralMotorConSchedule.getInstance().spin90Right();
-
+					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W03.04");
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
+					forwardControl = true;
+					
 				}
 			}
 			while (forwardControl) {
