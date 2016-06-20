@@ -142,21 +142,29 @@ public class GeneralMotorConSchedule {
 		cmd.schedule(0, new Runnable(){
 			@Override
 			public void run() {
+				int timeDivider = 200;
 				int id = newRunningThread();
-				int runNum = (int)time/500;
+				int runNum = (int)time/timeDivider;
+				addLastMovement(MOVED_FORWARD);
 				while (runNum > 0) {
 					if(isRunningThread(id)) {
 						try {
 							cmd.forward(speed);
-							addLastMovement(MOVED_FORWARD);
-							Thread.sleep(500);
+							Thread.sleep(timeDivider);
 						} catch (InterruptedException e) {
 							
 						}
 					}
 					runNum--;
 				}
-				
+				if(isRunningThread(id)){
+					try {
+						cmd.forward(speed);
+						Thread.sleep(time%timeDivider);
+					} catch(InterruptedException e) {
+						
+					}
+				}
 				if(isRunningThread(id))cmd.hover();
 				runningThreads--;
 			}

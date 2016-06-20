@@ -178,16 +178,14 @@ public class Assignment1 implements Runnable{
 	 */
 	private boolean updateHulaHoop() {
 		try{
+			long actualImgNumber = SpaceXGUI.getInstance().getImageNumber(); 
+			if((lastImgNumber+5) >= (actualImgNumber)) return false;
+			lastImgNumber = actualImgNumber;
 			if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Updating HulaHoop data, looking for: " + allHulaHoops.get(doneHulaHoop.size()));
 			hulaHoop = (ArrayList<String[]>)obj.findHulaHoops()[1];
 			if(hulaHoop.size() == 0) return false;
 			if(hulaHoop.isEmpty()) return false;
-			long actualImgNumber = SpaceXGUI.getInstance().getImageNumber(); 
-			if((lastImgNumber+5) >= (actualImgNumber)){
-				//lastImgNumber = actualImgNumber;
-				return false;
-			}
-			lastImgNumber = actualImgNumber;
+			
 			for (String[] s : hulaHoop){
 				if(s[3].contains(allHulaHoops.get(doneHulaHoop.size()))){
 					x = Double.parseDouble(s[0]);
