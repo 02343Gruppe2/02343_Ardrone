@@ -44,10 +44,17 @@ public class FlightSearch {
 
 	// Metode for forward check.
 	public void forwardCheck() {
+		
+		//scan qrcode
 		qrcodeScan();
 
+		// count size of qrcode scanned
 		for (int g = 0; g < qrcode.size(); g++) {
+			
+			// Checking if hula hoop ring found.
 			if (assign1.checkQRCode(qrcode)) {
+				SpaceXGUI.getInstance().appendToConsole(TAG, "Fundet en mulig hulahoop ring");
+				SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode: " + qrcode + assign1.checkQRCode(qrcode));
 				forwardControl = false;
 				map = true;
 				break;
@@ -57,14 +64,28 @@ public class FlightSearch {
 				break;
 			}
 		}
-		GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);;
+		//Forward 500 ms and pause for 500 ms.
+		GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);;
 	}
-
+	
+	//Spin 180 metode
+	public void spin180(){
+		
+		for(int i = 0; i < 2; i++){
+			GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(1000);
+		}
+			
+	}
+	
+	// Adjust drone position metode
 	public void adjustdrone(int j, String currentQr) {
 		
+		//counter for scanning (50 times)
 		int scanCounter = 0;
 		while ((!adjust) && scanCounter < 50) {
 			if (newQRCode) {
+				
+				//Get rect from arraylist and calculate the new x and y.
 				Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
 				double x = ((rect.br().x - rect.tl().x) / 2) + rect.tl().x,
 						y = ((rect.br().y - rect.tl().y) / 2) + rect.tl().y;
@@ -75,11 +96,15 @@ public class FlightSearch {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
 				SpaceXGUI.getInstance().appendToConsole(TAG, "x: " + x + " y: " + y);
 				
-				//errormargin=rect.width*2-100; 
+				//Tolerance for adjust the dronen position.
 				errormargin = (int)(600*Math.pow(0.9886, rect.width));
 				SpaceXGUI.getInstance().appendToConsole(TAG, "Erromargin: " + errormargin);
+				
+				//Check horizontal adjustment
 				if (x < errormargin && x > -errormargin ) {
+					//Check vertical adjustment
 					if(y < errormargin && y > -errormargin){
+						//Check if rect width less then rectangleWidth and forward a bit.
 						if(rect.width < rectangleWidth){
 							GeneralMotorConSchedule.getInstance().forward(500).pauseFor(500);
 						}else{
@@ -113,18 +138,6 @@ public class FlightSearch {
 			}
 		}
 	}
-
-	public void afstand(){
-		while(true){
-
-			qrcodeScan();
-			for(int j=0; j<qrcode.size(); j++){
-			Rect rect = ((ArrayList<Rect>) ((Object[]) res[0])[1]).get(j);
-			SpaceXGUI.getInstance().appendToConsole(TAG, "rect str: " + rect.width);
-			} 
-		}
-		
-	}
 	
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
@@ -134,16 +147,18 @@ public class FlightSearch {
 			SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode:" + qrcode);
 		
 			if (assign1.checkQRCode(qrcode)) {
-				SpaceXGUI.getInstance().appendToConsole(TAG, "Result: " + assign1.checkQRCode(qrcode));
+				SpaceXGUI.getInstance().appendToConsole(TAG, "Fundet en mulig hulahoop ring");
+				SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode: " + qrcode + assign1.checkQRCode(qrcode));
 				qrcodeFound = true;
 				map = true;
 				break;
+							
 			} else if (!qrcode.isEmpty()) {
 				SpaceXGUI.getInstance().appendToConsole(TAG, "Der er en qrcode");
 				qrcodeFound = true;
 				break;
 			}
-			GeneralMotorConSchedule.getInstance().spin90Left().pauseFor(5000);
+			GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 		}
 
 		while (!qrcodeFound) { // Scan for qrcode..
@@ -152,9 +167,11 @@ public class FlightSearch {
 
 			// Checking for Hulahop found
 			if (assign1.checkQRCode(qrcode)) {
+				SpaceXGUI.getInstance().appendToConsole(TAG, "Fundet en mulig hulahoop ring");
 				qrcodeFound = true;
 				map = true;
 				break;
+				
 			} else if (!qrcode.isEmpty()) {
 				qrcodeFound = true;
 				break;
@@ -167,16 +184,17 @@ public class FlightSearch {
 
 			// Scanning for QRcode and storage in arraylist
 			qrcodeScan();
-
+			SpaceXGUI.getInstance().appendToConsole(TAG, "!MAP QRcode " + qrcode);
 			// Counting total QRcode scanned
 			for (int j = 0; j < qrcode.size(); j++) {
 
 				// Checking for Hulahop
 				if (assign1.checkQRCode(qrcode)) {
 					SpaceXGUI.getInstance().appendToConsole(TAG, "Fundet en mulig hulahoop ring");
-					SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode: " + assign1.checkQRCode(qrcode));
+					SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode: " + qrcode + assign1.checkQRCode(qrcode));
 					map = true;
-					break;
+					break; 
+					
 				} else if (qrcode.get(j).equals("W00.00")) {
 					//adjustdrone(j, "W00.00");
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.00");
@@ -193,6 +211,7 @@ public class FlightSearch {
 					SpaceXGUI.getInstance().appendToConsole(TAG, "revert: " + revert);
 					adjustdrone(j, "W00.02");
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.02");
+					GeneralMotorConSchedule.getInstance().hover().pauseFor(1000);
 					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
@@ -276,6 +295,8 @@ public class FlightSearch {
 				} else if (qrcode.get(j).equals("W02.01") && !revert) {
 					adjustdrone(j, "W02.01");
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W02.01");
+					GeneralMotorConSchedule.getInstance().hover().pauseFor(500);
+					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					GeneralMotorConSchedule.getInstance().spin90Right().pauseFor(3000);
 					forwardControl = true;
