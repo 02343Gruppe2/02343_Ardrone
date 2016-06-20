@@ -23,7 +23,6 @@ public class SpaceXGUI extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private static SpaceXGUI instance = null;
-	private static SpaceXButtonPanel bPanel;
 	private static SpaceXVideoPanel horiVPanel;
 	private static SpaceXConsolePanel cPanel;
 	private static SpaceXDataPanel dPanel;
@@ -119,10 +118,6 @@ public class SpaceXGUI extends JPanel {
 	
 	public SpaceXVideoPanel getVPanel() {
 		return horiVPanel;
-	}
-	
-	public SpaceXButtonPanel getBPanel(){
-		return bPanel;
 	}
 	
 	/**
