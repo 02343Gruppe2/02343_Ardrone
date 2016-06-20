@@ -30,7 +30,7 @@ public class GeneralMotorConSchedule {
 	private int spinSpeed = 15;
 	
 	/* Spin 90 degrees Variables */
-	private int spin90Time = 3000;			//TODO: test the time.
+	private int spin90Time = 4500;			//TODO: test the time.
 	private int spin90Speed = 50;
 	
 	/* Altitude Variables */
