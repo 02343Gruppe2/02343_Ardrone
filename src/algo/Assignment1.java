@@ -20,6 +20,7 @@ import algo.GeneralMotorConSchedule;
 public class Assignment1 implements Runnable{
 	private static final String TAG = "Assignment1";
 	private static final boolean printToConsoleDebug = true;
+	private static final boolean printToConsole = true;
 	
 	/* Picture Analyze */
 	ImgProc obj = new ImgProc();
@@ -90,36 +91,44 @@ public class Assignment1 implements Runnable{
 	}
 	
 	/**
-	* Fly Through
+	* hulaHoopAdjustment
 	*/
 	private void hulaHoopAdjustment() {
 		boolean middle = false;
 		while (!middle) {
-			boolean check = updateHulaHoop();
-			if(check) {
+			/* Look for a hulahoop and adjust accordingly to it */
+			if(updateHulaHoop()) {
 				setVariableTolerance();
+				/* Check horizontal adjustment */
 				if(x < (variableTolerance-shittyDroneConstant) && x > -(variableTolerance+shittyDroneConstant)) {
+					/* Check Vertical adjustment */
 					if(y < (adjustmentTolerance) && y > -(adjustmentTolerance)){
 						if(printToConsoleDebug){
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Middle found");
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Radius: " + radius);
 							SpaceXGUI.getInstance().appendToConsole(TAG," - variableTolerance: " + variableTolerance);
 						}
+						/* Check if drone is close enough to fly all the way through */
 						if(radius > radiusForwardCheck){
 							middle = true;
 							SpaceXGUI.getInstance().appendToConsole(TAG," - Final fly through");
 							doneHulaHoop.add(qrcode);
+							/* Calculate the time to go forward */
 							int forwardFor = (int)(magicForwardNum/radius);
-							if(printToConsoleDebug)GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
+							GeneralMotorConSchedule.getInstance().forward(forwardFor).pauseFor(forwardFor);	
 						} else {
 							GeneralMotorConSchedule.getInstance().forward(1000).pauseFor(1000);
 						}
-					} else if(y > 0){
-						GeneralMotorConSchedule.getInstance().raiseAltitude();
-					} else {
-						GeneralMotorConSchedule.getInstance().lowerAltitude();
 					}
-				} else if(x > 0){
+					/* If the drone has to adjust vertically */
+					/* Go up */
+					else if(y > 0)GeneralMotorConSchedule.getInstance().raiseAltitude();
+					/* Go down */
+					else GeneralMotorConSchedule.getInstance().lowerAltitude();
+				}
+				/* If the drone has to adjust horizontally */
+				/* Go right, either spin or straight right */
+				else if(x > 0){
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().right();
@@ -133,7 +142,9 @@ public class Assignment1 implements Runnable{
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
 					
-				} else {
+				}
+				/* Go left, either spin or straight left */
+				else {
 					switch(doRandom()) {
 					case 0:
 						GeneralMotorConSchedule.getInstance().left();
@@ -147,7 +158,9 @@ public class Assignment1 implements Runnable{
 					}
 					GeneralMotorConSchedule.getInstance().pauseFor(100);
 				}	
-			} else {
+			}
+			/* If there is no hulahoop found */
+			else {
 				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG," - Lost the hulahoop");
 				if(!threadRun) return;
 			}
@@ -165,9 +178,12 @@ public class Assignment1 implements Runnable{
 	public boolean checkQRCode(ArrayList<String> qrcodes) {
 		
 		for (String s : qrcodes) {
-			if(s.contains(allHulaHoops.get(doneHulaHoop.size()))) return true;
+			if(s.contains(allHulaHoops.get(doneHulaHoop.size()))){
+				if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG,"checkQRCode - The right QRCode is there");
+				return true;
+			}
 		}
-		
+		if(printToConsoleDebug)SpaceXGUI.getInstance().appendToConsole(TAG,"checkQRCode - The right QRCode was NOT there");
 		return false;
 	}
 	 
@@ -176,7 +192,7 @@ public class Assignment1 implements Runnable{
 	 * checks for hula hoop and saves the x, y, radius and QRcode
 	 * @return - true, if a hulahoop was found.
 	 */
-	private boolean updateHulaHoop() {
+	public boolean updateHulaHoop() {
 		try{
 			long actualImgNumber = SpaceXGUI.getInstance().getImageNumber(); 
 			if((lastImgNumber+5) >= (actualImgNumber)) return false;
