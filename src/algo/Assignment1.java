@@ -54,12 +54,12 @@ public class Assignment1 implements Runnable{
 	
 	
 	/* Hula Hoop Variables and Constants*/
-	private int numHulaHoop = 4;									// The amount of hula hoops		
+	private int numHulaHoop = 6;									// The amount of hula hoops		
 	ArrayList<String> doneHulaHoop = new ArrayList<String>();		// List of the hula hoops the drone have flown through
 	ArrayList<String> allHulaHoops = new ArrayList<String>(); 		// The HulaHoop QRCodes
 	
 	public Assignment1() {
-		for(int i = 1; i < numHulaHoop; i++) {	//TODO: i start from 0
+		for(int i = 5; i < numHulaHoop; i++) {	//TODO: i start from 0
 			if(i < 10) {
 				allHulaHoops.add("P.0" + i );
 			}

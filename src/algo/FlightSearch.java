@@ -60,7 +60,7 @@ public class FlightSearch {
 				break;
 
 			} else if (qrcode.get(g).contains("W")) {
-				GeneralMotorConSchedule.getInstance().backward(500).pauseFor(500);
+				GeneralMotorConSchedule.getInstance().backward(500).pauseFor(1000);
 				forwardControl = false;
 				break;
 			}
@@ -214,7 +214,6 @@ public class FlightSearch {
 					forwardControl = true;
 
 				} else if (qrcode.get(j).equals("W00.02") && !revert) {
-					SpaceXGUI.getInstance().appendToConsole(TAG, "revert: " + revert);
 					adjustdrone(j, "W00.02");
 					SpaceXGUI.getInstance().appendToConsole(TAG, "fundet W00.02");
 					spin180();
