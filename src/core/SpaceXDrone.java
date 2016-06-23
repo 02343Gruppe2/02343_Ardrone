@@ -26,7 +26,7 @@ import algo.GeneralMotorConSchedule;
 
 public class SpaceXDrone {
 	FlightSearch fs;
-	Assignment1 assig1;
+	//Assignment1 assig1;
 	Boolean isFront;
 	Boolean imageIsReady;
 	int batteryPercentage;
@@ -81,7 +81,7 @@ public class SpaceXDrone {
 			drone.getNavDataManager().addBatteryListener(new powerLevel());
 			running = true;
 			Thread.sleep(10000);
-			assig1 = new Assignment1();
+			//assig1 = new Assignment1();
 			fs = new FlightSearch();
 			
 

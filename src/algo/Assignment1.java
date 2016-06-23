@@ -59,7 +59,7 @@ public class Assignment1 implements Runnable{
 	ArrayList<String> allHulaHoops = new ArrayList<String>(); 		// The HulaHoop QRCodes
 	
 	public Assignment1() {
-		for(int i = 5; i < numHulaHoop; i++) {	//TODO: i start from 0
+		for(int i = 0; i < numHulaHoop; i++) {	//TODO: i start from 0
 			if(i < 10) {
 				allHulaHoops.add("P.0" + i );
 			}

@@ -145,7 +145,7 @@ public class FlightSearch {
 	public void search() {
 		// spin 10 times and scan for hulahop and qrcode
 
-		for (int i = 0; i < 4; i++) {
+	/*	for (int i = 0; i < 4; i++) {
 			qrcodeScan();
 			SpaceXGUI.getInstance().appendToConsole(TAG, "qrcode:" + qrcode);
 		
@@ -182,7 +182,7 @@ public class FlightSearch {
 			}
 			// Forward with 500 mills and pause 1 second after.
 			GeneralMotorConSchedule.getInstance().forward(500).pauseFor(1000);
-		}
+		} */
 
 		while (!map) {
 
